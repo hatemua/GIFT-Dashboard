@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { ReactQueryProvider } from "@/components/ReactQueryProvider";
 
 export const metadata: Metadata = {
   title: "GIFT Platform - Gold International Fast Transfer",
-  description: "Enterprise blockchain-based gold transaction and traceability system",
+  description:
+    "Enterprise blockchain-based gold transaction and traceability system",
 };
 
 export default function RootLayout({
@@ -13,7 +15,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>{children}</body>
+      <body>
+        <ReactQueryProvider>
+          {children}
+        </ReactQueryProvider>
+      </body>
     </html>
   );
 }

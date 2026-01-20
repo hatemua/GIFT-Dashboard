@@ -4,18 +4,22 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { navigation } from "@/constants/navigation";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, LogOut } from "lucide-react";
 import { useState } from "react";
+import { useLogout } from "@/hooks/useAuth";
+import { Button } from "../ui/button";
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { mutate: logout } = useLogout();
+
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
 
   const toggleExpanded = (href: string) => {
     setExpandedItems((prev) =>
       prev.includes(href)
         ? prev.filter((item) => item !== href)
-        : [...prev, href]
+        : [...prev, href],
     );
   };
 
@@ -54,7 +58,7 @@ export function Sidebar() {
                       "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                       isActive(item.href)
                         ? "bg-gold-50 text-gold-700"
-                        : "text-slate-700 hover:bg-slate-100"
+                        : "text-slate-700 hover:bg-slate-100",
                     )}
                   >
                     <item.icon className="h-4 w-4" />
@@ -62,7 +66,7 @@ export function Sidebar() {
                     <ChevronRight
                       className={cn(
                         "h-4 w-4 transition-transform",
-                        expandedItems.includes(item.href) && "rotate-90"
+                        expandedItems.includes(item.href) && "rotate-90",
                       )}
                     />
                   </button>
@@ -76,7 +80,7 @@ export function Sidebar() {
                             "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                             isActive(child.href)
                               ? "bg-gold-50 text-gold-700"
-                              : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                              : "text-slate-600 hover:bg-slate-100 hover:text-slate-900",
                           )}
                         >
                           <child.icon className="h-4 w-4" />
@@ -93,7 +97,7 @@ export function Sidebar() {
                     "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                     isActive(item.href)
                       ? "bg-gold-50 text-gold-700"
-                      : "text-slate-700 hover:bg-slate-100"
+                      : "text-slate-700 hover:bg-slate-100",
                   )}
                 >
                   <item.icon className="h-4 w-4" />
@@ -106,16 +110,30 @@ export function Sidebar() {
       </nav>
 
       {/* User Profile */}
-      <div className="border-t border-slate-200 p-4">
+      <div className="border-t border-slate-200 p-4 space-y-4">
+        {/* User Info */}
         <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gold-100 text-sm font-semibold text-gold-700">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-gold-500 to-gold-600 text-sm font-semibold text-white shadow-sm">
             JD
           </div>
+
           <div className="flex-1">
-            <p className="text-sm font-medium text-slate-900">John Doe</p>
+            <p className="text-sm font-semibold text-slate-900">John Doe</p>
             <p className="text-xs text-slate-500">Admin</p>
           </div>
         </div>
+
+        {/* Logout */}
+        <Button
+          variant="outline"
+          onClick={() => logout()}
+          className="w-full bg-gold-300/20"
+        >
+          <span className="flex items-center gap-2 text-gold-700">
+            <LogOut className="h-4 w-4 text-gold-700 transition-colors" />
+            Sign out
+          </span>
+        </Button>
       </div>
     </div>
   );
