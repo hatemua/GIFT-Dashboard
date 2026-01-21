@@ -23,8 +23,11 @@ export function Sidebar() {
     );
   };
 
-  const isActive = (href: string) => {
+  const isActive = (href: string, isChild?: boolean) => {
     if (href === "/dashboard") {
+      return pathname === href;
+    }
+    if (isChild) {
       return pathname === href;
     }
     return pathname.startsWith(href);
@@ -78,7 +81,7 @@ export function Sidebar() {
                           href={child.href}
                           className={cn(
                             "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-                            isActive(child.href)
+                            isActive(child.href, true)
                               ? "bg-gold-50 text-gold-700"
                               : "text-slate-600 hover:bg-slate-100 hover:text-slate-900",
                           )}

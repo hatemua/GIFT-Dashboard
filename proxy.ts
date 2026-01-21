@@ -12,6 +12,7 @@ export function proxy(request: NextRequest) {
     "/dashboard",
     "/members",
     "/explorer",
+    "/assets"
   ];
 
   const isProtectedPage = protectedRoutes.some((route) =>

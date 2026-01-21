@@ -12,18 +12,24 @@ interface LoginFormValues {
 }
 
 export default function LoginPage() {
-  const { register, handleSubmit } = useForm<LoginFormValues>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<LoginFormValues>({
+    mode: "onChange",
+  });
   const loginMutation = useLogin();
 
   const onSubmit = (data: LoginFormValues) => {
     loginMutation.mutate({
       client_id: data.client_id,
       client_secret: data.client_secret,
-      grant_type: "client_credentials"
+      grant_type: "client_credentials",
     });
   };
 
-  const isLoading = loginMutation.status === 'pending';
+  const isLoading = loginMutation.status === "pending";
 
   return (
     <div className="flex min-h-screen bg-slate-50">
@@ -81,11 +87,18 @@ export default function LoginPage() {
                 <Key className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                 <Input
                   type="text"
-                  placeholder="Enter client_id"
-                  className="pl-10"
-                  {...register("client_id")}
+                  placeholder="Enter Client ID"
+                  className={`pl-10 ${errors.client_id ? "border-red-500 focus:ring-red-500" : ""}`}
+                  {...register("client_id", {
+                    required: "Client ID is required",
+                  })}
                 />
               </div>
+              {errors.client_id && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.client_id.message}
+                </p>
+              )}
             </div>
 
             {/* Client Secret */}
@@ -97,11 +110,18 @@ export default function LoginPage() {
                 <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                 <Input
                   type="password"
-                  placeholder="Enter client_secret"
-                  className="pl-10"
-                  {...register("client_secret")}
+                  placeholder="Enter Client Secret"
+                  className={`pl-10 ${errors.client_secret ? "border-red-500 focus:ring-red-500" : ""}`}
+                  {...register("client_secret", {
+                    required: "Client secret is required",
+                  })}
                 />
               </div>
+              {errors.client_secret && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.client_secret.message}
+                </p>
+              )}
             </div>
 
             {/* Submit */}
