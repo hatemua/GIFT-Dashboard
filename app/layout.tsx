@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { ReactQueryProvider } from "@/components/ReactQueryProvider";
+import { ReactQueryProvider } from "@/providers/ReactQueryProvider";
+import { ToastProvider } from "@/providers/toast-provider";
 
 export const metadata: Metadata = {
   title: "GIFT Platform - Gold International Fast Transfer",
@@ -17,7 +18,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body>
         <ReactQueryProvider>
-          {children}
+          <ToastProvider>{children}</ToastProvider>
         </ReactQueryProvider>
       </body>
     </html>

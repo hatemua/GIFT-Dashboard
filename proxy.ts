@@ -12,7 +12,8 @@ export function proxy(request: NextRequest) {
     "/dashboard",
     "/members",
     "/explorer",
-    "/assets"
+    "/assets",
+    "transactions",
   ];
 
   const isProtectedPage = protectedRoutes.some((route) =>
@@ -38,5 +39,7 @@ export const config = {
     "/dashboard/:path*",
     "/members/:path*",
     "/explorer/:path*",
+    "/assets/:path*",
+    "/transactions/:path*"
   ],
 };
