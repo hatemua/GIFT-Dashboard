@@ -1,15 +1,15 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
-import { Plus } from "lucide-react";
 
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { PageHeader } from "@/components/layout/page-header";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import TransactionsFilters from "@/components/features/explorer/transactions/TransactionsFilters";
+import TransactionsSkeleton from "@/components/features/explorer/transactions/TransactionsSkeleton";
+import EmptyTransactions from "@/components/features/explorer/transactions/EmptyTransactions";
+import TransactionsGrid from "@/components/features/explorer/transactions/TransactionsGrid";
+import TransactionsTable from "@/components/features/explorer/transactions/TransactionsTable";
+
 // UI-only mock data (replace later with real API)
 const MOCK_TRANSACTIONS = [
   {
@@ -35,7 +35,10 @@ const MOCK_TRANSACTIONS = [
 ];
 
 export default function BlockchainTransactionsPage() {
-  const [view, setView] = useState<"table" | "grid">("grid");
+  const [view, setView] = useState<"grid" | "table">("grid");
+  const [loading] = useState(false);
+
+  const hasTransactions = MOCK_TRANSACTIONS.length > 0;
 
   return (
     <DashboardShell>
@@ -49,67 +52,26 @@ export default function BlockchainTransactionsPage() {
         ]}
       />
 
+      {/* Filters / View Switch */}
+      <TransactionsFilters view={view} onViewChange={setView} />
 
-      {/* TABLE VIEW */}
-      {view === "table" && (
-        <Card>
-          <CardContent className="p-0">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Tx Hash</TableHead>
-                  <TableHead>Block</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Asset</TableHead>
-                  <TableHead>From</TableHead>
-                  <TableHead>To</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Timestamp</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {MOCK_TRANSACTIONS.map((tx) => (
-                  <TableRow key={tx.hash}>
-                    <TableCell className="font-mono text-sm">{tx.hash}</TableCell>
-                    <TableCell>{tx.block}</TableCell>
-                    <TableCell>{tx.type}</TableCell>
-                    <TableCell>{tx.asset}</TableCell>
-                    <TableCell>{tx.from}</TableCell>
-                    <TableCell>{tx.to}</TableCell>
-                    <TableCell>
-                      <Badge variant="success">{tx.status}</Badge>
-                    </TableCell>
-                    <TableCell>{tx.timestamp}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-      )}
+      {/* Loading */}
+      {loading && <TransactionsSkeleton />}
 
-      {/* GRID VIEW */}
-      {view === "grid" && (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {MOCK_TRANSACTIONS.map((tx) => (
-            <Card key={tx.hash} className="hover:shadow-md transition">
-              <CardContent className="space-y-2 p-4">
-                <div className="flex items-center justify-between">
-                  <span className="font-mono text-sm">{tx.hash}</span>
-                  <Badge variant="outline">{tx.type}</Badge>
-                </div>
-                <div className="text-sm text-muted-foreground">Block #{tx.block}</div>
-                <div className="font-medium">{tx.asset}</div>
-                <div className="text-sm">From: {tx.from}</div>
-                <div className="text-sm">To: {tx.to}</div>
-                <div className="flex items-center justify-between pt-2">
-                  <Badge variant="success">{tx.status}</Badge>
-                  <span className="text-xs text-muted-foreground">{tx.timestamp}</span>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+      {/* Empty */}
+      {!loading && !hasTransactions && <EmptyTransactions />}
+
+      {/* Content */}
+      {!loading && hasTransactions && (
+        <>
+          {view === "grid" && (
+            <TransactionsGrid transactions={MOCK_TRANSACTIONS} />
+          )}
+
+          {view === "table" && (
+            <TransactionsTable transactions={MOCK_TRANSACTIONS} />
+          )}
+        </>
       )}
     </DashboardShell>
   );
