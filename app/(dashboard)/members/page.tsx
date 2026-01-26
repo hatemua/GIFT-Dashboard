@@ -1,3 +1,4 @@
+"use client";
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { PageHeader } from "@/components/layout/page-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,8 +7,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { mockMembers } from "@/lib/mock-data";
 import { Users, Plus, Mail, Phone, Globe } from "lucide-react";
+import { use, useState } from "react";
+import CreateMemberModal from "@/components/features/members/new/CreateMemberModal";
 
 export default function MembersPage() {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
   return (
     <DashboardShell>
       <PageHeader
@@ -18,7 +24,7 @@ export default function MembersPage() {
           { label: "Members" },
         ]}
         action={
-          <Button variant="gold">
+          <Button variant="gold" onClick={handleOpenModal}>
             <Plus className="h-4 w-4" />
             Add Member
           </Button>
@@ -147,6 +153,11 @@ export default function MembersPage() {
           </Card>
         ))}
       </div>
+            {/* Create Member Modal */}
+      <CreateMemberModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+      />
     </DashboardShell>
   );
 }
