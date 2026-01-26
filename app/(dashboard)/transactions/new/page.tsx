@@ -7,7 +7,6 @@ import { PageHeader } from "@/components/layout/page-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
 import { Plus } from "lucide-react";
 import { Select, SelectItem } from "@/components/ui/select";
 import { DatePicker } from "@/components/ui/date-picker";
@@ -16,14 +15,13 @@ import { Transaction } from "@/types/transaction";
 import { useToast } from "@/providers/toast-provider";
 
 export default function NewTransactionPage() {
-  const { createTransaction, loading, error } = useTransaction();
+  const { createTransaction, loading } = useTransaction();
   const { showToast } = useToast();
 
   const {
     register,
     handleSubmit,
     control,
-    watch,
     reset,
     formState: { errors },
   } = useForm<Transaction>({
@@ -50,13 +48,11 @@ export default function NewTransactionPage() {
     } catch (err: any) {
       showToast({
         title: "Error",
-        message: err.message,
+        message: err?.message ?? "Something went wrong",
         variant: "error",
       });
     }
   };
-
-  const selectedAssets = watch("requested_assets");
 
   return (
     <DashboardShell>
@@ -70,30 +66,32 @@ export default function NewTransactionPage() {
         ]}
       />
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
-        {/* Transaction Details */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Transaction Details</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <label className="block mb-1 font-medium">
-                Transaction Reference
-              </label>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-6xl">
+        {/* Main Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Transaction Details */}
+          <Card className="border-slate-200/60 shadow-sm hover:shadow-md transition-shadow">
+            <CardHeader>
+              <CardTitle className="text-base font-semibold tracking-tight">
+                Transaction Details
+              </CardTitle>
+              <p className="text-sm text-slate-500">
+                Basic information about the transaction
+              </p>
+            </CardHeader>
+            <CardContent className="space-y-4">
               <Input
                 {...register("transaction_reference", { required: true })}
                 placeholder="PO-2025-8901"
+                label="Transaction Reference"
+                error={
+                  errors.transaction_reference
+                    ? "Transaction reference is required"
+                    : ""
+                }
+                className="mt-1"
               />
-              {errors.transaction_reference && (
-                <p className="text-red-500 text-sm">
-                  Transaction reference is required
-                </p>
-              )}
-            </div>
 
-            <div>
-              <label className="block mb-1 font-medium">Transaction Type</label>
               <Controller
                 control={control}
                 name="transaction_type"
@@ -103,6 +101,12 @@ export default function NewTransactionPage() {
                     value={field.value}
                     onChange={field.onChange}
                     placeholder="Select transaction type"
+                    label="Transaction Type"
+                    error={
+                      errors.transaction_type
+                        ? "Transaction type is required"
+                        : ""
+                    }
                   >
                     <SelectItem value="transfer">Transfer</SelectItem>
                     <SelectItem value="deposit">Deposit</SelectItem>
@@ -110,104 +114,57 @@ export default function NewTransactionPage() {
                   </Select>
                 )}
               />
-              {errors.transaction_type && (
-                <p className="text-red-500 text-sm">
-                  Transaction type is required
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="block mb-1 font-medium">Counterparty GIC</label>
               <Input
                 {...register("counterparty_gic", { required: true })}
                 placeholder="GIC-2025-0002"
+                label="Counterparty GIC"
+                error={
+                  errors.counterparty_gic ? "Counterparty GIC is required" : ""
+                }
+                className="mt-1"
               />
-              {errors.counterparty_gic && (
-                <p className="text-red-500 text-sm">
-                  Counterparty GIC is required
-                </p>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
 
-        {/* Requested Assets */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Requested Assets</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <label className="block mb-1 font-medium">Assets</label>
-              <Controller
-                control={control}
-                name="requested_assets"
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <Select
-                    multiple
-                    value={field.value}
-                    onChange={field.onChange}
-                    placeholder="Choose one or more assets"
-                  >
-                    <SelectItem value="asset-2024-001">
-                      asset-2024-001
-                    </SelectItem>
-                    <SelectItem value="asset-2024-002">
-                      asset-2024-002
-                    </SelectItem>
-                    <SelectItem value="asset-2024-003">
-                      asset-2024-003
-                    </SelectItem>
-                  </Select>
-                )}
-              />
-              {errors.requested_assets && (
-                <p className="text-red-500 text-sm">
-                  Select at least one asset
-                </p>
-              )}
-              {selectedAssets?.length > 0 && (
-                <p className="mt-1 text-sm text-slate-500">
-                  Selected: {selectedAssets.join(", ")}
-                </p>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Valuation */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Valuation</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <label className="block mb-1 font-medium">Valuation Date</label>
+          {/* Valuation */}
+          <Card className="border-slate-200/60 shadow-sm hover:shadow-md transition-shadow">
+            <CardHeader>
+              <CardTitle className="text-base font-semibold tracking-tight">
+                Valuation
+              </CardTitle>
+              <p className="text-sm text-slate-500">
+                Financial details of the transaction
+              </p>
+            </CardHeader>
+            <CardContent className="space-y-4">
               <Controller
                 control={control}
                 name="valuation_date"
-                rules={{ required: true }}
-                render={({ field }) => <DatePicker {...field} />}
+                rules={{ required: "Valuation date is required" }}
+                render={({ field }) => (
+                  <DatePicker
+                    {...field}
+                    label="Valuation Date"
+                    placeholder="Select valuation date"
+                    error={errors.valuation_date?.message}
+                  />
+                )}
               />
-              {errors.valuation_date && (
-                <p className="text-red-500 text-sm">
-                  Valuation date is required
-                </p>
-              )}
-            </div>
 
-            <div>
-              <label className="block mb-1 font-medium">Currency</label>
               <Controller
                 control={control}
                 name="valuation_currency"
                 render={({ field }) => (
                   <Select
+                    label="Currency"
                     value={field.value}
                     onChange={field.onChange}
                     placeholder="Select currency"
+                    error={
+                      errors.valuation_currency
+                        ? "Valuation currency is required"
+                        : ""
+                    }
                   >
                     <SelectItem value="USD">USD</SelectItem>
                     <SelectItem value="EUR">EUR</SelectItem>
@@ -215,12 +172,7 @@ export default function NewTransactionPage() {
                   </Select>
                 )}
               />
-            </div>
 
-            <div>
-              <label className="block mb-1 font-medium">
-                Transaction Value
-              </label>
               <Input
                 type="number"
                 {...register("transaction_value", {
@@ -229,21 +181,63 @@ export default function NewTransactionPage() {
                   valueAsNumber: true,
                 })}
                 placeholder="Enter amount"
+                label="Transaction Value"
+                error={
+                  errors.transaction_value
+                    ? "Enter a valid transaction value"
+                    : ""
+                }
+                className="mt-1"
               />
-              {errors.transaction_value && (
-                <p className="text-red-500 text-sm">
-                  Enter a valid transaction value
-                </p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Requested Assets */}
+        <Card className="border-slate-200/60 shadow-sm hover:shadow-md transition-shadow">
+          <CardHeader>
+            <CardTitle className="text-base font-semibold tracking-tight">
+              Requested Assets
+            </CardTitle>
+            <p className="text-sm text-slate-500">
+              Select one or more assets involved in this transaction
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Controller
+              control={control}
+              name="requested_assets"
+              rules={{ required: true }}
+              render={({ field }) => (
+                <Select
+                  multiple
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder="Choose assets"
+                  error={
+                    errors.requested_assets ? "Select at least one asset" : ""
+                  }
+                >
+                  <SelectItem value="asset-2024-001">asset-2024-001</SelectItem>
+                  <SelectItem value="asset-2024-002">asset-2024-002</SelectItem>
+                  <SelectItem value="asset-2024-003">asset-2024-003</SelectItem>
+                </Select>
               )}
-            </div>
+            />
           </CardContent>
         </Card>
 
-        {/* Submit */}
-        <div className="flex justify-end">
-          <Button type="submit" variant="gold">
+        {/* Sticky Footer */}
+        <div className="bottom-0 pt-2 flex justify-end">
+          <Button
+            type="submit"
+            variant="gold"
+            size="lg"
+            disabled={loading}
+            className="min-w-[220px]"
+          >
             <Plus className="h-4 w-4 mr-2" />
-            {loading ? "Creating..." : "Create Transaction"}
+            {loading ? "Creating transaction…" : "Create Transaction"}
           </Button>
         </div>
       </form>

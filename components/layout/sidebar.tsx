@@ -113,30 +113,29 @@ export function Sidebar() {
       </nav>
 
       {/* User Profile */}
-      <div className="border-t border-slate-200 p-4 space-y-4">
-        {/* User Info */}
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-gold-500 to-gold-600 text-sm font-semibold text-white shadow-sm">
-            JD
+      <div className="border-t border-slate-200 px-4 py-3">
+        <div className="flex items-center justify-between gap-3">
+          {/* User Info */}
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-gold-500 to-gold-600 text-sm font-semibold text-white shadow-sm">
+              JD
+            </div>
+
+            <div className="leading-tight">
+              <p className="text-sm font-semibold text-slate-900">John Doe</p>
+              <p className="text-xs text-slate-500">Admin</p>
+            </div>
           </div>
 
-          <div className="flex-1">
-            <p className="text-sm font-semibold text-slate-900">John Doe</p>
-            <p className="text-xs text-slate-500">Admin</p>
-          </div>
+          {/* Logout icon */}
+          <button
+            onClick={() => logout()}
+            className="cursor-pointer flex h-9 w-9 items-center justify-center rounded-md text-gold-700 transition hover:bg-gold-300/20 hover:text-gold-800"
+            aria-label="Sign out"
+          >
+            <LogOut className="h-4 w-4" />
+          </button>
         </div>
-
-        {/* Logout */}
-        <Button
-          variant="outline"
-          onClick={() => logout()}
-          className="w-full bg-gold-300/20"
-        >
-          <span className="flex items-center gap-2 text-gold-700">
-            <LogOut className="h-4 w-4 text-gold-700 transition-colors" />
-            Sign out
-          </span>
-        </Button>
       </div>
     </div>
   );
