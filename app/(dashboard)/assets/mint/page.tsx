@@ -119,7 +119,6 @@ export default function MintAssetPage() {
                 type="number"
                 label="Weight (grams)"
                 className="h-11"
-                rightHint="grams"
                 {...register("weight_grams", { required: true, min: 1 })}
               />
 
@@ -127,7 +126,6 @@ export default function MintAssetPage() {
                 type="number"
                 step="0.0001"
                 label="Fineness"
-                rightHint="Au"
                 className="h-11"
                 {...register("fineness", { required: true })}
               />
