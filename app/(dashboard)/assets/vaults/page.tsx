@@ -21,6 +21,7 @@ export default function VaultSitesPage() {
     totalCount,
     offset,
     limit,
+    country,
     loading,
     error,
     fetchVaultSites,
@@ -44,8 +45,8 @@ export default function VaultSitesPage() {
   };
 
   useEffect(() => {
-    fetchVaultSites(limit, offset);
-  }, [limit, offset]);
+    fetchVaultSites(limit, offset, country);
+  }, [limit, offset, country]);
 
   // Conditional content rendering
   let content;
@@ -54,7 +55,7 @@ export default function VaultSitesPage() {
   } else if (error) {
     content = <ErrorCard error={error} />;
   } else if (vaultSites.length === 0) {
-    content = <EmptyVaultSites />;
+    content = <EmptyVaultSites hasFilters={Boolean(country)} />;
   } else {
     content =
       view === "grid" ? (

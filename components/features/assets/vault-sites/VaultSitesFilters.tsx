@@ -1,6 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, List, Grid3x3 } from "lucide-react";
+import { useVaultSite } from "@/hooks/useVaultSite";
 
 interface VaultSitesFiltersProps {
   view: "grid" | "table";
@@ -8,6 +9,7 @@ interface VaultSitesFiltersProps {
 }
 
 const VaultSitesFilters = ({ view, onViewChange }: VaultSitesFiltersProps) => {
+  const { country, setCountry } = useVaultSite();
   return (
     <div className="mb-3 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       {/* Search */}
@@ -15,7 +17,9 @@ const VaultSitesFilters = ({ view, onViewChange }: VaultSitesFiltersProps) => {
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
         <Input
           type="search"
+          value={country ?? ""}
           placeholder="Search by country"
+          onChange={(e) => setCountry(e.target.value)}
           className="pl-10"
         />
       </div>

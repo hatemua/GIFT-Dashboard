@@ -17,7 +17,7 @@ export interface VaultSiteStore {
   totalCount: number;
   limit: number;
   offset: number;
-  country: string | null;
+  country: string | undefined;
   loading: boolean;
   error: string | null;
 
