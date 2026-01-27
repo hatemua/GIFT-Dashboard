@@ -18,15 +18,19 @@ interface SelectProps {
   label?: string;
   error?: string;
   onChange?: (value: string | string[]) => void;
+  /**
+   * Function to convert value to display label
+   */
+  displayLabel?: (value: string) => string;
 }
 
 export const Select = forwardRef<HTMLDivElement, SelectProps>(
-  ({ children, value, multiple, placeholder, label, error, onChange }, ref) => {
+  ({ children, value, multiple, placeholder, label, error, onChange, displayLabel }, ref) => {
     const [isOpen, setIsOpen] = useState(false);
     const [openUpwards, setOpenUpwards] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    // Determine selected values
+    // Selected values
     const selectedValues = multiple
       ? Array.isArray(value)
         ? value
@@ -35,7 +39,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
         : []
       : value ?? "";
 
-    // Close dropdown on click outside
+    // Close dropdown on outside click
     useEffect(() => {
       const handleClickOutside = (event: MouseEvent) => {
         if (
@@ -57,7 +61,6 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
         const spaceBelow = window.innerHeight - rect.bottom;
         const spaceAbove = rect.top;
 
-        // Open upwards if not enough space below
         setOpenUpwards(spaceBelow < 200 && spaceAbove > spaceBelow);
       }
       setIsOpen((prev) => !prev);
@@ -67,11 +70,9 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
     const handleSelect = (val: string) => {
       if (multiple && Array.isArray(selectedValues)) {
         if (selectedValues.includes(val)) {
-          const newValues = selectedValues.filter((v) => v !== val);
-          onChange?.(newValues);
+          onChange?.(selectedValues.filter((v) => v !== val));
         } else {
-          const newValues = [...selectedValues, val];
-          onChange?.(newValues);
+          onChange?.([...selectedValues, val]);
         }
       } else {
         onChange?.(val);
@@ -79,14 +80,19 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
       }
     };
 
-    // Remove a tag in multi-select
+    // Remove tag in multi-select
     const removeTag = (val: string) => {
       if (multiple && Array.isArray(selectedValues)) {
-        const newValues = selectedValues.filter((v) => v !== val);
-        onChange?.(newValues);
+        onChange?.(selectedValues.filter((v) => v !== val));
       } else {
         onChange?.("");
       }
+    };
+
+    // Map value → display label
+    const getLabel = (val: string) => {
+      if (!displayLabel) return val;
+      return displayLabel(val);
     };
 
     return (
@@ -110,7 +116,9 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
               </span>
             ) : (
               <>
-                {!multiple && selectedValues && <span>{selectedValues}</span>}
+                {!multiple && selectedValues && (
+                  <span>{getLabel(selectedValues as string)}</span>
+                )}
                 {multiple &&
                   Array.isArray(selectedValues) &&
                   selectedValues.map((val) => (
@@ -118,7 +126,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
                       key={val}
                       className="bg-gold-100 text-gold-800 px-2 py-0.5 rounded-full flex items-center gap-1 text-xs font-medium shadow-sm hover:bg-gold-200 transition"
                     >
-                      {val}
+                      {getLabel(val)}
                       <X
                         size={14}
                         className="cursor-pointer text-gold-700 hover:text-gold-900"
@@ -179,6 +187,10 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
 );
 
 Select.displayName = "Select";
+
+/* -------------------------------------------------------------------------- */
+/*                              Select Item Component                          */
+/* -------------------------------------------------------------------------- */
 
 export const SelectItem = ({
   value,

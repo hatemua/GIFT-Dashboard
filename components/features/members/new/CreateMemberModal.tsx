@@ -8,23 +8,14 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectItem } from "@/components/ui/select";
 import { Modal } from "@/components/ui/modal";
 import { COMPLIANCE_LEVELS, ENTITY_TYPES, ROLES } from "@/constants/member";
-import { create } from 'zustand';
 import { useMemberStore } from "@/store/memberStore";
 import { CreateMemberInput } from "@/types/member";
 import { useToast } from "@/providers/toast-provider";
-
-/* -------------------------------------------------------------------------- */
-/*                                   TYPES                                    */
-/* -------------------------------------------------------------------------- */
 
 interface CreateMemberModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
-
-/* -------------------------------------------------------------------------- */
-/*                                COMPONENT                                   */
-/* -------------------------------------------------------------------------- */
 
 export default function CreateMemberModal({
   isOpen,
@@ -46,26 +37,25 @@ export default function CreateMemberModal({
     },
   });
 
-const onSubmit = async (data: CreateMemberInput) => {
-  try {
-    await createMember(data);
-    showToast({
-      title: "Success",
-      message: "Member created successfully!",
-      variant: "success",
-    });
-    reset();
-    onClose();
-  } catch (err: any) {
-    console.error("Error creating member:", err);
-    showToast({
-      title: "Error",
-      message: err?.message || "Failed to create member",
-      variant: "error",
-    });
-  }
-};
-
+  const onSubmit = async (data: CreateMemberInput) => {
+    try {
+      await createMember(data);
+      showToast({
+        title: "Success",
+        message: "Member created successfully!",
+        variant: "success",
+      });
+      reset();
+      onClose();
+    } catch (err: any) {
+      console.error("Error creating member:", err);
+      showToast({
+        title: "Error",
+        message: err?.message || "Failed to create member",
+        variant: "error",
+      });
+    }
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Create Member" size="md">
@@ -95,6 +85,9 @@ const onSubmit = async (data: CreateMemberInput) => {
               label="Entity Type"
               value={field.value}
               onChange={field.onChange}
+              displayLabel={(val) =>
+                ENTITY_TYPES.find((t) => t.value === val)?.label || val
+              }
             >
               {ENTITY_TYPES.map((type) => (
                 <SelectItem key={type.value} value={type.value}>
@@ -119,6 +112,9 @@ const onSubmit = async (data: CreateMemberInput) => {
               label="Compliance Level"
               value={field.value}
               onChange={field.onChange}
+              displayLabel={(val) =>
+                COMPLIANCE_LEVELS.find((t) => t.value === val)?.label || val
+              }
             >
               {COMPLIANCE_LEVELS.map((level) => (
                 <SelectItem key={level.value} value={level.value}>
@@ -145,6 +141,9 @@ const onSubmit = async (data: CreateMemberInput) => {
               value={field.value}
               placeholder="Select member roles"
               onChange={field.onChange}
+              displayLabel={(val) =>
+                ROLES.find((t) => t.value === val)?.label || val
+              }
             >
               {ROLES.map((role) => (
                 <SelectItem key={role.value} value={role.value}>
