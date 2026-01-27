@@ -7,46 +7,65 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectItem } from "@/components/ui/select";
 import { Modal } from "@/components/ui/modal";
+import { COMPLIANCE_LEVELS, ENTITY_TYPES, ROLES } from "@/constants/member";
+import { create } from 'zustand';
+import { useMemberStore } from "@/store/memberStore";
+import { CreateMemberInput } from "@/types/member";
+import { useToast } from "@/providers/toast-provider";
 
-interface CreateMemberFormValues {
-  member_gic: string;
-  entity_type: "company" | "individual";
-  compliance_level: "basic" | "standard" | "enhanced";
-  roles: string[];
-}
-
-const ROLES = [
-  { label: "Refiner", value: "ROLE_REFINER" },
-  { label: "Minter", value: "ROLE_MINTER" },
-  { label: "Vault", value: "ROLE_VAULT" },
-];
+/* -------------------------------------------------------------------------- */
+/*                                   TYPES                                    */
+/* -------------------------------------------------------------------------- */
 
 interface CreateMemberModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmitMember?: (data: CreateMemberFormValues) => void;
 }
+
+/* -------------------------------------------------------------------------- */
+/*                                COMPONENT                                   */
+/* -------------------------------------------------------------------------- */
 
 export default function CreateMemberModal({
   isOpen,
   onClose,
-  onSubmitMember,
 }: CreateMemberModalProps) {
+  const { showToast } = useToast();
+  const { createMember } = useMemberStore();
   const {
     control,
     handleSubmit,
+    reset,
     formState: { isSubmitting },
-  } = useForm<CreateMemberFormValues>({
+  } = useForm<CreateMemberInput>({
     defaultValues: {
+      member_gic: "",
       entity_type: "company",
       compliance_level: "enhanced",
       roles: [],
     },
   });
 
-  const onSubmit = (data: CreateMemberFormValues) => {
-    if (onSubmitMember) onSubmitMember(data);
-  };
+const onSubmit = async (data: CreateMemberInput) => {
+  try {
+    await createMember(data);
+    showToast({
+      title: "Success",
+      message: "Member created successfully!",
+      variant: "success",
+    });
+    reset();
+    onClose();
+  } catch (err: any) {
+    console.error("Error creating member:", err);
+    showToast({
+      title: "Error",
+      message: err?.message || "Failed to create member",
+      variant: "error",
+    });
+  }
+};
+
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Create Member" size="md">
@@ -77,8 +96,16 @@ export default function CreateMemberModal({
               value={field.value}
               onChange={field.onChange}
             >
-              <SelectItem value="company">Company</SelectItem>
-              <SelectItem value="individual">Individual</SelectItem>
+              {ENTITY_TYPES.map((type) => (
+                <SelectItem key={type.value} value={type.value}>
+                  <div className="flex flex-col">
+                    <span className="font-medium">{type.label}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {type.description}
+                    </span>
+                  </div>
+                </SelectItem>
+              ))}
             </Select>
           )}
         />
@@ -93,9 +120,16 @@ export default function CreateMemberModal({
               value={field.value}
               onChange={field.onChange}
             >
-              <SelectItem value="basic">Basic</SelectItem>
-              <SelectItem value="standard">Standard</SelectItem>
-              <SelectItem value="enhanced">Enhanced</SelectItem>
+              {COMPLIANCE_LEVELS.map((level) => (
+                <SelectItem key={level.value} value={level.value}>
+                  <div className="flex flex-col">
+                    <span className="font-medium">{level.label}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {level.description}
+                    </span>
+                  </div>
+                </SelectItem>
+              ))}
             </Select>
           )}
         />
@@ -114,7 +148,12 @@ export default function CreateMemberModal({
             >
               {ROLES.map((role) => (
                 <SelectItem key={role.value} value={role.value}>
-                  {role.label}
+                  <div className="flex flex-col">
+                    <span className="font-medium">{role.label}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {role.description}
+                    </span>
+                  </div>
                 </SelectItem>
               ))}
             </Select>

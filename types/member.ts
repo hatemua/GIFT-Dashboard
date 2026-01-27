@@ -1,3 +1,5 @@
+import { COMPLIANCE_LEVELS, ENTITY_TYPES, ROLES } from "@/constants/member";
+
 export interface Member {
   member_gic: string;
   access_token: string;
@@ -13,3 +15,11 @@ export interface Member {
   member_hash: string;
   blockchain_tx: string;
 }
+
+export interface CreateMemberInput {
+  member_gic: string;
+  entity_type: (typeof ENTITY_TYPES)[number]["value"];
+  compliance_level: (typeof COMPLIANCE_LEVELS)[number]["value"];
+  roles: (typeof ROLES)[number]["value"][];
+}
+

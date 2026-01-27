@@ -1,8 +1,8 @@
 import { api } from "@/lib/axios";
-import { Member } from "@/types/member";
+import { CreateMemberInput, Member } from "@/types/member";
 
 export const memberService = {
-  createMember: async (data: Member) => {
+  createMember: async (data: CreateMemberInput) => {
     const response = await api.post("/members/create", data);
     return response.data as Member;
   },

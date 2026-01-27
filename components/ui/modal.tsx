@@ -22,14 +22,14 @@ export const Modal = ({ isOpen, onClose, title, children, size = "md" }: ModalPr
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity overflow-auto"
       onClick={onClose}
     >
       <div
         className={`relative w-full ${sizeClasses[size]} mx-auto p-4 transform transition-all duration-300 scale-100`}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="bg-white rounded-xl shadow-2xl overflow-hidden">
+        <div className="bg-white rounded-xl shadow-2xl">
           {/* Header */}
           <div className="flex justify-between items-center p-4 border-b border-slate-200">
             {title && <h2 className="text-lg font-bold text-slate-900">{title}</h2>}

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { Member } from "@/types/member";
+import { CreateMemberInput, Member } from "@/types/member";
 import { memberService } from "@/services/memberService";
 
 interface MemberState {
@@ -8,7 +8,7 @@ interface MemberState {
   error?: string;
 
   fetchMembers: () => Promise<void>;
-  createMember: (member: Member) => Promise<Member | undefined>;
+  createMember: (member: CreateMemberInput) => Promise<Member | undefined>;
 }
 
 export const useMemberStore = create<MemberState>((set, get) => ({
@@ -28,7 +28,7 @@ export const useMemberStore = create<MemberState>((set, get) => ({
     }
   },
 
-  createMember: async (member: Member) => {
+  createMember: async (member: CreateMemberInput) => {
     set({ loading: true, error: undefined });
     try {
       const data = await memberService.createMember(member);
