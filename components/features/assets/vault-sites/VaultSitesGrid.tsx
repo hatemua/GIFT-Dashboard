@@ -73,7 +73,7 @@ export function VaultSitesGrid({ vaultSites }: VaultSitesGridProps) {
               </div>
 
               {/* Action */}
-              <Link href={`/vault-sites/${vaultSite.vault_site_id}`}>
+              <Link href={`/assets/vaults/${vaultSite.vault_site_id}`}>
                 <Button
                   size="sm"
                   variant="outline"
