@@ -11,7 +11,7 @@ import { use, useState } from "react";
 import CreateMemberModal from "@/components/features/members/new/CreateMemberModal";
 
 export default function MembersPage() {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
   return (
@@ -51,7 +51,10 @@ export default function MembersPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {mockMembers.filter((m) => m.current_member_status === "Active").length}
+              {
+                mockMembers.filter((m) => m.current_member_status === "Active")
+                  .length
+              }
             </div>
           </CardContent>
         </Card>
@@ -91,7 +94,9 @@ export default function MembersPage() {
             <CardHeader>
               <div className="flex items-start justify-between">
                 <div>
-                  <CardTitle className="text-lg">{member.entity_name}</CardTitle>
+                  <CardTitle className="text-lg">
+                    {member.entity_name}
+                  </CardTitle>
                   <p className="text-sm text-slate-500 mt-1">
                     {member.type_member}
                   </p>
@@ -111,7 +116,9 @@ export default function MembersPage() {
               {/* Location */}
               <div className="flex items-center gap-2 text-sm">
                 <Globe className="h-4 w-4 text-slate-400" />
-                <span className="text-slate-600">{member.city}, {member.country}</span>
+                <span className="text-slate-600">
+                  {member.city}, {member.country}
+                </span>
               </div>
 
               {/* Roles */}
@@ -128,7 +135,9 @@ export default function MembersPage() {
                 <div className="pt-3 border-t border-slate-200 space-y-2">
                   <div className="flex items-center gap-2 text-sm text-slate-600">
                     <Mail className="h-3.5 w-3.5 text-slate-400" />
-                    <span className="text-xs truncate">{member.contact_email}</span>
+                    <span className="text-xs truncate">
+                      {member.contact_email}
+                    </span>
                   </div>
                   {member.contact_phone && (
                     <div className="flex items-center gap-2 text-sm text-slate-600">
@@ -143,21 +152,20 @@ export default function MembersPage() {
               <div className="pt-2 border-t border-slate-200">
                 <p className="text-xs text-slate-400">
                   Member since{" "}
-                  {new Date(member.membership_effective_date).toLocaleDateString(
-                    "en-US",
-                    { year: "numeric", month: "long" }
-                  )}
+                  {new Date(
+                    member.membership_effective_date,
+                  ).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                  })}
                 </p>
               </div>
             </CardContent>
           </Card>
         ))}
       </div>
-            {/* Create Member Modal */}
-      <CreateMemberModal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-      />
+      {/* Create Member Modal */}
+      <CreateMemberModal isOpen={isModalOpen} onClose={handleCloseModal} />
     </DashboardShell>
   );
 }
