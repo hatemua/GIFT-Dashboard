@@ -6,7 +6,7 @@ import { create } from "zustand";
 export const useVaultSiteStore = create<VaultSiteStore>((set, get) => ({
   vaultSites: [],
   totalCount: 0,
-  limit: 50,
+  limit: 6,
   offset: 0,
   country: null,
   loading: false,

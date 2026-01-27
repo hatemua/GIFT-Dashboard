@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 const VaultSiteCardSkeleton = () => {
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {[...Array(3)].map((_, i) => (
+      {[...Array(6)].map((_, i) => (
         <Card key={i} className="overflow-hidden">
           <CardHeader className="space-y-3">
             <div className="flex items-start justify-between">

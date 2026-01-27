@@ -6,8 +6,10 @@ import { MapPin, Package, Scale, Calendar } from "lucide-react";
 import { useVaultSite } from "@/hooks/useVaultSite";
 import { formatDate, formatWeight } from "@/lib/utils";
 
-export function VaultSitesGrid() {
-  const { vaultSites } = useVaultSite();
+interface VaultSitesGridProps {
+  vaultSites: ReturnType<typeof useVaultSite>["vaultSites"];
+}  
+export function VaultSitesGrid({ vaultSites }: VaultSitesGridProps) {
 
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

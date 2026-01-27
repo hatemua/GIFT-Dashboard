@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { PageHeader } from "@/components/layout/page-header";
@@ -9,10 +9,11 @@ import { Plus } from "lucide-react";
 import { useVaultSite } from "@/hooks/useVaultSite";
 import { Pagination } from "@/components/ui/pagination";
 import EmptyVaultSites from "@/components/features/assets/vault-sites/EmptyVaultSites";
-import { VaultSitesFilters } from "@/components/features/assets/vault-sites/VaultSitesFilters";
 import { VaultSitesGrid } from "@/components/features/assets/vault-sites/VaultSitesGrid";
 import { ErrorCard } from "@/components/ui/error-card";
 import VaultSiteCardSkeleton from "@/components/features/assets/vault-sites/VaultSiteCardSkeleton";
+import VaultSitesFilters from "@/components/features/assets/vault-sites/VaultSitesFilters";
+import { VaultSitesTable } from "@/components/features/assets/vault-sites/VaultSitesTable";
 
 export default function VaultSitesPage() {
   const {
@@ -26,23 +27,42 @@ export default function VaultSitesPage() {
     setOffset,
   } = useVaultSite();
 
-  useEffect(() => {
-    fetchVaultSites();
-  }, []);
+  const [view, setView] = useState<"grid" | "table">("grid");
+
+  const handleViewChange = (newView: "grid" | "table") => setView(newView);
 
   const handleNextPage = () => {
     if (offset + limit < totalCount) {
       setOffset(offset + limit);
-      fetchVaultSites(offset + limit);
     }
   };
 
   const handlePrevPage = () => {
     if (offset - limit >= 0) {
       setOffset(offset - limit);
-      fetchVaultSites(offset - limit);
     }
   };
+
+  useEffect(() => {
+    fetchVaultSites(limit, offset);
+  }, [limit, offset]);
+
+  // Conditional content rendering
+  let content;
+  if (loading) {
+    content = <VaultSiteCardSkeleton />;
+  } else if (error) {
+    content = <ErrorCard error={error} />;
+  } else if (vaultSites.length === 0) {
+    content = <EmptyVaultSites />;
+  } else {
+    content =
+      view === "grid" ? (
+        <VaultSitesGrid vaultSites={vaultSites} />
+      ) : (
+        <VaultSitesTable vaultSites={vaultSites} />
+      );
+  }
 
   return (
     <DashboardShell>
@@ -56,7 +76,10 @@ export default function VaultSitesPage() {
         ]}
         action={
           <Link href="/vault-sites/new">
-            <Button variant="gold">
+            <Button
+              variant="gold"
+              className="flex items-center gap-2 transition-transform hover:scale-105"
+            >
               <Plus className="h-4 w-4" />
               Add Vault Site
             </Button>
@@ -64,29 +87,24 @@ export default function VaultSitesPage() {
         }
       />
 
-      {/* Display an error card if an error occurs */}
-      {error && <ErrorCard error={error} />}
+      {/* Filters */}
+      <VaultSitesFilters view={view} onViewChange={handleViewChange} />
 
-      {/* Filters component for selecting countries or other criteria */}
-      {!error && <VaultSitesFilters />}
+      {/* Main content */}
+      {content}
 
-      {/* Show skeleton loading cards while data is being fetched */}
-      {loading && !error && <VaultSiteCardSkeleton />}
-
-      {/* Show empty state if there are no vault sites */}
-      {!error && !loading && vaultSites.length === 0 && <EmptyVaultSites />}
-
-      {/* Show the grid of vault cards if vault sites exist */}
-      {!error && !loading && vaultSites.length > 0 && <VaultSitesGrid />}
-
-      {/* Pagination component */}
-      <Pagination
-        offset={offset}
-        limit={limit}
-        total={totalCount}
-        onPrev={handlePrevPage}
-        onNext={handleNextPage}
-      />
+      {/* Pagination */}
+      {!loading && !error && vaultSites.length > 0 && (
+        <div className="mt-6 flex justify-center">
+          <Pagination
+            offset={offset}
+            limit={limit}
+            total={totalCount}
+            onPrev={handlePrevPage}
+            onNext={handleNextPage}
+          />
+        </div>
+      )}
     </DashboardShell>
   );
 }
