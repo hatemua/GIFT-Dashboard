@@ -22,14 +22,6 @@ const EmptyTransactionOrders = () => {
             withdrawals of assets across vault sites.
           </p>
         </div>
-
-        {/* Action */}
-        <Link href="/transactions/orders/new">
-          <Button variant="gold">
-            <Plus className="h-4 w-4" />
-            Create Transaction
-          </Button>
-        </Link>
       </CardContent>
     </Card>
   );

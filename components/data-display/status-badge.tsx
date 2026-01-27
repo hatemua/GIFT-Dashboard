@@ -35,6 +35,15 @@ const statusStyles = {
   Minted: "bg-green-50 text-green-700 border-green-200",
   Transferred: "bg-blue-50 text-blue-700 border-blue-200",
   Burnt: "bg-red-50 text-red-700 border-red-200",
+
+  // Certified statuses
+  Certified: "bg-green-50 text-green-700 border-green-200",
+  "Not Certified": "bg-red-50 text-red-700 border-red-200",
+
+  // Gold product types
+  bar: "bg-yellow-50 text-yellow-700 border-yellow-200",
+  coin: "bg-amber-50 text-amber-700 border-amber-200",
+  ingot: "bg-orange-50 text-orange-700 border-orange-200",
 } as const;
 
 interface StatusBadgeProps {
@@ -51,7 +60,7 @@ export function StatusBadge({ status, className }: StatusBadgeProps) {
   return (
     <Badge
       variant="outline"
-      className={cn("font-medium border", statusStyle, className)}
+      className={cn("font-medium border capitalize", statusStyle, className)}
     >
       {status.replace(/_/g, " ")}
     </Badge>

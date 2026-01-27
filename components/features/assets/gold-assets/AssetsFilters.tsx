@@ -1,13 +1,13 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, List, Grid3x3, Filter } from "lucide-react";
+import { Search, List, Grid3x3 } from "lucide-react";
 
-interface TransactionOrdersFiltersProps {
+interface AssetsFiltersProps {
   view: "grid" | "table";
   onViewChange: (view: "grid" | "table") => void;
 }
 
-const TransactionOrdersFilters = ({ view, onViewChange }: TransactionOrdersFiltersProps) => {
+const AssetsFilters = ({ view, onViewChange }: AssetsFiltersProps) => {
   return (
     <div className="mb-3 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       {/* Search */}
@@ -15,7 +15,7 @@ const TransactionOrdersFilters = ({ view, onViewChange }: TransactionOrdersFilte
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
         <Input
           type="search"
-          placeholder="Search by reference, asset, or counterparty..."
+          placeholder="Search by IGAN or member GIC"
           className="pl-10"
         />
       </div>
@@ -44,4 +44,4 @@ const TransactionOrdersFilters = ({ view, onViewChange }: TransactionOrdersFilte
   );
 };
 
-export default TransactionOrdersFilters;
+export default AssetsFilters;

@@ -5,18 +5,39 @@ interface UseAssetReturn {
   assets: Asset[];
   loading: boolean;
   error?: string;
-  fetchAssets: () => Promise<void>;
+  page: number;
+  limit: number;
+  totalCount: number;
+  fetchAssets: (page?: number, limit?: number) => Promise<void>;
   mintAsset: (asset: Asset) => Promise<Asset | undefined>;
+  setPage: (page: number) => void;
+  setLimit: (limit: number) => void;
 }
 
 export const useAsset = (): UseAssetReturn => {
-  const { assets, loading, error, fetchAssets, mintAsset } = useAssetStore();
+  const {
+    assets,
+    loading,
+    error,
+    page,
+    limit,
+    totalCount,
+    fetchAssets,
+    mintAsset,
+    setPage,
+    setLimit,
+  } = useAssetStore();
 
   return {
     assets,
     loading,
     error,
+    page,
+    limit,
+    totalCount,
     fetchAssets,
     mintAsset,
+    setPage,
+    setLimit,
   };
 };

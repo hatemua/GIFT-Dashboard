@@ -7,8 +7,11 @@ export const assetService = {
     return response.data;
   },
 
-  getAssets: async () => {
-    const response = await api.get("/assets");
-    return response.data as Asset[];
+  getAssets: async (page: number = 1, limit: number = 10) => {
+    const response = await api.get(`/assets?page=${page}&limit=${limit}`);
+    return response.data as {
+      data: Asset[];
+      totalCount: number;
+    };
   },
 };
