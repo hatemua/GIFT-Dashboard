@@ -11,8 +11,8 @@ import { Pagination } from "@/components/ui/pagination";
 import EmptyVaultSites from "@/components/features/assets/vault-sites/EmptyVaultSites";
 import { VaultSitesGrid } from "@/components/features/assets/vault-sites/VaultSitesGrid";
 import { ErrorCard } from "@/components/ui/error-card";
-import VaultSiteCardSkeleton from "@/components/features/assets/vault-sites/VaultSiteCardSkeleton";
 import VaultSitesFilters from "@/components/features/assets/vault-sites/VaultSitesFilters";
+import VaultSitesSkeleton from "@/components/features/assets/vault-sites/VaultSitesSkeleton";
 import { VaultSitesTable } from "@/components/features/assets/vault-sites/VaultSitesTable";
 
 export default function VaultSitesPage() {
@@ -50,7 +50,7 @@ export default function VaultSitesPage() {
   // Conditional content rendering
   let content;
   if (loading) {
-    content = <VaultSiteCardSkeleton />;
+    content = <VaultSitesSkeleton view={view} />;
   } else if (error) {
     content = <ErrorCard error={error} />;
   } else if (vaultSites.length === 0) {
