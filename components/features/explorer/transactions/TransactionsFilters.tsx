@@ -1,6 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, List, Grid3x3, Filter } from "lucide-react";
+import { Search, List, Grid3x3 } from "lucide-react";
 
 interface TransactionsFiltersProps {
   view: "grid" | "table";
@@ -15,7 +15,7 @@ const TransactionsFilters = ({ view, onViewChange }: TransactionsFiltersProps) =
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
         <Input
           type="search"
-          placeholder="Search by reference, asset, or counterparty..."
+          placeholder="Search by hash, from, to, or block..."
           className="pl-10"
         />
       </div>

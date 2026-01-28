@@ -13,7 +13,6 @@ interface UseBlockchainTransactionsReturn {
   fetchTransactions: (
     page?: number,
     limit?: number,
-    filters?: { blockHash?: string; walletAddress?: string },
   ) => Promise<void>;
   setPage: (page: number) => void;
   setLimit: (limit: number) => void;

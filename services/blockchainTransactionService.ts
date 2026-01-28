@@ -5,10 +5,9 @@ export const blockchainTransactionService = {
   getTransactions: async (
     page: number = 1,
     limit: number = 10,
-    filters?: { blockHash?: string; walletAddress?: string },
   ) => {
     const response = await api.get(`/transactions`, {
-      params: { page, limit, ...filters },
+      params: { page, limit },
     });
     return response.data as {
       data: BlockchainTransaction[];

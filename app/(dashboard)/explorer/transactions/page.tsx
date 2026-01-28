@@ -61,10 +61,12 @@ export default function BlockchainTransactionsPage() {
       <TransactionsFilters view={view} onViewChange={setView} />
 
       {/* Loading */}
-      {loading && <TransactionsSkeleton />}
+      {loading && <TransactionsSkeleton view={view} />}
 
       {/* Empty */}
-      {!loading && !hasTransactions && <EmptyState type="blockchainTransactions" />}
+      {!loading && !hasTransactions && (
+        <EmptyState type="blockchainTransactions" />
+      )}
 
       {/* Content */}
       {!loading && hasTransactions && (

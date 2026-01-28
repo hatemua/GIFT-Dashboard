@@ -10,6 +10,7 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { AddressDisplay } from "@/components/blockchain/address-display";
 
 interface Transaction {
   hash: string;
@@ -32,9 +33,6 @@ const statusStyles: Record<string, string> = {
   pending: "bg-amber-50 text-amber-700 border-amber-200",
 };
 
-const shorten = (value: string, chars = 6) =>
-  `${value.slice(0, chars)}…${value.slice(-chars)}`;
-
 export default function TransactionsTable({
   transactions,
 }: TransactionsTableProps) {
@@ -47,18 +45,10 @@ export default function TransactionsTable({
               <TableRow className="bg-muted/40">
                 <TableHead>Tx Hash</TableHead>
                 <TableHead>Block</TableHead>
-                <TableHead className="hidden md:table-cell">
-                  Type
-                </TableHead>
-                <TableHead className="hidden lg:table-cell">
-                  Asset
-                </TableHead>
-                <TableHead className="hidden xl:table-cell">
-                  From
-                </TableHead>
-                <TableHead className="hidden xl:table-cell">
-                  To
-                </TableHead>
+                <TableHead className="hidden md:table-cell">Type</TableHead>
+                <TableHead className="hidden lg:table-cell">Asset</TableHead>
+                <TableHead className="hidden xl:table-cell">From</TableHead>
+                <TableHead className="hidden xl:table-cell">To</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="hidden md:table-cell">
                   Timestamp
@@ -77,13 +67,16 @@ export default function TransactionsTable({
                     className="max-w-[160px] truncate font-mono text-sm"
                     title={tx.hash}
                   >
-                    {shorten(tx.hash)}
+                    <AddressDisplay
+                      address={tx.hash}
+                      truncate={true}
+                      startChars={6}
+                      endChars={6}
+                    />
                   </TableCell>
 
                   {/* Block */}
-                  <TableCell className="font-medium">
-                    #{tx.block}
-                  </TableCell>
+                  <TableCell className="font-medium">#{tx.block}</TableCell>
 
                   {/* Type */}
                   <TableCell className="hidden md:table-cell">
@@ -100,7 +93,12 @@ export default function TransactionsTable({
                     className="hidden max-w-[180px] truncate font-mono xl:table-cell"
                     title={tx.from}
                   >
-                    {shorten(tx.from)}
+                    <AddressDisplay
+                      address={tx.from}
+                      truncate={true}
+                      startChars={6}
+                      endChars={6}
+                    />
                   </TableCell>
 
                   {/* To */}
@@ -108,7 +106,12 @@ export default function TransactionsTable({
                     className="hidden max-w-[180px] truncate font-mono xl:table-cell"
                     title={tx.to}
                   >
-                    {shorten(tx.to)}
+                    <AddressDisplay
+                      address={tx.to}
+                      truncate={true}
+                      startChars={6}
+                      endChars={6}
+                    />
                   </TableCell>
 
                   {/* Status */}

@@ -7,11 +7,7 @@ interface BlockchainTransactionStore {
   loading: boolean;
   error?: string;
 
-  fetchTransactions: (
-    page?: number,
-    limit?: number,
-    filters?: { blockHash?: string; walletAddress?: string },
-  ) => Promise<void>;
+  fetchTransactions: (page?: number, limit?: number) => Promise<void>;
 
   setPage: (page: number) => void;
   setLimit: (limit: number) => void;
@@ -27,16 +23,11 @@ export const useBlockchainTransactionStore = create<BlockchainTransactionStore>(
     fetchTransactions: async (
       page = get().transactions.page,
       limit = get().transactions.limit,
-      filters,
     ) => {
       set({ loading: true, error: undefined });
       try {
         const { data, totalCount } =
-          await blockchainTransactionService.getTransactions(
-            page,
-            limit,
-            filters,
-          );
+          await blockchainTransactionService.getTransactions(page, limit);
         set({
           transactions: {
             items: data,
