@@ -1,8 +1,10 @@
 export interface BlockchainTransaction {
   hash: string;
+  block: number;
+  type: string;
+  asset: string;
   from: string;
   to: string;
-  amount: string;
   status: string;
   timestamp: string;
 }

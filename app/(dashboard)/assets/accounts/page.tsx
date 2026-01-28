@@ -7,12 +7,12 @@ import { Card, CardContent } from "@/components/ui/card";
 
 import AccountsFilters from "@/components/features/assets/accounts/AccountsFilters";
 import AccountsSkeleton from "@/components/features/assets/accounts/AccountsSkeleton";
-import EmptyAccounts from "@/components/features/assets/accounts/EmptyAccounts";
 import AccountsGrid from "@/components/features/assets/accounts/AccountsGrid";
 import AccountsTable from "@/components/features/assets/accounts/AccountsTable";
 
 import { useGoldAccount } from "@/hooks/useGoldAccount";
 import { Pagination } from "@/components/ui/pagination";
+import EmptyState from "@/components/features/common/EmptyState";
 
 export default function GoldAccountsPage() {
   const {
@@ -62,7 +62,7 @@ export default function GoldAccountsPage() {
       {loading ? (
         <AccountsSkeleton count={6} />
       ) : accounts.length === 0 ? (
-        <EmptyAccounts />
+        <EmptyState type="goldAccounts" />
       ) : view === "grid" ? (
         <AccountsGrid accounts={accounts} />
       ) : (

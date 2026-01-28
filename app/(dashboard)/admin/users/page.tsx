@@ -9,10 +9,10 @@ import { Plus } from "lucide-react";
 import UsersFilters from "@/components/features/admin/users/UsersFilters";
 import UsersGrid from "@/components/features/admin/users/UsersGrid";
 import UsersTable from "@/components/features/admin/users/UsersTable";
-import UsersEmpty from "@/components/features/admin/users/EmptyUsers";
 import UsersSkeleton from "@/components/features/admin/users/UsersSkeleton";
 import { Pagination } from "@/components/ui/pagination";
 import { useUser } from "@/hooks/useUser";
+import EmptyState from "@/components/features/common/EmptyState";
 
 type ViewMode = "grid" | "table";
 
@@ -62,7 +62,7 @@ export default function UsersPage() {
       {/* Content */}
       {loading && <UsersSkeleton />}
 
-      {!loading && users.length === 0 && <UsersEmpty />}
+      {!loading && users.length === 0 && <EmptyState type="users" />}
 
       {!loading && users.length > 0 && (
         <>

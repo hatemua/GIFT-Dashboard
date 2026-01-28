@@ -7,7 +7,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Pagination } from "@/components/ui/pagination";
 
 import { useAsset } from "@/hooks/useAsset";
-import EmptyAssets from "@/components/features/assets/gold-assets/EmptyAssets";
 import AssetsFilters from "@/components/features/assets/gold-assets/AssetsFilters";
 import { AssetsGrid } from "@/components/features/assets/gold-assets/AssetsGrid";
 import { AssetsSkeleton } from "@/components/features/assets/gold-assets/AssetsSkeleton";
@@ -16,80 +15,80 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { Asset } from "@/types/asset";
+import EmptyState from "@/components/features/common/EmptyState";
 
 export default function GoldAssetsPage() {
-  const { totalCount, page, limit, loading, fetchAssets, setPage } =
-    useAsset();
-const assets: Asset[] = [
-  {
-    serial_number: "SN-1001",
-    refiner_name: "GoldRefine Inc.",
-    weight_grams: 100,
-    fineness: 999,
-    gold_product_type_id: "bar",
-    traceability_gic: "GIC-001",
-    initial_owner_igan: "IGAN-001",
-    auto_verify_hash: true,
-    manufacture_date: "2025-01-10",
-    certification_framework: "ISO 9001",
-    certified: true,
-  },
-  {
-    serial_number: "SN-1002",
-    refiner_name: "Shiny Gold Co.",
-    weight_grams: 50,
-    fineness: 995,
-    gold_product_type_id: "coin",
-    traceability_gic: "GIC-002",
-    initial_owner_igan: "IGAN-002",
-    auto_verify_hash: false,
-    manufacture_date: "2025-01-12",
-    certification_framework: "ISO 14001",
-    certified: false,
-  },
-  {
-    serial_number: "SN-1003",
-    refiner_name: "Auric Metals",
-    weight_grams: 150,
-    fineness: 999,
-    gold_product_type_id: "ingot",
-    traceability_gic: "GIC-003",
-    initial_owner_igan: "IGAN-003",
+  const { totalCount, page, limit, loading, fetchAssets, setPage } = useAsset();
+  const assets: Asset[] = [
+    {
+      serial_number: "SN-1001",
+      refiner_name: "GoldRefine Inc.",
+      weight_grams: 100,
+      fineness: 999,
+      gold_product_type_id: "bar",
+      traceability_gic: "GIC-001",
+      initial_owner_igan: "IGAN-001",
+      auto_verify_hash: true,
+      manufacture_date: "2025-01-10",
+      certification_framework: "ISO 9001",
+      certified: true,
+    },
+    {
+      serial_number: "SN-1002",
+      refiner_name: "Shiny Gold Co.",
+      weight_grams: 50,
+      fineness: 995,
+      gold_product_type_id: "coin",
+      traceability_gic: "GIC-002",
+      initial_owner_igan: "IGAN-002",
+      auto_verify_hash: false,
+      manufacture_date: "2025-01-12",
+      certification_framework: "ISO 14001",
+      certified: false,
+    },
+    {
+      serial_number: "SN-1003",
+      refiner_name: "Auric Metals",
+      weight_grams: 150,
+      fineness: 999,
+      gold_product_type_id: "ingot",
+      traceability_gic: "GIC-003",
+      initial_owner_igan: "IGAN-003",
 
-    auto_verify_hash: true,
-    manufacture_date: "2025-01-15",
-    certification_framework: "ISO 9001",
-    certified: true,
-  },
-  {
-    serial_number: "SN-1004",
-    refiner_name: "GoldRefine Inc.",
-    weight_grams: 200,
-    fineness: 999,
-    gold_product_type_id: "bar",
-    traceability_gic: "GIC-004",
-    initial_owner_igan: "IGAN-004",
+      auto_verify_hash: true,
+      manufacture_date: "2025-01-15",
+      certification_framework: "ISO 9001",
+      certified: true,
+    },
+    {
+      serial_number: "SN-1004",
+      refiner_name: "GoldRefine Inc.",
+      weight_grams: 200,
+      fineness: 999,
+      gold_product_type_id: "bar",
+      traceability_gic: "GIC-004",
+      initial_owner_igan: "IGAN-004",
 
-    auto_verify_hash: true,
-    manufacture_date: "2025-01-18",
-    certification_framework: "ISO 9001",
-    certified: true,
-  },
-  {
-    serial_number: "SN-1005",
-    refiner_name: "Shiny Gold Co.",
-    weight_grams: 75,
-    fineness: 997,
-    gold_product_type_id: "coin",
-    traceability_gic: "GIC-005",
-    initial_owner_igan: "IGAN-005",
+      auto_verify_hash: true,
+      manufacture_date: "2025-01-18",
+      certification_framework: "ISO 9001",
+      certified: true,
+    },
+    {
+      serial_number: "SN-1005",
+      refiner_name: "Shiny Gold Co.",
+      weight_grams: 75,
+      fineness: 997,
+      gold_product_type_id: "coin",
+      traceability_gic: "GIC-005",
+      initial_owner_igan: "IGAN-005",
 
-    auto_verify_hash: false,
-    manufacture_date: "2025-01-20",
-    certification_framework: "ISO 14001",
-    certified: false,
-  },
-];
+      auto_verify_hash: false,
+      manufacture_date: "2025-01-20",
+      certification_framework: "ISO 14001",
+      certified: false,
+    },
+  ];
 
   const [view, setView] = React.useState<"grid" | "table">("grid");
 
@@ -140,7 +139,7 @@ const assets: Asset[] = [
       {loading ? (
         <AssetsSkeleton />
       ) : assets.length === 0 ? (
-        <EmptyAssets />
+        <EmptyState type="assets" />
       ) : view === "grid" ? (
         <AssetsGrid assets={assets} />
       ) : (

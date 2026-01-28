@@ -5,13 +5,13 @@ import { PageHeader } from "@/components/layout/page-header";
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import TransactionOrdersFilters from "@/components/features/transactions/orders/TransactionOrdersFilters";
 import TransactionOrdersSkeleton from "@/components/features/transactions/orders/TransactionOrdersSkeleton";
-import EmptyTransactionOrders from "@/components/features/transactions/orders/EmptyTransactionOrders";
 import TransactionOrdersGrid from "@/components/features/transactions/orders/TransactionOrdersGrid";
 import TransactionOrdersTable from "@/components/features/transactions/orders/TransactionOrdersTable";
 import { useTransaction } from "@/hooks/useTransaction";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import EmptyState from "@/components/features/common/EmptyState";
 
 export default function TransactionOrdersPage() {
   const [view, setView] = useState<"grid" | "table">("grid");
@@ -45,7 +45,7 @@ export default function TransactionOrdersPage() {
       {loading ? (
         <TransactionOrdersSkeleton />
       ) : transactions.length === 0 ? (
-        <EmptyTransactionOrders />
+        <EmptyState type="transactions" />
       ) : view === "grid" ? (
         <TransactionOrdersGrid transactions={transactions} />
       ) : (

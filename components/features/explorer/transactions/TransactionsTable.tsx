@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 interface Transaction {
   hash: string;
@@ -25,45 +26,114 @@ interface TransactionsTableProps {
   transactions: Transaction[];
 }
 
+const statusStyles: Record<string, string> = {
+  success: "bg-emerald-50 text-emerald-700 border-emerald-200",
+  failed: "bg-red-50 text-red-700 border-red-200",
+  pending: "bg-amber-50 text-amber-700 border-amber-200",
+};
+
+const shorten = (value: string, chars = 6) =>
+  `${value.slice(0, chars)}…${value.slice(-chars)}`;
+
 export default function TransactionsTable({
   transactions,
 }: TransactionsTableProps) {
   return (
-    <Card>
+    <Card className="overflow-hidden">
       <CardContent className="p-0">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Tx Hash</TableHead>
-              <TableHead>Block</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Asset</TableHead>
-              <TableHead>From</TableHead>
-              <TableHead>To</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Timestamp</TableHead>
-            </TableRow>
-          </TableHeader>
-
-          <TableBody>
-            {transactions.map((tx) => (
-              <TableRow key={tx.hash}>
-                <TableCell className="font-mono text-sm">
-                  {tx.hash}
-                </TableCell>
-                <TableCell>{tx.block}</TableCell>
-                <TableCell>{tx.type}</TableCell>
-                <TableCell>{tx.asset}</TableCell>
-                <TableCell>{tx.from}</TableCell>
-                <TableCell>{tx.to}</TableCell>
-                <TableCell>
-                  <Badge variant="success">{tx.status}</Badge>
-                </TableCell>
-                <TableCell>{tx.timestamp}</TableCell>
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-muted/40">
+                <TableHead>Tx Hash</TableHead>
+                <TableHead>Block</TableHead>
+                <TableHead className="hidden md:table-cell">
+                  Type
+                </TableHead>
+                <TableHead className="hidden lg:table-cell">
+                  Asset
+                </TableHead>
+                <TableHead className="hidden xl:table-cell">
+                  From
+                </TableHead>
+                <TableHead className="hidden xl:table-cell">
+                  To
+                </TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="hidden md:table-cell">
+                  Timestamp
+                </TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+
+            <TableBody>
+              {transactions.map((tx) => (
+                <TableRow
+                  key={tx.hash}
+                  className="transition hover:bg-muted/30"
+                >
+                  {/* Hash */}
+                  <TableCell
+                    className="max-w-[160px] truncate font-mono text-sm"
+                    title={tx.hash}
+                  >
+                    {shorten(tx.hash)}
+                  </TableCell>
+
+                  {/* Block */}
+                  <TableCell className="font-medium">
+                    #{tx.block}
+                  </TableCell>
+
+                  {/* Type */}
+                  <TableCell className="hidden md:table-cell">
+                    {tx.type}
+                  </TableCell>
+
+                  {/* Asset */}
+                  <TableCell className="hidden lg:table-cell">
+                    {tx.asset}
+                  </TableCell>
+
+                  {/* From */}
+                  <TableCell
+                    className="hidden max-w-[180px] truncate font-mono xl:table-cell"
+                    title={tx.from}
+                  >
+                    {shorten(tx.from)}
+                  </TableCell>
+
+                  {/* To */}
+                  <TableCell
+                    className="hidden max-w-[180px] truncate font-mono xl:table-cell"
+                    title={tx.to}
+                  >
+                    {shorten(tx.to)}
+                  </TableCell>
+
+                  {/* Status */}
+                  <TableCell>
+                    <Badge
+                      variant="outline"
+                      className={cn(
+                        "capitalize",
+                        statusStyles[tx.status?.toLowerCase()] ??
+                          "bg-slate-50 text-slate-700 border-slate-200",
+                      )}
+                    >
+                      {tx.status}
+                    </Badge>
+                  </TableCell>
+
+                  {/* Timestamp */}
+                  <TableCell className="hidden md:table-cell text-muted-foreground text-sm">
+                    {tx.timestamp}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </CardContent>
     </Card>
   );

@@ -1,44 +1,49 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { PageHeader } from "@/components/layout/page-header";
 import TransactionsFilters from "@/components/features/explorer/transactions/TransactionsFilters";
 import TransactionsSkeleton from "@/components/features/explorer/transactions/TransactionsSkeleton";
-import EmptyTransactions from "@/components/features/explorer/transactions/EmptyTransactions";
 import TransactionsGrid from "@/components/features/explorer/transactions/TransactionsGrid";
 import TransactionsTable from "@/components/features/explorer/transactions/TransactionsTable";
-
-// UI-only mock data (replace later with real API)
-const MOCK_TRANSACTIONS = [
-  {
-    hash: "0x8fa2...d91c",
-    block: 1823401,
-    type: "Mint",
-    asset: "Gold Bar #A-1021",
-    from: "Treasury",
-    to: "Vault GIC-001",
-    status: "Confirmed",
-    timestamp: "2025-01-22 14:32",
-  },
-  {
-    hash: "0x2c91...a3ff",
-    block: 1823398,
-    type: "Transfer",
-    asset: "Gold Bar #A-0994",
-    from: "Vault GIC-002",
-    to: "Vault GIC-004",
-    status: "Confirmed",
-    timestamp: "2025-01-22 14:10",
-  },
-];
+import { useBlockchainTransactions } from "@/hooks/useBlockchainTransaction";
+import { Pagination } from "@/components/ui/pagination";
+import EmptyState from "@/components/features/common/EmptyState";
 
 export default function BlockchainTransactionsPage() {
   const [view, setView] = useState<"grid" | "table">("grid");
-  const [loading] = useState(false);
 
-  const hasTransactions = MOCK_TRANSACTIONS.length > 0;
+  const {
+    transactions,
+    loading,
+    page,
+    limit,
+    totalCount,
+    fetchTransactions,
+    setPage,
+  } = useBlockchainTransactions();
+
+  const hasTransactions = transactions.length > 0;
+
+  // Page-based pagination
+  const handleNextPage = () => {
+    if (page < Math.ceil(totalCount / limit)) {
+      setPage(page + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (page > 1) {
+      setPage(page - 1);
+    }
+  };
+
+  // Optional: refetch when pagination changes
+  useEffect(() => {
+    fetchTransactions(page, limit);
+  }, [page, limit]);
 
   return (
     <DashboardShell>
@@ -59,20 +64,26 @@ export default function BlockchainTransactionsPage() {
       {loading && <TransactionsSkeleton />}
 
       {/* Empty */}
-      {!loading && !hasTransactions && <EmptyTransactions />}
+      {!loading && !hasTransactions && <EmptyState type="blockchainTransactions" />}
 
       {/* Content */}
       {!loading && hasTransactions && (
         <>
-          {view === "grid" && (
-            <TransactionsGrid transactions={MOCK_TRANSACTIONS} />
-          )}
+          {view === "grid" && <TransactionsGrid transactions={transactions} />}
 
           {view === "table" && (
-            <TransactionsTable transactions={MOCK_TRANSACTIONS} />
+            <TransactionsTable transactions={transactions} />
           )}
         </>
       )}
+      {/* Pagination */}
+      <Pagination
+        page={page}
+        limit={limit}
+        total={totalCount}
+        onPrev={handlePrevPage}
+        onNext={handleNextPage}
+      />
     </DashboardShell>
   );
 }

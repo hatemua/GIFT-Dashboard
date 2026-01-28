@@ -8,12 +8,12 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useVaultSite } from "@/hooks/useVaultSite";
 import { Pagination } from "@/components/ui/pagination";
-import EmptyVaultSites from "@/components/features/assets/vault-sites/EmptyVaultSites";
 import { VaultSitesGrid } from "@/components/features/assets/vault-sites/VaultSitesGrid";
 import { ErrorCard } from "@/components/ui/error-card";
 import VaultSitesFilters from "@/components/features/assets/vault-sites/VaultSitesFilters";
 import VaultSitesSkeleton from "@/components/features/assets/vault-sites/VaultSitesSkeleton";
 import { VaultSitesTable } from "@/components/features/assets/vault-sites/VaultSitesTable";
+import EmptyState from "@/components/features/common/EmptyState";
 
 export default function VaultSitesPage() {
   const {
@@ -55,7 +55,7 @@ export default function VaultSitesPage() {
   } else if (error) {
     content = <ErrorCard error={error} />;
   } else if (vaultSites.length === 0) {
-    content = <EmptyVaultSites hasFilters={Boolean(country)} />;
+    content = <EmptyState type="vaultSites" />;
   } else {
     content =
       view === "grid" ? (
