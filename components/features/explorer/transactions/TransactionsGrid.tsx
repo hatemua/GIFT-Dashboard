@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BlockchainTransaction } from "@/types/blockchainTransaction";
 import { cn } from "@/lib/utils";
+import { AddressDisplay } from "@/components/blockchain/address-display";
 
 interface TransactionsGridProps {
   transactions: BlockchainTransaction[];
@@ -35,7 +36,12 @@ export default function TransactionsGrid({
                   className="truncate font-mono text-sm font-medium"
                   title={tx.hash}
                 >
-                  {tx.hash}
+                  <AddressDisplay
+                    address={tx.hash}
+                    truncate={true}
+                    startChars={4}
+                    endChars={4}
+                  />
                 </p>
               </div>
 
@@ -64,7 +70,12 @@ export default function TransactionsGrid({
                   className="max-w-[65%] truncate text-right font-mono"
                   title={tx.from}
                 >
-                  {tx.from}
+                  <AddressDisplay
+                    address={tx.from}
+                    truncate={true}
+                    startChars={4}
+                    endChars={4}
+                  />
                 </span>
               </div>
 
@@ -74,7 +85,12 @@ export default function TransactionsGrid({
                   className="max-w-[65%] truncate text-right font-mono"
                   title={tx.to}
                 >
-                  {tx.to}
+                  <AddressDisplay
+                    address={tx.to}
+                    truncate={true}
+                    startChars={4}
+                    endChars={4}
+                  />
                 </span>
               </div>
             </div>
