@@ -109,8 +109,9 @@ export default function NewTransactionPage() {
                     }
                   >
                     <SelectItem value="transfer">Transfer</SelectItem>
-                    <SelectItem value="deposit">Deposit</SelectItem>
-                    <SelectItem value="withdrawal">Withdrawal</SelectItem>
+                    <SelectItem value="sale">Sale</SelectItem>
+                    <SelectItem value="purchase">Purchase</SelectItem>
+                    <SelectItem value="collateral">Collateral</SelectItem>
                   </Select>
                 )}
               />

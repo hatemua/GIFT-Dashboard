@@ -7,8 +7,17 @@ export const transactionService = {
     return response.data;
   },
 
-  getTransactions: async () => {
-    const response = await api.get("/transactions");
-    return response.data as Transaction[];
+  getTransactions: async (
+    page: number = 1,
+    limit: number = 10,
+    filters?: { transaction_reference?: string; transaction_type?: string },
+  ) => {
+    const response = await api.get("/transactions", {
+      params: { page, limit, ...filters },
+    });
+    return response.data as {
+      data: Transaction[];
+      totalCount: number;
+    };
   },
 };
