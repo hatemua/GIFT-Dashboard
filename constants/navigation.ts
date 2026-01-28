@@ -8,6 +8,7 @@ import {
   Settings,
   Receipt,
   FileText,
+  Ban
 } from "lucide-react";
 
 export interface NavItem {
@@ -68,6 +69,16 @@ export const navigation: NavItem[] = [
     icon: Package,
     children: [
       {
+        title: "Vaults",
+        href: "/assets/vaults",
+        icon: Settings,
+      },
+      {
+        title: "Gold Accounts",
+        href: "/assets/accounts",
+        icon: Receipt,
+      },
+      {
         title: "Gold Assets",
         href: "/assets",
         icon: Package,
@@ -76,16 +87,6 @@ export const navigation: NavItem[] = [
         title: "Mint New Asset",
         href: "/assets/mint",
         icon: FileText,
-      },
-      {
-        title: "Gold Accounts",
-        href: "/assets/accounts",
-        icon: Receipt,
-      },
-      {
-        title: "Vaults",
-        href: "/assets/vaults",
-        icon: Settings,
       },
     ],
   },
@@ -122,9 +123,9 @@ export const navigation: NavItem[] = [
         icon: Users,
       },
       {
-        title: "Whitelist",
-        href: "/admin/whitelist",
-        icon: FileCheck,
+        title: "Blacklist",
+        href: "/admin/blacklist",
+        icon: Ban,
       },
       {
         title: "Configuration",
