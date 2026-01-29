@@ -15,7 +15,7 @@ const AssetsFilters = ({ view, onViewChange }: AssetsFiltersProps) => {
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
         <Input
           type="search"
-          placeholder="Search by Serial number, Token ID, Owner"
+          placeholder="Search by Token ID, Serial Number, or Refiner..."
           className="pl-10"
         />
       </div>

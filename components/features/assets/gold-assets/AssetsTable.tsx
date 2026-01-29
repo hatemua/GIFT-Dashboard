@@ -1,7 +1,6 @@
 "use client";
 
 import { Asset } from "@/types/asset";
-import { ShieldCheck, ShieldX, Coins } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -10,56 +9,131 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { StatusBadge } from "@/components/data-display/status-badge";
+import { AddressDisplay } from "@/components/blockchain/address-display";
+import { formatDate, formatWeight, formatCurrency } from "@/lib/utils";
+import { getAssetStatusLabel } from "@/lib/assets";
+import {
+  User,
+  Scale,
+  Gem,
+  DollarSign,
+  Calendar,
+  Hash,
+  Tag,
+  Barcode,
+} from "lucide-react";
 
 interface AssetsTableProps {
   assets: Asset[];
 }
 
-export function AssetsTable({ assets }: AssetsTableProps) {
-  if (!assets.length) {
-    return <p className="text-center py-10 text-slate-500">No assets found</p>;
-  }
-
+export default function AssetsTable({ assets }: AssetsTableProps) {
   return (
-    <div className="overflow-x-auto">
-      <Table className="min-w-full border border-slate-200">
-        <TableHeader>
-          <TableRow className="bg-slate-100 text-left text-sm text-slate-600">
-            <TableHead>Serial</TableHead>
-            <TableHead>Type</TableHead>
-            <TableHead>Refiner</TableHead>
-            <TableHead>Weight</TableHead>
-            <TableHead>Fineness</TableHead>
-            <TableHead>GIC</TableHead>
-            <TableHead>Manufacture Date</TableHead>
-            <TableHead>Certified</TableHead>
+    <div className="rounded-xl border border-slate-200 dark:border-gray-700 overflow-hidden">
+      <Table>
+        {/* HEADER */}
+        <TableHeader className="bg-slate-50 dark:bg-gray-900">
+          <TableRow>
+            <TableHead>
+              <div className="flex items-center gap-2">
+                <Barcode className="h-3.5 w-3.5" />
+                Serial
+              </div>
+            </TableHead>
+
+            <TableHead>
+              <div className="flex items-center gap-2">
+                <Tag className="h-3.5 w-3.5" />
+                Type
+              </div>
+            </TableHead>
+
+            <TableHead>
+              <div className="flex items-center gap-2">
+                <Hash className="h-3.5 w-3.5" />
+                Token ID
+              </div>
+            </TableHead>
+
+            <TableHead>
+              <div className="flex items-center gap-2">
+                <DollarSign className="h-3.5 w-3.5" />
+                Value
+              </div>
+            </TableHead>
+
+            <TableHead>Status</TableHead>
           </TableRow>
         </TableHeader>
 
+        {/* BODY */}
         <TableBody>
           {assets.map((asset) => (
             <TableRow
-              key={asset.serial_number}
-              className="hover:bg-slate-50 transition-colors"
+              key={asset.token_id}
+              className="hover:bg-slate-50 dark:hover:bg-gray-800/50 transition-colors"
             >
-              <TableCell>{asset.serial_number}</TableCell>
-              <TableCell className="flex items-center gap-1 capitalize">
-                <Coins className="h-4 w-4" />
-                {asset.gold_product_type_id}
-              </TableCell>
-              <TableCell>{asset.refiner_name}</TableCell>
-              <TableCell>{asset.weight_grams} g</TableCell>
-              <TableCell>{asset.fineness}‰</TableCell>
-              <TableCell>{asset.traceability_gic}</TableCell>
+              {/* Serial */}
               <TableCell>
-                {new Date(asset.manufacture_date).toLocaleDateString()}
+                <div className="space-y-0.5">
+                  <p className="font-medium text-slate-900 dark:text-white">
+                    {asset.metadata.serial_number}
+                  </p>
+                  <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                    <User className="h-3 w-3" />
+                    <span className="truncate max-w-[120px]">
+                      {asset.ownership.current_owner_igan}
+                    </span>
+                  </div>
+                </div>
               </TableCell>
+
+              {/* Type */}
               <TableCell>
-                {asset.certified ? (
-                  <ShieldCheck className="h-4 w-4 text-green-600" />
-                ) : (
-                  <ShieldX className="h-4 w-4 text-red-500" />
-                )}
+                <div className="space-y-0.5">
+                  <p className="font-medium text-slate-900 dark:text-white">
+                    {asset.metadata.gold_product_type_id.toUpperCase()}
+                  </p>
+                  <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                    <Scale className="h-3 w-3" />
+                    <span>{formatWeight(asset.metadata.weight_grams)}</span>
+                    <Gem className="h-3 w-3" />
+                    <span>{asset.metadata.fineness}‰</span>
+                  </div>
+                </div>
+              </TableCell>
+
+              {/* Token ID */}
+              <TableCell>
+                <div className="space-y-0.5">
+                  <div className="text-xs font-mono text-slate-500 dark:text-slate-400">
+                    <AddressDisplay
+                      address={asset.token_id}
+                      truncate
+                      startChars={4}
+                      endChars={4}
+                    />
+                  </div>
+                  <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
+                    <Calendar className="h-3 w-3" />
+                    {formatDate(asset.metadata.manufacture_date, "short")}
+                  </div>
+                </div>
+              </TableCell>
+
+              {/* Value */}
+              <TableCell>
+                <p className="font-semibold text-gold-700 dark:text-gold-300">
+                  {formatCurrency(asset.valuation.asset_value)}
+                </p>
+              </TableCell>
+
+              {/* Status */}
+              <TableCell>
+                <StatusBadge
+                  status={getAssetStatusLabel(asset.ownership.asset_status)}
+                />
               </TableCell>
             </TableRow>
           ))}

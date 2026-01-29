@@ -1,29 +1,84 @@
 "use client";
 
-export function AssetsSkeleton() {
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHeader,
+  TableHead,
+  TableRow,
+} from "@/components/ui/table";
+
+type AssetsView = "grid" | "table";
+
+interface AssetsSkeletonProps {
+  view: AssetsView;
+}
+
+export default function AssetsSkeleton({ view }: AssetsSkeletonProps) {
+  if (view === "table") {
+    return <AssetsTableSkeleton />;
+  }
+
+  return <AssetsGridSkeleton />;
+}
+
+function AssetsGridSkeleton() {
   return (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {Array.from({ length: 6 }).map((_, index) => (
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      {Array.from({ length: 8 }).map((_, index) => (
         <div
           key={index}
-          className="border border-slate-200 rounded-lg overflow-hidden animate-pulse"
+          className="rounded-xl border border-slate-200 dark:border-gray-700 overflow-hidden animate-pulse bg-white dark:bg-gray-800"
         >
-          {/* Image placeholder */}
-          <div className="h-40 bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100 flex items-center justify-center"></div>
+          {/* Header */}
+          <div className="h-24 bg-slate-200 dark:bg-gray-700" />
 
-          {/* Card content */}
+          {/* Content */}
           <div className="p-4 space-y-3">
-            <div className="h-4 bg-slate-200 rounded w-1/3"></div> {/* Serial */}
-            <div className="h-3 bg-slate-200 rounded w-2/3"></div> {/* Refiner */}
-            <div className="grid grid-cols-2 gap-3">
-              <div className="h-3 bg-slate-200 rounded w-full"></div> {/* Weight */}
-              <div className="h-3 bg-slate-200 rounded w-full"></div> {/* Fineness */}
+            <div className="h-4 w-1/2 bg-slate-200 dark:bg-gray-700 rounded" />
+            <div className="h-3 w-2/3 bg-slate-200 dark:bg-gray-700 rounded" />
+
+            <div className="flex justify-between pt-2">
+              <div className="h-3 w-16 bg-slate-200 dark:bg-gray-700 rounded" />
+              <div className="h-3 w-16 bg-slate-200 dark:bg-gray-700 rounded" />
+              <div className="h-3 w-12 bg-slate-200 dark:bg-gray-700 rounded" />
             </div>
-            <div className="h-3 bg-slate-200 rounded w-1/2"></div> {/* GIC */}
-            <div className="h-3 bg-slate-200 rounded w-1/3"></div> {/* Manufacture Date */}
+
+            <div className="h-3 w-1/3 bg-slate-200 dark:bg-gray-700 rounded" />
           </div>
         </div>
       ))}
+    </div>
+  );
+}
+
+function AssetsTableSkeleton() {
+  return (
+    <div className="rounded-xl border border-slate-200 dark:border-gray-700 overflow-hidden animate-pulse">
+      <Table>
+        <TableHeader className="bg-slate-50 dark:bg-gray-900">
+          <TableRow>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <TableHead key={i}>
+                <div className="h-4 w-20 bg-slate-200 dark:bg-gray-700 rounded" />
+              </TableHead>
+            ))}
+          </TableRow>
+        </TableHeader>
+
+        <TableBody>
+          {Array.from({ length: 6 }).map((_, row) => (
+            <TableRow key={row}>
+              {Array.from({ length: 5 }).map((_, col) => (
+                <TableCell key={col}>
+                  <div className="h-4 w-full bg-slate-200 dark:bg-gray-700 rounded" />
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 }
