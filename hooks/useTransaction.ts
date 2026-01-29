@@ -10,13 +10,11 @@ interface UseTransactionReturn {
   loading: boolean;
   error?: string;
 
-  fetchTransactions: (
-    page?: number,
-    limit?: number,
-    filters?: { transaction_reference?: string; transaction_type?: string }
-  ) => Promise<void>;
+  fetchTransactions: (page?: number, limit?: number) => Promise<void>;
 
-  createTransaction: (transaction: Transaction) => Promise<Transaction | undefined>;
+  createTransaction: (
+    transaction: Transaction,
+  ) => Promise<Transaction | undefined>;
   setPage: (page: number) => void;
   setLimit: (limit: number) => void;
 }
