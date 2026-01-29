@@ -1,23 +1,52 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { PageHeader } from "@/components/layout/page-header";
 import { DashboardShell } from "@/components/layout/dashboard-shell";
+
 import TransactionOrdersFilters from "@/components/features/transactions/orders/TransactionOrdersFilters";
 import TransactionOrdersSkeleton from "@/components/features/transactions/orders/TransactionOrdersSkeleton";
 import TransactionOrdersGrid from "@/components/features/transactions/orders/TransactionOrdersGrid";
 import TransactionOrdersTable from "@/components/features/transactions/orders/TransactionOrdersTable";
+
 import { useTransaction } from "@/hooks/useTransaction";
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import EmptyState from "@/components/features/common/EmptyState";
+import { Pagination } from "@/components/ui/pagination";
 
 export default function TransactionOrdersPage() {
   const [view, setView] = useState<"grid" | "table">("grid");
-  const { transactions, loading } = useTransaction();
+
+  const {
+    transactions,
+    loading,
+    page,
+    limit,
+    totalCount,
+    setPage,
+    fetchTransactions,
+  } = useTransaction();
 
   const handleViewChange = (newView: "grid" | "table") => setView(newView);
+
+  const handleNextPage = () => {
+    if (page < Math.ceil(totalCount / limit)) {
+      setPage(page + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (page > 1) {
+      setPage(page - 1);
+    }
+  };
+
+  useEffect(() => {
+    fetchTransactions(page, limit);
+  }, [page, limit]);
 
   return (
     <DashboardShell>
@@ -43,13 +72,24 @@ export default function TransactionOrdersPage() {
 
       {/* Content */}
       {loading ? (
-        <TransactionOrdersSkeleton />
+        <TransactionOrdersSkeleton view={view}/>
       ) : transactions.length === 0 ? (
         <EmptyState type="transactions" />
       ) : view === "grid" ? (
         <TransactionOrdersGrid transactions={transactions} />
       ) : (
         <TransactionOrdersTable transactions={transactions} />
+      )}
+
+      {/* Pagination */}
+      {!loading && totalCount > limit && (
+        <Pagination
+          page={page}
+          limit={limit}
+          total={totalCount}
+          onPrev={handlePrevPage}
+          onNext={handleNextPage}
+        />
       )}
     </DashboardShell>
   );
