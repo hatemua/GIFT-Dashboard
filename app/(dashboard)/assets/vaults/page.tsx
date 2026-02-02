@@ -8,11 +8,11 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useVaultSite } from "@/hooks/useVaultSite";
 import { Pagination } from "@/components/ui/pagination";
-import { VaultSitesGrid } from "@/components/features/assets/vault-sites/VaultSitesGrid";
+import { VaultSitesGrid } from "@/components/features/assets/vault-sites/list/VaultSitesGrid";
 import { ErrorCard } from "@/components/ui/error-card";
-import VaultSitesFilters from "@/components/features/assets/vault-sites/VaultSitesFilters";
-import VaultSitesSkeleton from "@/components/features/assets/vault-sites/VaultSitesSkeleton";
-import { VaultSitesTable } from "@/components/features/assets/vault-sites/VaultSitesTable";
+import VaultSitesFilters from "@/components/features/assets/vault-sites/list/VaultSitesFilters";
+import VaultSitesSkeleton from "@/components/features/assets/vault-sites/list/VaultSitesSkeleton";
+import { VaultSitesTable } from "@/components/features/assets/vault-sites/list/VaultSitesTable";
 import EmptyState from "@/components/features/common/EmptyState";
 
 export default function VaultSitesPage() {

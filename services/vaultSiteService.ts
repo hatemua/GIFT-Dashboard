@@ -30,3 +30,9 @@ export const createVaultSiteApi = async (payload: CreateVaultSitePayload) => {
   const response = await api.post(`${API_URL}/vault-sites/create`, payload);
   return response.data;
 };
+
+// Get vaults for a specific vault site
+export const fetchVaultsByVaultSiteApi = async (vaultSiteId: string) => {
+  const response = await api.get(`${API_URL}/vault-sites/${vaultSiteId}/vaults`);
+  return response.data;
+};

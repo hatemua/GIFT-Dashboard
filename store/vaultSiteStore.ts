@@ -3,9 +3,9 @@ import {
   fetchVaultSitesApi,
   fetchVaultSiteByIdApi,
   createVaultSiteApi,
+  fetchVaultsByVaultSiteApi, // ✅ import the new endpoint
 } from "@/services/vaultSiteService";
 import type {
-  VaultSite,
   VaultSiteStore,
   CreateVaultSitePayload,
 } from "@/types/vault-site";
@@ -14,6 +14,7 @@ export const useVaultSiteStore = create<VaultSiteStore>((set, get) => ({
   // state
   vaultSites: [],
   vaultSiteDetails: null,
+  vaults: [],
   totalCount: 0,
   limit: 6,
   offset: 0,
@@ -89,6 +90,23 @@ export const useVaultSiteStore = create<VaultSiteStore>((set, get) => ({
         loading: false,
       });
       throw err;
+    }
+  },
+
+  fetchVaultsByVaultSiteId: async (vaultSiteId: string) => {
+    set({ loading: true, error: null });
+
+    try {
+      const data = await fetchVaultsByVaultSiteApi(vaultSiteId);
+      set({ vaults: data?.vaults ?? [], loading: false });
+    } catch (err: any) {
+      set({
+        error:
+          err?.response?.data?.message ||
+          err?.message ||
+          "Failed to fetch vaults for this site",
+        loading: false,
+      });
     }
   },
 

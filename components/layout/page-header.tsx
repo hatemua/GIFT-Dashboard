@@ -12,6 +12,7 @@ interface PageHeaderProps {
   description?: string;
   breadcrumbs?: Breadcrumb[];
   action?: React.ReactNode;
+  className?: string;
 }
 
 export function PageHeader({
@@ -19,9 +20,10 @@ export function PageHeader({
   description,
   breadcrumbs,
   action,
+  className,
 }: PageHeaderProps) {
   return (
-    <div className="mb-6">
+    <div className={` ${className || "mb-6"}`}>
       {breadcrumbs && breadcrumbs.length > 0 && (
         <div className="mb-2 flex items-center gap-2 text-sm text-slate-500">
           {breadcrumbs.map((crumb, index) => (

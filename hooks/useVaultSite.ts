@@ -4,6 +4,7 @@ export const useVaultSite = () => {
   const {
     vaultSites,
     vaultSiteDetails,
+    vaults,
     totalCount,
     offset,
     limit,
@@ -13,6 +14,7 @@ export const useVaultSite = () => {
     fetchVaultSites,
     fetchVaultSiteById,
     createVaultSite,
+    fetchVaultsByVaultSiteId,
     setCountry,
     setOffset,
     setLimit,
@@ -22,6 +24,7 @@ export const useVaultSite = () => {
   return {
     vaultSites,
     vaultSiteDetails,
+    vaults,
     totalCount,
     offset,
     limit,
@@ -31,6 +34,7 @@ export const useVaultSite = () => {
     fetchVaultSites,
     fetchVaultSiteById,
     createVaultSite,
+    fetchVaultsByVaultSiteId,
     setCountry,
     setOffset,
     setLimit,

@@ -1,3 +1,5 @@
+import { Vault } from "./vault";
+
 export interface VaultSite {
   vault_site_id: string;
   vault_site_name: string;
@@ -9,6 +11,55 @@ export interface VaultSite {
   current_weight_in_gold_kg: number;
   status: string;
   last_audit_date: string;
+}
+
+export interface vaultSiteDetails {
+  vault_site_id: string;
+  vault_site_name: string;
+  member_gic: string;
+
+  location: {
+    location_name: string;
+    registered_address: string;
+    operational_address: string;
+    city: string;
+    state_or_province: string;
+    postal_code: string;
+    country: string;
+    timezone: string;
+    gps_coordinates: string; // "lat,long" string
+  };
+
+  storage_capacity: {
+    maximum_weight_in_gold_kg: number;
+    current_weight_in_gold_kg: number;
+    utilization_percent: number;
+  };
+
+  opening_hours: string;
+
+  insurance_coverage: {
+    name_of_insurer: string;
+    expiration_date: string; // ISO date string
+    documentation_sod_id: string;
+    coverage_amount: number;
+    coverage_currency: string;
+  };
+
+  audit_and_compliance: {
+    audit_documentation_sod_id: string;
+    last_audit_date: string; // ISO date string
+    next_audit_due: string; // ISO date string
+    audit_frequency: "annual" | "semi-annual" | "quarterly" | "monthly";
+  };
+
+  status: "active" | "inactive" | "under_audit" | "suspended";
+
+  vaults: any[]; // if nested vault objects are added later, replace 'any' with a proper type
+  total_assets: string; // number of assets as string
+  total_weight_grams: number;
+
+  created_at: string; // ISO datetime string
 }
 
 export interface CreateVaultSitePayload {
@@ -37,7 +88,8 @@ export interface CreateVaultSitePayload {
 
 export interface VaultSiteStore {
   vaultSites: VaultSite[];
-  vaultSiteDetails: VaultSite | null;
+  vaultSiteDetails: vaultSiteDetails | null;
+  vaults: Vault[];
   totalCount: number;
   limit: number;
   offset: number;
@@ -56,6 +108,8 @@ export interface VaultSiteStore {
   createVaultSite: (
     payload: CreateVaultSitePayload
   ) => Promise<VaultSite>;
+
+  fetchVaultsByVaultSiteId: (vaultSiteId: string) => Promise<void>;
 
   setCountry: (country?: string) => void;
   setOffset: (offset: number) => void;
