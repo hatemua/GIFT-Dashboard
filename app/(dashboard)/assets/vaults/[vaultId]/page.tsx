@@ -10,6 +10,7 @@ import { VaultsListCard } from "@/components/features/assets/vault-sites/details
 import { StorageOverviewCard } from "@/components/features/assets/vault-sites/details/StorageOverviewCard";
 import { InsuranceCard } from "@/components/features/assets/vault-sites/details/InsuranceCard";
 import { AuditStatusCard } from "@/components/features/assets/vault-sites/details/AuditStatusCard";
+import { InventoryOverview } from "@/components/features/assets/vault-sites/details/InventoryOverview";
 
 interface VaultDetailsPageProps {
   params: Promise<{ vaultId: string }>;
@@ -59,8 +60,7 @@ export default function VaultDetailsPage({ params }: VaultDetailsPageProps) {
         <div className="lg:col-span-2 space-y-4">
           {/* Compact Location & Info Card */}
           <SiteInformationCard vault={vault} />
-
-          {/* Vaults Grid */}
+          <InventoryOverview />
           <VaultsListCard />
         </div>
 
