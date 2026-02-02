@@ -1,4 +1,5 @@
 import { Vault } from "./vault";
+import { fetchVaultSiteInventoryApi } from './../services/vaultSiteService';
 
 export interface VaultSite {
   vault_site_id: string;
@@ -85,11 +86,61 @@ export interface CreateVaultSitePayload {
   last_audit_date: string; // ISO string
 }
 
+export type VaultSiteInventory = {
+  vault_site_id: string;
+  vault_site_name: string;
+  inventory_date: string;
+  total_assets: number;
+  total_weight_grams: number;
+  total_fine_weight_grams: number;
+  total_valuation: {
+    currency: string;
+    amount: number;
+    gold_rate: number;
+  };
+  by_owner: {
+    igan: string;
+    member_gic: string;
+    asset_count: number;
+    total_weight_grams: number;
+    total_fine_weight_grams: number;
+  }[];
+  product_type: {
+    gold_product_type_id: string;
+    asset_count: number;
+    total_weight_grams: number;
+    total_fine_weight_grams: number;
+  }[];
+  by_vault: {
+    vault_id: string;
+    asset_count: number;
+    total_weight_grams: number;
+  }[];
+};
+
+export interface InventorySummary {
+  vault_site_id: string;
+  vault_site_name: string;
+  inventory_date: string;
+  total_assets: number;
+  total_weight_grams: number;
+  total_fine_weight_grams: number;
+  total_valuation: {
+    currency: string;
+    amount: number;
+    gold_rate: number;
+  };
+}
+
 
 export interface VaultSiteStore {
   vaultSites: VaultSite[];
   vaultSiteDetails: vaultSiteDetails | null;
   vaults: Vault[];
+  inventorySummary: InventorySummary | null;
+  inventoryByOwner: VaultSiteInventory["by_owner"] | [];
+  inventoryByProductType: VaultSiteInventory["product_type"] | [];
+  inventoryByVault: VaultSiteInventory["by_vault"] | [];
   totalCount: number;
   limit: number;
   offset: number;
@@ -111,6 +162,12 @@ export interface VaultSiteStore {
 
   fetchVaultsByVaultSiteId: (vaultSiteId: string) => Promise<void>;
 
+  fetchVaultSiteInventory: (
+    vaultSiteId: string,
+    groupBy?: "owner" | "product_type" | "asset_status" | "vault_id"
+  ) => Promise<void>;
+
+  setVaultSiteSummary: (summary: InventorySummary | null) => void;
   setCountry: (country?: string) => void;
   setOffset: (offset: number) => void;
   setLimit: (limit: number) => void;

@@ -49,7 +49,7 @@ export default function VaultDetailsPage({ params }: VaultDetailsPageProps) {
         title=""
         breadcrumbs={[
           { label: "Dashboard", href: "/dashboard" },
-          { label: "Vault Sites" },
+          { label: "Vault Sites", href: "/assets/vaults" },
         ]}
       />
       <VaultSiteHeader vault={vault} />

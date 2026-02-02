@@ -36,3 +36,15 @@ export const fetchVaultsByVaultSiteApi = async (vaultSiteId: string) => {
   const response = await api.get(`${API_URL}/vault-sites/${vaultSiteId}/vaults`);
   return response.data;
 };
+
+// Get inventory for a specific vault site, with optional grouping
+export const fetchVaultSiteInventoryApi = async (
+  vaultSiteId: string,
+  groupBy?: "owner" | "product_type" | "asset_status" | "vault_id" | undefined
+) => {
+  const params: any = {};
+  if (groupBy) params.group_by = groupBy;
+
+  const response = await api.get(`${API_URL}/vault-sites/${vaultSiteId}/inventory`, { params });
+  return response.data;
+};
