@@ -20,7 +20,7 @@ export function Sparkline({
 
   return (
     <div className={className}>
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height={50}>
         <LineChart data={chartData}>
           <Line
             type="monotone"

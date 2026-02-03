@@ -3,6 +3,7 @@ import { useDocumentStore } from "@/store/documentStore";
 import {
   DocumentUploadInput,
   DocumentUploadSetInput,
+  DocumentUploadResponse,
 } from "@/types/document";
 
 export const useDocument = () => {
@@ -22,28 +23,29 @@ export const useDocument = () => {
   } = useDocumentStore();
 
   const handleUploadDocument = useCallback(
-    (data: DocumentUploadInput) => uploadDocument(data),
+    (data: DocumentUploadInput): Promise<void> => uploadDocument(data),
     [uploadDocument]
   );
 
   const handleUploadDocumentSet = useCallback(
-    (data: DocumentUploadSetInput) => uploadDocumentSet(data),
+    (data: DocumentUploadSetInput): Promise<void> => uploadDocumentSet(data),
     [uploadDocumentSet]
   );
 
   const handleFetchDocumentHash = useCallback(
-    (sod_id: string, document_id: string) => fetchDocumentHash(sod_id, document_id),
+    (sod_id: string, document_id: string): Promise<void> =>
+      fetchDocumentHash(sod_id, document_id),
     [fetchDocumentHash]
   );
 
   const handleVerifyDocument = useCallback(
-    (document_id: string, document_base64: string) =>
+    (document_id: string, document_base64: string): Promise<void> =>
       verifyDocument(document_id, document_base64),
     [verifyDocument]
   );
 
   const handleSelectDocument = useCallback(
-    (doc?: typeof selectedDocument) => setSelectedDocument(doc),
+    (doc?: DocumentUploadResponse) => setSelectedDocument(doc),
     [setSelectedDocument]
   );
 

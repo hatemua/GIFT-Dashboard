@@ -6,13 +6,17 @@ export interface DocumentUploadInput {
   sod_id: string;
 }
 
-export interface Document {
+export interface DocumentUploadResponse {
+  status: "success" | "failure";
   document_id: string;
-  document_type: string;
-  document_url: string;
   sod_id: string;
-  created_at: string;
+  document_hash: string;
+  document_type: string;
+  file_size_bytes: number;
+  stored_at: string; // ISO date string
+  blockchain_tx: string;
 }
+
 
 export interface DocumentUploadSetInput {
   sod_id: string;
@@ -39,4 +43,21 @@ export interface DocumentVerification {
   original_certification_date: string;
   verification_timestamp: string;
   blockchain_block: number;
+}
+
+export interface DocumentSetItem {
+  document_id: string;
+  document_hash: string;
+  document_type: string;
+}
+
+export interface DocumentSetUploadResponse {
+  status: "success" | "failure";
+  sod_id: string;
+  document_count: number;
+  documents: DocumentSetItem[];
+  individual_hashes: string[];
+  set_hash: string;
+  stored_at: string; // ISO date string
+  blockchain_tx: string;
 }

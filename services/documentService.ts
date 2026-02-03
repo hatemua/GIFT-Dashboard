@@ -1,23 +1,24 @@
 import { api } from "@/lib/axios";
 import {
   DocumentUploadInput,
-  Document,
   DocumentUploadSetInput,
   DocumentHash,
   DocumentVerification,
+  DocumentUploadResponse,
+  DocumentSetUploadResponse,
 } from "@/types/document";
 
 export const documentService = {
-  uploadDocument: async (data: DocumentUploadInput): Promise<Document> => {
+  uploadDocument: async (data: DocumentUploadInput): Promise<DocumentUploadResponse> => {
     const response = await api.post("/documents/upload", data);
-    return response.data as Document;
+    return response.data as DocumentUploadResponse;
   },
 
   uploadDocumentSet: async (
     data: DocumentUploadSetInput,
-  ): Promise<Document[]> => {
+  ): Promise<DocumentSetUploadResponse> => {
     const response = await api.post("/documents/upload-set", data);
-    return response.data as Document[];
+    return response.data as DocumentSetUploadResponse;
   },
 
   getDocumentHash: async (
