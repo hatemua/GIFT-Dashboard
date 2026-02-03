@@ -76,7 +76,7 @@ export default function VaultSitesPage() {
           { label: "Vault Sites" },
         ]}
         action={
-          <Link href="/vault-sites/new">
+          <Link href="/assets/vaults/new">
             <Button
               variant="gold"
               className="flex items-center gap-2 transition-transform hover:scale-105"
