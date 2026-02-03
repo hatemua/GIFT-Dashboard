@@ -32,18 +32,6 @@ export default function VaultSitesPage() {
 
   const handleViewChange = (newView: "grid" | "table") => setView(newView);
 
-  const handleNextPage = () => {
-    if (offset + limit < totalCount) {
-      setOffset(offset + limit);
-    }
-  };
-
-  const handlePrevPage = () => {
-    if (offset - limit >= 0) {
-      setOffset(offset - limit);
-    }
-  };
-
   useEffect(() => {
     fetchVaultSites(limit, offset, country);
   }, [limit, offset, country]);
@@ -101,8 +89,7 @@ export default function VaultSitesPage() {
             offset={offset}
             limit={limit}
             total={totalCount}
-            onPrev={handlePrevPage}
-            onNext={handleNextPage}
+            setOffset={setOffset}
           />
         </div>
       )}

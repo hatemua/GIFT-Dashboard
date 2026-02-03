@@ -27,19 +27,6 @@ export default function BlockchainTransactionsPage() {
 
   const hasTransactions = transactions.length > 0;
 
-  // Page-based pagination
-  const handleNextPage = () => {
-    if (page < Math.ceil(totalCount / limit)) {
-      setPage(page + 1);
-    }
-  };
-
-  const handlePrevPage = () => {
-    if (page > 1) {
-      setPage(page - 1);
-    }
-  };
-
   // Optional: refetch when pagination changes
   useEffect(() => {
     fetchTransactions(page, limit);
@@ -83,8 +70,7 @@ export default function BlockchainTransactionsPage() {
         page={page}
         limit={limit}
         total={totalCount}
-        onPrev={handlePrevPage}
-        onNext={handleNextPage}
+        setPage={setPage}
       />
     </DashboardShell>
   );

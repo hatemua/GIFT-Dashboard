@@ -6,8 +6,8 @@ interface PaginationProps {
   offset?: number;
   limit: number;
   total: number;
-  onPrev: () => void;
-  onNext: () => void;
+  setPage?: (page: number) => void;
+  setOffset?: (offset: number) => void;
 }
 
 export function Pagination({
@@ -15,8 +15,8 @@ export function Pagination({
   offset,
   limit,
   total,
-  onPrev,
-  onNext,
+  setPage,
+  setOffset,
 }: PaginationProps) {
   const currentPage =
     page !== undefined
@@ -26,6 +26,22 @@ export function Pagination({
         : 1;
 
   const totalPages = Math.ceil(total / limit);
+
+  const handleNextPage = () => {
+    if (page !== undefined && page < totalPages && setPage) {
+      setPage(page + 1);
+    } else if (offset !== undefined && offset + limit < total && setOffset) {
+      setOffset(offset + limit);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (page !== undefined && page > 1 && setPage) {
+      setPage(page - 1);
+    } else if (offset !== undefined && offset - limit >= 0 && setOffset) {
+      setOffset(offset - limit);
+    }
+  };
 
   if (totalPages <= 1) return null;
 
@@ -40,7 +56,7 @@ export function Pagination({
         <Button
           size="icon"
           variant="ghost"
-          onClick={onPrev}
+          onClick={handlePrevPage}
           disabled={currentPage === 1}
           className="
             h-9 w-9 rounded-xl
@@ -72,7 +88,7 @@ export function Pagination({
         <Button
           size="icon"
           variant="ghost"
-          onClick={onNext}
+          onClick={handleNextPage}
           disabled={currentPage === totalPages}
           className="
             h-9 w-9 rounded-xl

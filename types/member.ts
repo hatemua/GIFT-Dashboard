@@ -23,3 +23,9 @@ export interface CreateMemberInput {
   roles: (typeof ROLES)[number]["value"][];
 }
 
+export interface BlacklistedMember {
+  member_gic: string;
+  blacklisted_at: string;
+  created_by_admin: string;
+}
+

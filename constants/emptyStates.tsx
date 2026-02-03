@@ -10,7 +10,8 @@ export type EmptyStateType =
   | "goldAccounts"
   | "vaultSites"
   | "members"
-  | "users";
+  | "users"
+  | "blacklist";
 
 interface EmptyStateConfig {
   title: string;
@@ -63,5 +64,10 @@ export const EMPTY_STATES: Record<EmptyStateType, EmptyStateConfig> = {
     title: "No users found",
     description: "Users will be displayed here once registered.",
     icon: <Users className="h-6 w-6" />,
+  },
+  blacklist: {
+    title: "No blacklisted members",
+    description: "Blacklisted members will appear here once added.",
+    icon: <User className="h-6 w-6" />,
   },
 };

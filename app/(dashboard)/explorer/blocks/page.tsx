@@ -21,18 +21,6 @@ export default function BlocksPage() {
 
   const hasBlocks = blocks.length > 0;
 
-  const handleNextPage = () => {
-    if (page < Math.ceil(totalCount / limit)) {
-      setPage(page + 1);
-    }
-  };
-
-  const handlePrevPage = () => {
-    if (page > 1) {
-      setPage(page - 1);
-    }
-  };
-
   useEffect(() => {
     fetchBlocks(page, limit);
   }, [page, limit]);
@@ -71,8 +59,7 @@ export default function BlocksPage() {
         page={page}
         limit={limit}
         total={totalCount}
-        onPrev={handlePrevPage}
-        onNext={handleNextPage}
+        setPage={setPage}
       />
     </DashboardShell>
   );

@@ -15,34 +15,12 @@ import { Pagination } from "@/components/ui/pagination";
 import EmptyState from "@/components/features/common/EmptyState";
 
 export default function GoldAccountsPage() {
-  const {
-    accounts,
-    totalCount,
-    page,
-    limit,
-    loading,
-    fetchAccounts,
-    setPage,
-  } = useGoldAccount();
+  const { accounts, totalCount, page, limit, loading, setPage } =
+    useGoldAccount();
 
   const [view, setView] = React.useState<"grid" | "table">("grid");
 
   const handleViewChange = (newView: "grid" | "table") => setView(newView);
-
-  // Page-based pagination
-  const handleNextPage = () => {
-    if (page < Math.ceil(totalCount / limit)) {
-      setPage(page + 1);
-      fetchAccounts(limit, page + 1);
-    }
-  };
-
-  const handlePrevPage = () => {
-    if (page > 1) {
-      setPage(page - 1);
-      fetchAccounts(limit, page - 1);
-    }
-  };
 
   return (
     <DashboardShell>
@@ -78,8 +56,7 @@ export default function GoldAccountsPage() {
         page={page}
         limit={limit}
         total={totalCount}
-        onPrev={handlePrevPage}
-        onNext={handleNextPage}
+        setPage={setPage}
       />
     </DashboardShell>
   );

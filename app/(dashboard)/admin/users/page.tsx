@@ -13,31 +13,15 @@ import UsersSkeleton from "@/components/features/admin/users/UsersSkeleton";
 import { Pagination } from "@/components/ui/pagination";
 import { useUser } from "@/hooks/useUser";
 import EmptyState from "@/components/features/common/EmptyState";
-
-type ViewMode = "grid" | "table";
+import { ViewMode } from "@/types";
 
 export default function UsersPage() {
-
   const { users, totalCount, page, limit, loading, fetchUsers, setPage } =
     useUser();
 
   const [view, setView] = useState<ViewMode>("grid");
 
   const handleViewChange = (newView: "grid" | "table") => setView(newView);
-  
-  const handleNextPage = () => {
-    if (page < Math.ceil(totalCount / limit)) {
-      setPage(page + 1);
-      fetchUsers(limit, page + 1);
-    }
-  };
-
-  const handlePrevPage = () => {
-    if (page > 1) {
-      setPage(page - 1);
-      fetchUsers(limit, page - 1);
-    }
-  };
 
   return (
     <DashboardShell>
@@ -75,8 +59,7 @@ export default function UsersPage() {
         page={page}
         limit={limit}
         total={totalCount}
-        onPrev={handlePrevPage}
-        onNext={handleNextPage}
+        setPage={setPage}
       />
     </DashboardShell>
   );

@@ -54,8 +54,8 @@ export const useGoldAccount = (): UseGoldAccountReturn => {
 
   // Auto-fetch accounts on mount if empty
   useEffect(() => {
-    if (store.accounts.length === 0) store.fetchAccounts();
-  }, []);
+     store.fetchAccounts(store.limit, store.page);
+  }, [store.page, store.limit]);
 
   return {
     // Data

@@ -22,18 +22,6 @@ export default function ExplorerAssetsPage() {
 
   const handleViewChange = (newView: "grid" | "table") => setView(newView);
 
-  const handleNextPage = () => {
-    if (page < Math.ceil(totalCount / limit)) {
-      setPage(page + 1);
-    }
-  };
-
-  const handlePrevPage = () => {
-    if (page > 1) {
-      setPage(page - 1);
-    }
-  };
-
   useEffect(() => {
     fetchAssets(page, limit);
   }, [page, limit]);
@@ -77,8 +65,7 @@ export default function ExplorerAssetsPage() {
         page={page}
         limit={limit}
         total={totalCount}
-        onPrev={handlePrevPage}
-        onNext={handleNextPage}
+        setPage={setPage}
       />
     </DashboardShell>
   );

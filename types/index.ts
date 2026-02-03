@@ -240,3 +240,5 @@ export interface BlockchainTransaction {
   status: "Success" | "Failed" | "Pending";
   gas_used?: number;
 }
+
+export type ViewMode = "grid" | "table";
