@@ -19,13 +19,20 @@ export default function GoldAccountDetailsPage({
 }: GoldAccountDetailsPageProps) {
   const { igan } = React.use(params);
 
-  const { selectedAccount: account, error, fetchAccountByIgan } =
-    useGoldAccount();
+  const {
+    selectedAccount: account,
+    error,
+    fetchAccountByIgan,
+    resetSelectedAccount,
+  } = useGoldAccount();
 
   useEffect(() => {
     if (igan) {
-      fetchAccountByIgan(igan)
+      fetchAccountByIgan(igan);
     }
+    return () => {
+      resetSelectedAccount();
+    };
   }, [igan]);
 
   return (
@@ -44,7 +51,7 @@ export default function GoldAccountDetailsPage({
       {error && <ErrorState />}
 
       {/* ───── Success State ───── */}
-      {!error && account && (
+      {!error && (
         <>
           <GoldAccountBasicInfo />
           <HoldingsByProductType igan={igan} />

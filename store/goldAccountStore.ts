@@ -10,36 +10,45 @@ import {
 } from "@/types/goldAccount";
 
 interface GoldAccountStore {
+  // Main data
   accounts: GoldAccount[];
   totalCount: number;
   limit: number;
   page: number;
+
+  // Global loading/error for fetchAccounts and fetchAccountByIgan
   loading: boolean;
   error?: string;
 
+  // Selected account details
   selectedAccount?: GoldAccountDetails;
   accountBalance?: GoldAccountBalance;
   accountAssets?: GoldAccountAssetsResponse;
   searchedAssets?: GoldAccountAssetsSearchResponse;
   accountMovements?: GoldAccountMovementsResponse;
 
+  // Per-function loading/error states
+  balanceLoading: boolean;
+  balanceError?: string;
+
+  assetsLoading: boolean;
+  assetsError?: string;
+
+  searchAssetsLoading: boolean;
+  searchAssetsError?: string;
+
+  movementsLoading: boolean;
+  movementsError?: string;
+
   // Actions
   fetchAccounts: (limit?: number, page?: number) => Promise<void>;
   fetchAccountByIgan: (igan: string) => Promise<void>;
   fetchAccountBalance: (igan: string, currency?: string) => Promise<void>;
-  fetchAccountAssets: (
-    igan: string,
-    params?: any
-  ) => Promise<void>;
-  searchAccountAssets: (
-    igan: string,
-    params?: any
-  ) => Promise<void>;
-  fetchAccountMovements: (
-    igan: string,
-    params?: any
-  ) => Promise<void>;
-
+  fetchAccountAssets: (igan: string, params?: any) => Promise<void>;
+  searchAccountAssets: (igan: string, params?: any) => Promise<void>;
+  fetchAccountMovements: (igan: string, params?: any) => Promise<void>;
+  
+  resetSelectedAccount: () => void;
   setLimit: (limit: number) => void;
   setPage: (page: number) => void;
 }
@@ -49,14 +58,30 @@ export const useGoldAccountStore = create<GoldAccountStore>((set, get) => ({
   totalCount: 0,
   limit: 6,
   page: 1,
+
+  // Global loading/error for fetching accounts
   loading: false,
   error: undefined,
 
+  // Individual states
   selectedAccount: undefined,
   accountBalance: undefined,
   accountAssets: undefined,
   searchedAssets: undefined,
   accountMovements: undefined,
+
+  // Individual loading/errors
+  balanceLoading: false,
+  balanceError: undefined,
+
+  assetsLoading: false,
+  assetsError: undefined,
+
+  searchAssetsLoading: false,
+  searchAssetsError: undefined,
+
+  movementsLoading: false,
+  movementsError: undefined,
 
   fetchAccounts: async (limit = get().limit, page = get().page) => {
     set({ loading: true, error: undefined });
@@ -88,52 +113,73 @@ export const useGoldAccountStore = create<GoldAccountStore>((set, get) => ({
   },
 
   fetchAccountBalance: async (igan: string, currency?: string) => {
-    set({ loading: true, error: undefined });
+    set({ balanceLoading: true, balanceError: undefined });
     try {
       const data = await goldAccountService.getAccountBalance(igan, currency);
       set({ accountBalance: data });
     } catch (err: any) {
-      set({ error: err?.message || "Failed to fetch account balance" });
+      set({ balanceError: err?.message || "Failed to fetch account balance" });
     } finally {
-      set({ loading: false });
+      set({ balanceLoading: false });
     }
   },
 
   fetchAccountAssets: async (igan: string, params?: any) => {
-    set({ loading: true, error: undefined });
+    set({ assetsLoading: true, assetsError: undefined });
     try {
       const data = await goldAccountService.getAccountAssets(igan, params);
       set({ accountAssets: data });
     } catch (err: any) {
-      set({ error: err?.message || "Failed to fetch account assets" });
+      set({ assetsError: err?.message || "Failed to fetch account assets" });
     } finally {
-      set({ loading: false });
+      set({ assetsLoading: false });
     }
   },
 
   searchAccountAssets: async (igan: string, params?: any) => {
-    set({ loading: true, error: undefined });
+    set({ searchAssetsLoading: true, searchAssetsError: undefined });
     try {
       const data = await goldAccountService.searchAccountAssets(igan, params);
       set({ searchedAssets: data });
     } catch (err: any) {
-      set({ error: err?.message || "Failed to search account assets" });
+      set({
+        searchAssetsError: err?.message || "Failed to search account assets",
+      });
     } finally {
-      set({ loading: false });
+      set({ searchAssetsLoading: false });
     }
   },
 
   fetchAccountMovements: async (igan: string, params?: any) => {
-    set({ loading: true, error: undefined });
+    set({ movementsLoading: true, movementsError: undefined });
     try {
       const data = await goldAccountService.getAccountMovements(igan, params);
       set({ accountMovements: data });
     } catch (err: any) {
-      set({ error: err?.message || "Failed to fetch account movements" });
+      set({
+        movementsError: err?.message || "Failed to fetch account movements",
+      });
     } finally {
-      set({ loading: false });
+      set({ movementsLoading: false });
     }
   },
+
+  resetSelectedAccount: () =>
+    set({
+      selectedAccount: undefined,
+      accountBalance: undefined,
+      accountAssets: undefined,
+      searchedAssets: undefined,
+      accountMovements: undefined,
+      balanceLoading: false,
+      balanceError: undefined,
+      assetsLoading: false,
+      assetsError: undefined,
+      searchAssetsLoading: false,
+      searchAssetsError: undefined,
+      movementsLoading: false,
+      movementsError: undefined,
+    }),
 
   setLimit: (limit: number) => set({ limit }),
   setPage: (page: number) => set({ page }),

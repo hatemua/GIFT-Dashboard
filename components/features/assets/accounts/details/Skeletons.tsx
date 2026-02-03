@@ -1,4 +1,3 @@
-
 "use client";
 import RealSkeleton from "@/components/ui/real-skeleton";
 
@@ -102,7 +101,10 @@ export const ValuationAnalysisSkeleton = () => (
     {/* Value Breakdown */}
     <div className="space-y-3 mb-4">
       {Array.from({ length: 2 }).map((_, i) => (
-        <div key={i} className="flex justify-between items-center p-3 rounded-lg bg-gray-100">
+        <div
+          key={i}
+          className="flex justify-between items-center p-3 rounded-lg bg-gray-100"
+        >
           <div className="space-y-1">
             <div className="h-4 w-24 bg-gray-200 rounded" /> {/* label */}
             <div className="h-3 w-20 bg-gray-200 rounded" /> {/* subtext */}
@@ -115,7 +117,10 @@ export const ValuationAnalysisSkeleton = () => (
     {/* Additional Metrics */}
     <div className="pt-3 border-t grid grid-cols-2 gap-3">
       {Array.from({ length: 2 }).map((_, i) => (
-        <div key={i} className="text-center p-3 rounded-lg bg-gray-100 space-y-1">
+        <div
+          key={i}
+          className="text-center p-3 rounded-lg bg-gray-100 space-y-1"
+        >
           <div className="h-3 w-16 bg-gray-200 rounded mx-auto" /> {/* label */}
           <div className="h-5 w-20 bg-gray-300 rounded mx-auto" /> {/* value */}
         </div>
@@ -123,4 +128,3 @@ export const ValuationAnalysisSkeleton = () => (
     </div>
   </div>
 );
-

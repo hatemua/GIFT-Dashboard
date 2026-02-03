@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { Gem, Coins, Calendar, Loader2, Layers } from "lucide-react";
+import { Gem, Coins, Calendar, Layers } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useGoldAccount } from "@/hooks/useGoldAccount";
 
@@ -12,33 +12,14 @@ interface HoldingsByProductTypeProps {
 const HoldingsByProductType: React.FC<HoldingsByProductTypeProps> = ({
   igan,
 }) => {
-  const { accountBalance, loading, error, fetchAccountBalance } =
-    useGoldAccount();
+  const { accountBalance, fetchAccountBalance } = useGoldAccount();
 
   useEffect(() => {
     if (igan) fetchAccountBalance(igan);
   }, [igan]);
 
-  if (loading) {
-    return (
-      <Card>
-        <CardContent className="p-6 flex items-center justify-center gap-2 text-sm text-gray-500">
-          <Loader2 className="h-4 w-4 animate-spin" />
-          Loading holdings…
-        </CardContent>
-      </Card>
-    );
-  }
-
-  if (error) {
-    return (
-      <Card>
-        <CardContent className="p-6 text-sm text-red-600">{error}</CardContent>
-      </Card>
-    );
-  }
-
-  if (!accountBalance) return null;
+  if (!accountBalance || accountBalance?.by_product_type?.length === 0)
+    return null;
 
   const { by_product_type, valuation } = accountBalance;
 

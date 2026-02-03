@@ -20,12 +20,8 @@ interface StatsProps {
 export const Stats: React.FC<StatsProps> = ({ account }) => {
   if (!account) return null;
 
-  const {
-    account_status,
-    creation_date,
-    compliance_status,
-    total_holdings,
-  } = account;
+  const { account_status, creation_date, compliance_status, total_holdings } =
+    account;
 
   const {
     current_valuation_amount,
@@ -71,9 +67,7 @@ export const Stats: React.FC<StatsProps> = ({ account }) => {
       <StatCard
         icon={<DollarSign className="h-5 w-5 text-white" />}
         gradient="amber"
-        badge={
-          <ChangeBadge positive={isPositive} value={valueChangePercent} />
-        }
+        badge={<ChangeBadge positive={isPositive} value={valueChangePercent} />}
         label="Current Value"
         value={`${total_valuation_currency} ${formatted.currentValueK}K`}
         footer="Since minting"
@@ -115,9 +109,7 @@ export const Stats: React.FC<StatsProps> = ({ account }) => {
       <StatCard
         icon={<Shield className="h-5 w-5 text-white" />}
         gradient="emerald"
-        badge={
-          <StatusBadge status={compliance_status} />
-        }
+        badge={<StatusBadge status={compliance_status} />}
         label="Account Status"
         value={account_status.toLowerCase()}
         footer={
@@ -157,14 +149,7 @@ export const Stats: React.FC<StatsProps> = ({ account }) => {
 
 /* ───────── Reusable UI blocks ───────── */
 
-const StatCard = ({
-  icon,
-  label,
-  value,
-  footer,
-  badge,
-  gradient,
-}: any) => (
+const StatCard = ({ icon, label, value, footer, badge, gradient }: any) => (
   <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-white to-white border border-gray-100 p-5 shadow-xs hover:shadow-sm transition-shadow">
     <div
       className={`absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-${gradient}-100 to-transparent rounded-full -translate-y-6 translate-x-6`}
@@ -195,9 +180,7 @@ const ChangeBadge = ({
 }) => (
   <div
     className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
-      positive
-        ? "bg-emerald-50 text-emerald-700"
-        : "bg-red-50 text-red-700"
+      positive ? "bg-emerald-50 text-emerald-700" : "bg-red-50 text-red-700"
     }`}
   >
     {positive ? (

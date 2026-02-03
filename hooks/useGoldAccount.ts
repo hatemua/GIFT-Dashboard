@@ -17,15 +17,30 @@ interface UseGoldAccountReturn {
   searchedAssets?: GoldAccountAssetsSearchResponse;
   accountMovements?: GoldAccountMovementsResponse;
 
+  // Global states
   loading: boolean;
+  error?: string;
   page: number;
   limit: number;
   totalCount: number;
-  error?: string;
+
+  // Per-function loading/error states
+  balanceLoading: boolean;
+  balanceError?: string;
+
+  assetsLoading: boolean;
+  assetsError?: string;
+
+  searchAssetsLoading: boolean;
+  searchAssetsError?: string;
+
+  movementsLoading: boolean;
+  movementsError?: string;
 
   // Actions
   setPage: (page: number) => void;
   setLimit: (limit: number) => void;
+  resetSelectedAccount: () => void;
   fetchAccounts: (limit?: number, page?: number) => Promise<void>;
   fetchAccountByIgan: (igan: string) => Promise<void>;
   fetchAccountBalance: (igan: string, currency?: string) => Promise<void>;
@@ -35,54 +50,51 @@ interface UseGoldAccountReturn {
 }
 
 export const useGoldAccount = (): UseGoldAccountReturn => {
-  // State
-  const accounts = useGoldAccountStore((state) => state.accounts);
-  const selectedAccount = useGoldAccountStore((state) => state.selectedAccount);
-  const accountBalance = useGoldAccountStore((state) => state.accountBalance);
-  const accountAssets = useGoldAccountStore((state) => state.accountAssets);
-  const searchedAssets = useGoldAccountStore((state) => state.searchedAssets);
-  const accountMovements = useGoldAccountStore((state) => state.accountMovements);
-
-  const loading = useGoldAccountStore((state) => state.loading);
-  const error = useGoldAccountStore((state) => state.error);
-  const totalCount = useGoldAccountStore((state) => state.totalCount);
-  const page = useGoldAccountStore((state) => state.page);
-  const limit = useGoldAccountStore((state) => state.limit);
-
-  // Actions
-  const fetchAccounts = useGoldAccountStore((state) => state.fetchAccounts);
-  const fetchAccountByIgan = useGoldAccountStore((state) => state.fetchAccountByIgan);
-  const fetchAccountBalance = useGoldAccountStore((state) => state.fetchAccountBalance);
-  const fetchAccountAssets = useGoldAccountStore((state) => state.fetchAccountAssets);
-  const searchAccountAssets = useGoldAccountStore((state) => state.searchAccountAssets);
-  const fetchAccountMovements = useGoldAccountStore((state) => state.fetchAccountMovements);
-  const setPage = useGoldAccountStore((state) => state.setPage);
-  const setLimit = useGoldAccountStore((state) => state.setLimit);
+  const store = useGoldAccountStore();
 
   // Auto-fetch accounts on mount if empty
   useEffect(() => {
-    if (accounts.length === 0) fetchAccounts();
+    if (store.accounts.length === 0) store.fetchAccounts();
   }, []);
 
   return {
-    accounts,
-    selectedAccount,
-    accountBalance,
-    accountAssets,
-    searchedAssets,
-    accountMovements,
-    loading,
-    page,
-    limit,
-    totalCount,
-    error,
-    fetchAccounts,
-    fetchAccountByIgan,
-    fetchAccountBalance,
-    fetchAccountAssets,
-    searchAccountAssets,
-    fetchAccountMovements,
-    setPage,
-    setLimit,
+    // Data
+    accounts: store.accounts,
+    selectedAccount: store.selectedAccount,
+    accountBalance: store.accountBalance,
+    accountAssets: store.accountAssets,
+    searchedAssets: store.searchedAssets,
+    accountMovements: store.accountMovements,
+
+    // Global states
+    loading: store.loading,
+    error: store.error,
+    page: store.page,
+    limit: store.limit,
+    totalCount: store.totalCount,
+
+    // Per-function loading/error
+    balanceLoading: store.balanceLoading,
+    balanceError: store.balanceError,
+
+    assetsLoading: store.assetsLoading,
+    assetsError: store.assetsError,
+
+    searchAssetsLoading: store.searchAssetsLoading,
+    searchAssetsError: store.searchAssetsError,
+
+    movementsLoading: store.movementsLoading,
+    movementsError: store.movementsError,
+
+    // Actions
+    setPage: store.setPage,
+    setLimit: store.setLimit,
+    resetSelectedAccount: store.resetSelectedAccount,
+    fetchAccounts: store.fetchAccounts,
+    fetchAccountByIgan: store.fetchAccountByIgan,
+    fetchAccountBalance: store.fetchAccountBalance,
+    fetchAccountAssets: store.fetchAccountAssets,
+    searchAccountAssets: store.searchAccountAssets,
+    fetchAccountMovements: store.fetchAccountMovements,
   };
 };
