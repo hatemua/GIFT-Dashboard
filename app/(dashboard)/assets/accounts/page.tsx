@@ -5,10 +5,10 @@ import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { PageHeader } from "@/components/layout/page-header";
 import { Card, CardContent } from "@/components/ui/card";
 
-import AccountsFilters from "@/components/features/assets/accounts/AccountsFilters";
-import AccountsSkeleton from "@/components/features/assets/accounts/AccountsSkeleton";
-import AccountsGrid from "@/components/features/assets/accounts/AccountsGrid";
-import AccountsTable from "@/components/features/assets/accounts/AccountsTable";
+import AccountsFilters from "@/components/features/assets/accounts/list/AccountsFilters";
+import AccountsSkeleton from "@/components/features/assets/accounts/list/AccountsSkeleton";
+import AccountsGrid from "@/components/features/assets/accounts/list/AccountsGrid";
+import AccountsTable from "@/components/features/assets/accounts/list/AccountsTable";
 
 import { useGoldAccount } from "@/hooks/useGoldAccount";
 import { Pagination } from "@/components/ui/pagination";

@@ -1,4 +1,3 @@
-// components/ui/real-skeleton.tsx
 import { cn } from "@/lib/utils";
 
 export default function RealSkeleton({

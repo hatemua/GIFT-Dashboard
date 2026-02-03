@@ -1,5 +1,4 @@
 import { Vault } from "./vault";
-import { fetchVaultSiteInventoryApi } from './../services/vaultSiteService';
 
 export interface VaultSite {
   vault_site_id: string;

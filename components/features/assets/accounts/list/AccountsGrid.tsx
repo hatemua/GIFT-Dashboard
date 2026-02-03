@@ -1,11 +1,14 @@
 "use client";
 
-import React from "react";
+import React, { use } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Archive, Clipboard, Layers } from "lucide-react";
 import { StatusBadge } from "@/components/data-display/status-badge";
 import { Tooltip } from "@/components/ui/tooltip";
 import { GoldAccount } from "@/types/goldAccount";
+import { useRouter } from "next/router";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 interface AccountsGridProps {
   accounts: GoldAccount[];
@@ -86,6 +89,16 @@ export default function AccountsGrid({ accounts }: AccountsGridProps) {
                 Created: {new Date(acc.created_at).toLocaleString()}
               </p>
             </div>
+                          {/* Action */}
+              <Link href={`/assets/accounts/${acc.igan}`}>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="w-full group-hover:border-gold-400"
+                >
+                  View details
+                </Button>
+              </Link>
           </CardContent>
         </Card>
       ))}
