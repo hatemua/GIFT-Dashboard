@@ -7,10 +7,13 @@ import {
   GoldAccountAssetsResponse,
   GoldAccountAssetsSearchResponse,
   GoldAccountMovementsResponse,
+  CreateGoldAccountResponse,
+  CreateGoldAccountPayload,
 } from "@/types/goldAccount";
 
 interface UseGoldAccountReturn {
   accounts: GoldAccount[];
+  createdAccount?: CreateGoldAccountResponse;
   selectedAccount?: GoldAccountDetails;
   accountBalance?: GoldAccountBalance;
   accountAssets?: GoldAccountAssetsResponse;
@@ -41,6 +44,7 @@ interface UseGoldAccountReturn {
   setPage: (page: number) => void;
   setLimit: (limit: number) => void;
   resetSelectedAccount: () => void;
+  createAccount: (payload: CreateGoldAccountPayload) => Promise<void>;
   fetchAccounts: (limit?: number, page?: number) => Promise<void>;
   fetchAccountByIgan: (igan: string) => Promise<void>;
   fetchAccountBalance: (igan: string, currency?: string) => Promise<void>;
@@ -60,6 +64,7 @@ export const useGoldAccount = (): UseGoldAccountReturn => {
   return {
     // Data
     accounts: store.accounts,
+    createdAccount: store.createdAccount,
     selectedAccount: store.selectedAccount,
     accountBalance: store.accountBalance,
     accountAssets: store.accountAssets,
@@ -90,6 +95,7 @@ export const useGoldAccount = (): UseGoldAccountReturn => {
     setPage: store.setPage,
     setLimit: store.setLimit,
     resetSelectedAccount: store.resetSelectedAccount,
+    createAccount: store.createAccount,
     fetchAccounts: store.fetchAccounts,
     fetchAccountByIgan: store.fetchAccountByIgan,
     fetchAccountBalance: store.fetchAccountBalance,

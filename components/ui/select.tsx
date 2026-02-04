@@ -17,6 +17,8 @@ interface SelectProps {
   placeholder?: string;
   label?: string;
   error?: string;
+  required?: boolean;
+  className?: string;
   onChange?: (value: string | string[]) => void;
   /**
    * Function to convert value to display label
@@ -25,7 +27,7 @@ interface SelectProps {
 }
 
 export const Select = forwardRef<HTMLDivElement, SelectProps>(
-  ({ children, value, multiple, placeholder, label, error, onChange, displayLabel }, ref) => {
+  ({ children, value, multiple, placeholder, label, error, required, className = '', onChange, displayLabel }, ref) => {
     const [isOpen, setIsOpen] = useState(false);
     const [openUpwards, setOpenUpwards] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -99,7 +101,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
       <div className="space-y-1">
         {/* Label */}
         {label && (
-          <label className="text-sm font-medium text-slate-700">{label}</label>
+          <label className="text-sm font-medium text-slate-700">{label} {required ? <span className="text-red-500">*</span> : <span className="text-gray-400 text-xs ml-1">(optional)</span>}</label>
         )}
 
         {/* Select container */}
@@ -107,7 +109,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
           {/* Trigger */}
           <div
             ref={ref}
-            className="w-full min-h-[42px] border border-slate-300 rounded-lg px-3 py-2 text-sm flex flex-wrap items-center gap-1 cursor-pointer transition hover:border-gold-400"
+            className={"w-full min-h-[42px] border border-slate-300 rounded-lg px-3 py-2 text-sm flex flex-wrap items-center gap-1 cursor-pointer transition hover:border-gold-400 " + className}
             onClick={handleToggleDropdown}
           >
             {selectedValues.length === 0 ? (

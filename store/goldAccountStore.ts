@@ -7,6 +7,8 @@ import {
   GoldAccountAssetsResponse,
   GoldAccountAssetsSearchResponse,
   GoldAccountMovementsResponse,
+  CreateGoldAccountPayload,
+  CreateGoldAccountResponse,
 } from "@/types/goldAccount";
 
 interface GoldAccountStore {
@@ -21,6 +23,7 @@ interface GoldAccountStore {
   error?: string;
 
   // Selected account details
+  createdAccount?: CreateGoldAccountResponse;
   selectedAccount?: GoldAccountDetails;
   accountBalance?: GoldAccountBalance;
   accountAssets?: GoldAccountAssetsResponse;
@@ -41,13 +44,14 @@ interface GoldAccountStore {
   movementsError?: string;
 
   // Actions
+  createAccount: (payload: CreateGoldAccountPayload) => Promise<void>;
   fetchAccounts: (limit?: number, page?: number) => Promise<void>;
   fetchAccountByIgan: (igan: string) => Promise<void>;
   fetchAccountBalance: (igan: string, currency?: string) => Promise<void>;
   fetchAccountAssets: (igan: string, params?: any) => Promise<void>;
   searchAccountAssets: (igan: string, params?: any) => Promise<void>;
   fetchAccountMovements: (igan: string, params?: any) => Promise<void>;
-  
+
   resetSelectedAccount: () => void;
   setLimit: (limit: number) => void;
   setPage: (page: number) => void;
@@ -64,6 +68,7 @@ export const useGoldAccountStore = create<GoldAccountStore>((set, get) => ({
   error: undefined,
 
   // Individual states
+  createdAccount: undefined,
   selectedAccount: undefined,
   accountBalance: undefined,
   accountAssets: undefined,
@@ -82,6 +87,23 @@ export const useGoldAccountStore = create<GoldAccountStore>((set, get) => ({
 
   movementsLoading: false,
   movementsError: undefined,
+
+  createAccount: async (payload: CreateGoldAccountPayload) => {
+    set({ loading: true, error: undefined });
+    try {
+      const account = await goldAccountService.createAccount(payload);
+      set({ createdAccount: account, loading: false });
+    } catch (err: any) {
+      const message =
+        err?.response?.data?.error_description ||
+        err?.message ||
+        "Failed to create account";
+      set({ error: message });
+      throw new Error(message);
+    } finally {
+      set({ loading: false });
+    }
+  },
 
   fetchAccounts: async (limit = get().limit, page = get().page) => {
     set({ loading: true, error: undefined });

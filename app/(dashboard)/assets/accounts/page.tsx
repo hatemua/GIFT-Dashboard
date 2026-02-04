@@ -13,6 +13,9 @@ import AccountsTable from "@/components/features/assets/accounts/list/AccountsTa
 import { useGoldAccount } from "@/hooks/useGoldAccount";
 import { Pagination } from "@/components/ui/pagination";
 import EmptyState from "@/components/features/common/EmptyState";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
 export default function GoldAccountsPage() {
   const { accounts, totalCount, page, limit, loading, setPage } =
@@ -31,6 +34,14 @@ export default function GoldAccountsPage() {
           { label: "Dashboard", href: "/dashboard" },
           { label: "Gold Accounts", href: "/gold-accounts" },
         ]}
+        action={
+          <Link href="/assets/accounts/new">
+            <Button variant="gold">
+              <Plus className="h-4 w-4" />
+              New Account
+            </Button>
+          </Link>
+        }
       />
 
       {/* Filters / View Toggle */}

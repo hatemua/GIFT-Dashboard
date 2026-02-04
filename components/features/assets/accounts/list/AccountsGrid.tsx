@@ -9,6 +9,7 @@ import { GoldAccount } from "@/types/goldAccount";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { AddressDisplay } from "@/components/blockchain/address-display";
 
 interface AccountsGridProps {
   accounts: GoldAccount[];
@@ -44,43 +45,45 @@ export default function AccountsGrid({ accounts }: AccountsGridProps) {
                 IGAN
               </span>
               <Tooltip content={acc.igan} placement="top">
-                <span className="font-mono font-medium text-sm text-slate-900 truncate max-w-[120px] sm:max-w-[150px] cursor-help">
+                                  <AddressDisplay
+                                    address={acc.igan}
+                                    truncate
+                                    startChars={4}
+                                    endChars={4}
+                                  />
+                {/* <span className="font-mono font-medium text-sm text-slate-900 truncate max-w-[120px] sm:max-w-[150px] cursor-help">
                   {acc.igan}
-                </span>
+                </span> */}
               </Tooltip>
             </div>
 
             {/* Account Purpose */}
             <div className="flex justify-between items-center">
               <span className="text-sm text-slate-500 flex items-center gap-1">
-                <Archive className="h-3.5 w-3.5 text-slate-400" />
                 Purpose
               </span>
-              <Tooltip content={acc.gold_account_purpose} placement="top">
                 <span className="text-sm text-slate-900 truncate cursor-help">
                   {acc.gold_account_purpose}
                 </span>
-              </Tooltip>
             </div>
 
             {/* Member */}
             <div className="flex justify-between items-center">
               <span className="text-sm text-slate-500">Member</span>
-              <Tooltip content={acc.member_gic} placement="top">
-                <span className="text-sm text-slate-900 truncate cursor-help">
-                  {acc.member_gic}
-                </span>
-              </Tooltip>
+                                              <AddressDisplay
+                                    address={acc.member_gic}
+                                    truncate
+                                    startChars={4}
+                                    endChars={4}
+                                  />
             </div>
 
             {/* Vault */}
             <div className="flex justify-between items-center">
-              <span className="text-sm text-slate-500">Vault</span>
-              <Tooltip content={acc.vault_site_id} placement="top">
+              <span className="text-sm text-slate-500">Vault Site</span>
                 <span className="text-sm text-slate-900 truncate cursor-help">
                   {acc.vault_site_id}
                 </span>
-              </Tooltip>
             </div>
 
             {/* Created At */}

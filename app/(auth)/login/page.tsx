@@ -80,48 +80,36 @@ export default function LoginPage() {
           <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
             {/* Client ID */}
             <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700">
-                Client ID
-              </label>
-              <div className="relative">
-                <Key className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                <Input
-                  type="text"
-                  placeholder="Enter Client ID"
-                  className={`pl-10 ${errors.client_id ? "border-red-500 focus:ring-red-500" : ""}`}
-                  {...register("client_id", {
-                    required: "Client ID is required",
-                  })}
-                />
-              </div>
-              {errors.client_id && (
-                <p className="mt-1 text-xs text-red-500">
-                  {errors.client_id.message}
-                </p>
-              )}
+              <Input
+                label="Client ID"
+                type="text"
+                icon={
+                  <Key className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                }
+                placeholder="Enter Client ID"
+                error={errors.client_id?.message}
+                className={`pl-10 ${errors.client_id ? "border-red-500 focus:ring-red-500" : ""}`}
+                {...register("client_id", {
+                  required: "Client ID is required",
+                })}
+              />
             </div>
 
             {/* Client Secret */}
             <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700">
-                Client Secret
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                <Input
-                  type="password"
-                  placeholder="Enter Client Secret"
-                  className={`pl-10 ${errors.client_secret ? "border-red-500 focus:ring-red-500" : ""}`}
-                  {...register("client_secret", {
-                    required: "Client secret is required",
-                  })}
-                />
-              </div>
-              {errors.client_secret && (
-                <p className="mt-1 text-xs text-red-500">
-                  {errors.client_secret.message}
-                </p>
-              )}
+              <Input
+                icon={
+                  <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                }
+                label="Client Secret"
+                type="password"
+                placeholder="Enter Client Secret"
+                error={errors.client_secret?.message}
+                className={`pl-10 ${errors.client_secret ? "border-red-500 focus:ring-red-500" : ""}`}
+                {...register("client_secret", {
+                  required: "Client secret is required",
+                })}
+              />
             </div>
 
             {/* Submit */}

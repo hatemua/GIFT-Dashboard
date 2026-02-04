@@ -1,5 +1,7 @@
 import { api } from "@/lib/axios";
 import {
+  CreateGoldAccountPayload,
+  CreateGoldAccountResponse,
   GetAccountAssetsParams,
   GetAccountMovementsParams,
   GetAllAccountsParams,
@@ -13,6 +15,15 @@ import {
 } from "@/types/goldAccount";
 
 export const goldAccountService = {
+  createAccount: async (
+    payload: CreateGoldAccountPayload,
+  ): Promise<CreateGoldAccountResponse> => {
+    const { data } = await api.post<CreateGoldAccountResponse>(
+      "/accounts/create",
+      payload,
+    );
+    return data;
+  },
   getAllAccounts: async (
     params: GetAllAccountsParams = {},
   ): Promise<GoldAccountsResponse> => {
@@ -27,7 +38,7 @@ export const goldAccountService = {
 
     return response.data as GoldAccountsResponse;
   },
-  
+
   getAccountByIgan: async (igan: string): Promise<GoldAccountDetails> => {
     console.log("Fetching account with IGAN:", igan);
     const response = await api.get(`/accounts/${igan}`);
