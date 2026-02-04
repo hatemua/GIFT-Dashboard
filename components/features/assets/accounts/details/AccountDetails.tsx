@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { GOLD_ACCOUNT_PURPOSES } from "@/constants/goldAccount";
 
 interface AccountDetailsProps {
   account?: GoldAccountDetails;
@@ -25,6 +26,7 @@ export const AccountDetails: React.FC<AccountDetailsProps> = ({ account }) => {
     igan,
     member_gic,
     vault_site_id,
+    vault_id,
     gold_account_purpose,
     creation_date,
     last_activity,
@@ -72,6 +74,12 @@ export const AccountDetails: React.FC<AccountDetailsProps> = ({ account }) => {
             icon={<Building className="h-4 w-4 text-purple-500" />}
             badge
           />
+          <SimpleInfoRow
+            label="Vault"
+            value={vault_id}
+            icon={<Building className="h-4 w-4 text-orange-500" />}
+            badge
+          />
         </div>
 
         {/* Purpose Badge */}
@@ -84,7 +92,9 @@ export const AccountDetails: React.FC<AccountDetailsProps> = ({ account }) => {
               </span>
             </div>
             <Badge variant="secondary" className="font-medium">
-              {gold_account_purpose}
+              {GOLD_ACCOUNT_PURPOSES.find(
+                (p) => p.value === gold_account_purpose,
+              )?.shortLabel || gold_account_purpose}
             </Badge>
           </div>
         </div>

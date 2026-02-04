@@ -3,6 +3,7 @@ export interface GoldAccount {
   gold_account_purpose: string;
   active: boolean;
   member_gic: string;
+  vault_id: string;
   vault_site_id: string;
   created_at: string;
 }
@@ -51,6 +52,7 @@ export interface GoldAccountDetails {
   igan: string;
   member_gic: string;
   vault_site_id: string;
+  vault_id: string;
   guarantee_deposit_account: string;
   gold_account_purpose: string;
   account_status: string;

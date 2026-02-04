@@ -1,15 +1,14 @@
 "use client";
 
-import React, { use } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Archive, Clipboard, Layers } from "lucide-react";
+import { Clipboard, Layers } from "lucide-react";
 import { StatusBadge } from "@/components/data-display/status-badge";
 import { Tooltip } from "@/components/ui/tooltip";
 import { GoldAccount } from "@/types/goldAccount";
-import { useRouter } from "next/router";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { AddressDisplay } from "@/components/blockchain/address-display";
+import { GOLD_ACCOUNT_PURPOSES } from "@/constants/goldAccount";
 
 interface AccountsGridProps {
   accounts: GoldAccount[];
@@ -45,15 +44,12 @@ export default function AccountsGrid({ accounts }: AccountsGridProps) {
                 IGAN
               </span>
               <Tooltip content={acc.igan} placement="top">
-                                  <AddressDisplay
-                                    address={acc.igan}
-                                    truncate
-                                    startChars={4}
-                                    endChars={4}
-                                  />
-                {/* <span className="font-mono font-medium text-sm text-slate-900 truncate max-w-[120px] sm:max-w-[150px] cursor-help">
-                  {acc.igan}
-                </span> */}
+                <AddressDisplay
+                  address={acc.igan}
+                  truncate
+                  startChars={4}
+                  endChars={4}
+                />
               </Tooltip>
             </div>
 
@@ -62,28 +58,30 @@ export default function AccountsGrid({ accounts }: AccountsGridProps) {
               <span className="text-sm text-slate-500 flex items-center gap-1">
                 Purpose
               </span>
-                <span className="text-sm text-slate-900 truncate cursor-help">
-                  {acc.gold_account_purpose}
-                </span>
+              <span className="text-sm text-slate-900 truncate cursor-help">
+                {GOLD_ACCOUNT_PURPOSES.find(
+                  (p) => p.value === acc.gold_account_purpose,
+                )?.shortLabel || acc.gold_account_purpose}
+              </span>
             </div>
 
             {/* Member */}
             <div className="flex justify-between items-center">
               <span className="text-sm text-slate-500">Member</span>
-                                              <AddressDisplay
-                                    address={acc.member_gic}
-                                    truncate
-                                    startChars={4}
-                                    endChars={4}
-                                  />
+              <AddressDisplay
+                address={acc.member_gic}
+                truncate
+                startChars={4}
+                endChars={4}
+              />
             </div>
 
             {/* Vault */}
             <div className="flex justify-between items-center">
-              <span className="text-sm text-slate-500">Vault Site</span>
-                <span className="text-sm text-slate-900 truncate cursor-help">
-                  {acc.vault_site_id}
-                </span>
+              <span className="text-sm text-slate-500">Vault</span>
+              <span className="text-sm text-slate-900 truncate cursor-help">
+                {acc.vault_id}
+              </span>
             </div>
 
             {/* Created At */}
@@ -92,16 +90,16 @@ export default function AccountsGrid({ accounts }: AccountsGridProps) {
                 Created: {new Date(acc.created_at).toLocaleString()}
               </p>
             </div>
-                          {/* Action */}
-              <Link href={`/assets/accounts/${acc.igan}`}>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="w-full group-hover:border-gold-400"
-                >
-                  View details
-                </Button>
-              </Link>
+            {/* Action */}
+            <Link href={`/assets/accounts/${acc.igan}`}>
+              <Button
+                size="sm"
+                variant="outline"
+                className="w-full group-hover:border-gold-400"
+              >
+                View details
+              </Button>
+            </Link>
           </CardContent>
         </Card>
       ))}

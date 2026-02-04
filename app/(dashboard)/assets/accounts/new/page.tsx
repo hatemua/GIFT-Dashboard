@@ -13,6 +13,7 @@ import { Select, SelectItem } from "@/components/ui/select";
 import { useToast } from "@/providers/toast-provider";
 import { useGoldAccount } from "@/hooks/useGoldAccount";
 import { CreateGoldAccountPayload } from "@/types/goldAccount";
+import { GOLD_ACCOUNT_PURPOSES } from "@/constants/goldAccount";
 
 export default function NewGoldAccountPage() {
   const { showToast } = useToast();
@@ -130,16 +131,20 @@ export default function NewGoldAccountPage() {
                   rules={{ required: "Account purpose is required" }}
                   render={({ field }) => (
                     <Select
-                      {...field}
-                      required={true}
                       label="Account Purpose"
-                      className="h-11 rounded-md border-gray-200 focus:border-amber-500 focus:ring-amber-100"
+                      required={true}
                       error={errors.gold_account_purpose?.message}
+                      className="h-11 rounded-md border-gray-200 focus:border-amber-500 focus:ring-amber-100"
+                      {...field}
+                                    displayLabel={(val) =>
+                                      GOLD_ACCOUNT_PURPOSES.find((t) => t.value === val)?.label || val
+                                    }
                     >
-                      <SelectItem value="trading">Trading</SelectItem>
-                      <SelectItem value="custody">Custody</SelectItem>
-                      <SelectItem value="collateral">Collateral</SelectItem>
-                      <SelectItem value="savings">Savings</SelectItem>
+                      {GOLD_ACCOUNT_PURPOSES.map((purpose) => (
+                        <SelectItem key={purpose.value} value={purpose.value}>
+                          {purpose.label}
+                        </SelectItem>
+                      ))}
                     </Select>
                   )}
                 />

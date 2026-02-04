@@ -7,13 +7,18 @@ interface TransactionOrdersFiltersProps {
   onViewChange: (view: "grid" | "table") => void;
 }
 
-const TransactionOrdersFilters = ({ view, onViewChange }: TransactionOrdersFiltersProps) => {
+const TransactionOrdersFilters = ({
+  view,
+  onViewChange,
+}: TransactionOrdersFiltersProps) => {
   return (
     <div className="mb-3 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       {/* Search */}
-      <div className="relative w-full sm:max-w-md">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+      <div className="w-full sm:max-w-md">
         <Input
+          icon={
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          }
           type="search"
           placeholder="Search by reference, asset, or counterparty..."
           className="pl-10"
