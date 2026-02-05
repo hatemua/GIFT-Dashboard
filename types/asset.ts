@@ -62,6 +62,7 @@ export interface Asset {
   serial_number: string;
   refiner_name: string;
   weight_grams: number;
+  assetValueInDollar: number;
   fineness: number;
   gold_product_type_id: string;
   certificate_path: string;

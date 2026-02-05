@@ -125,7 +125,7 @@ export default function AssetsTable({ assets }: AssetsTableProps) {
               {/* Value */}
               <TableCell>
                 <p className="font-semibold text-gold-700 dark:text-gold-300">
-                  {formatCurrency(0)}
+                  {formatCurrency(asset.assetValueInDollar)}
                 </p>
               </TableCell>
 

@@ -143,7 +143,7 @@ function normalizeAsset(
       weightGrams: asset.weight_grams,
       fineness: asset.fineness,
       fineWeightGrams: undefined,
-      value: 0,
+      value: asset.assetValueInDollar,
       manufactureDate: asset.manufacture_date,
       createdAt: asset.createdAt
     };
