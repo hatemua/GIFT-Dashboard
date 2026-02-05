@@ -1,6 +1,5 @@
-import { useEffect } from "react";
 import { useMemberStore } from "@/store/memberStore";
-import { Member, CreateMemberInput } from "@/types/member";
+import { Member, CreateMemberInput, MembersFilters, CreateMemberResponse } from "@/types/member";
 import { BlacklistedMember } from "@/types/member";
 
 interface UseMemberReturn {
@@ -10,15 +9,17 @@ interface UseMemberReturn {
   error?: string;
   page: number;
   limit: number;
-  totalCount: number;
+  filters: MembersFilters;
+  count: number;
   fetchMembers: () => Promise<void>;
-  createMember: (member: CreateMemberInput) => Promise<Member | undefined>;
+  createMember: (member: CreateMemberInput) => Promise<CreateMemberResponse | undefined>;
   fetchBlacklistedMembers: (page?: number, limit?: number) => Promise<void>;
   addToBlacklist: (
     member_gic: string,
     reason: string,
   ) => Promise<BlacklistedMember | undefined>;
   removeFromBlacklist: (member_gic: string) => Promise<void>;
+  setFilters: (filters: MembersFilters) => void;
   setPage: (page: number) => void;
   setLimit: (limit: number) => void;
 }
@@ -35,12 +36,14 @@ export const useMember = (): UseMemberReturn => {
     error,
     page,
     limit,
-    totalCount,
+    filters,
+    count,
     fetchMembers,
     createMember,
     fetchBlacklistedMembers,
     addToBlacklist,
     removeFromBlacklist,
+    setFilters,
     setPage,
     setLimit,
   } = useMemberStore();
@@ -52,12 +55,14 @@ export const useMember = (): UseMemberReturn => {
     error,
     page,
     limit,
-    totalCount,
+    filters,
+    count,
     fetchMembers,
     createMember,
     fetchBlacklistedMembers,
     addToBlacklist,
     removeFromBlacklist,
+    setFilters,
     setPage,
     setLimit,
   };

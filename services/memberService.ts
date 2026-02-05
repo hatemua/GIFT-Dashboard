@@ -1,21 +1,35 @@
 import { api } from "@/lib/axios";
-import { BlacklistedMember, CreateMemberInput, Member } from "@/types/member";
+import {
+  BlacklistedMember,
+  CreateMemberInput,
+  CreateMemberResponse,
+  GetMembersParams,
+  MembersResponse,
+} from "@/types/member";
 
 export const memberService = {
-  // Existing
   createMember: async (data: CreateMemberInput) => {
     const response = await api.post("/members/create", data);
-    return response.data as Member;
+    return response.data as CreateMemberResponse;
   },
 
-  getMembers: async (page = 1, limit = 10) => {
-    const response = await api.get(`/members`, {
-      params: { page, limit },
+  getMembers: async ({
+    page = 1,
+    limit = 6,
+    filters = {},
+  }: GetMembersParams): Promise<MembersResponse> => {
+    const response = await api.get<MembersResponse>("/dashboard/members", {
+      params: {
+        page,
+        limit,
+        search: filters.search,
+        from_date: filters.from_date,
+        to_date: filters.to_date,
+        role: filters.role,
+      },
     });
-    return response.data as {
-      totalCount: number;
-      members: Member[];
-    };
+
+    return response.data;
   },
 
   // Blacklist endpoints
@@ -36,7 +50,7 @@ export const memberService = {
       params: { page, limit },
     });
     return response.data as {
-      totalCount: number;
+      count: number;
       members: BlacklistedMember[];
     };
   },

@@ -1,23 +1,33 @@
 import { create } from "zustand";
-import { BlacklistedMember, CreateMemberInput, Member } from "@/types/member";
+import {
+  BlacklistedMember,
+  CreateMemberInput,
+  CreateMemberResponse,
+  Member,
+  MembersFilters,
+  MembersResponse,
+} from "@/types/member";
 import { memberService } from "@/services/memberService";
 
 interface MemberState {
   // All members
   members: Member[];
   blacklistedMembers: BlacklistedMember[];
-  totalCount: number;
+  count: number;
 
   // Pagination
   page: number;
   limit: number;
+  filters: MembersFilters;
 
   loading: boolean;
   error?: string;
 
   // Member actions
   fetchMembers: () => Promise<void>;
-  createMember: (member: CreateMemberInput) => Promise<Member | undefined>;
+  createMember: (
+    member: CreateMemberInput,
+  ) => Promise<CreateMemberResponse | undefined>;
 
   // Blacklist actions
   fetchBlacklistedMembers: (page?: number, limit?: number) => Promise<void>;
@@ -26,6 +36,7 @@ interface MemberState {
     reason: string,
   ) => Promise<BlacklistedMember | undefined>;
   removeFromBlacklist: (member_gic: string) => Promise<void>;
+  setFilters: (filters: MembersFilters) => void;
   setPage: (page: number) => void;
   setLimit: (limit: number) => void;
 }
@@ -34,9 +45,10 @@ export const useMemberStore = create<MemberState>((set, get) => ({
   // State
   members: [],
   blacklistedMembers: [],
-  totalCount: 0,
+  count: 0,
   page: 1,
-  limit: 10,
+  limit: 6,
+  filters: {},
   loading: false,
   error: undefined,
 
@@ -44,8 +56,13 @@ export const useMemberStore = create<MemberState>((set, get) => ({
   fetchMembers: async () => {
     set({ loading: true, error: undefined });
     try {
-      const data = await memberService.getMembers();
-      set({ members: data.members, totalCount: data.totalCount });
+      const { page, limit, filters } = get();
+      const data: MembersResponse = await memberService.getMembers({
+        page,
+        limit,
+        filters,
+      });
+      set({ members: data.members, count: data.count, loading: false });
     } catch (err: any) {
       set({ error: err?.message || "Failed to fetch members" });
     } finally {
@@ -57,7 +74,6 @@ export const useMemberStore = create<MemberState>((set, get) => ({
     set({ loading: true, error: undefined });
     try {
       const data = await memberService.createMember(member);
-      set({ members: [...get().members, data] });
       return data;
     } catch (err: any) {
       const message =
@@ -75,11 +91,11 @@ export const useMemberStore = create<MemberState>((set, get) => ({
   fetchBlacklistedMembers: async (page = get().page, limit = get().limit) => {
     set({ loading: true, error: undefined });
     try {
-      const { members, totalCount } = await memberService.getBlacklistedMembers(
+      const { members, count } = await memberService.getBlacklistedMembers(
         page,
         limit,
       );
-      set({ blacklistedMembers: members, totalCount, page, limit });
+      set({ blacklistedMembers: members, count, page, limit });
     } catch (err: any) {
       set({ error: err?.message || "Failed to fetch blacklisted members" });
     } finally {
@@ -93,7 +109,7 @@ export const useMemberStore = create<MemberState>((set, get) => ({
       const data = await memberService.addToBlacklist(member_gic, reason);
       set({
         blacklistedMembers: [data, ...get().blacklistedMembers],
-        totalCount: get().totalCount + 1,
+        count: get().count + 1,
       });
       return data;
     } catch (err: any) {
@@ -116,7 +132,7 @@ export const useMemberStore = create<MemberState>((set, get) => ({
         blacklistedMembers: get().blacklistedMembers.filter(
           (m) => m.member_gic !== member_gic,
         ),
-        totalCount: get().totalCount - 1,
+        count: get().count - 1,
       });
     } catch (err: any) {
       const message =
@@ -129,6 +145,18 @@ export const useMemberStore = create<MemberState>((set, get) => ({
       set({ loading: false });
     }
   },
+
+  setFilters: (filters: MembersFilters) =>
+    set((state) => ({
+      filters: { ...state.filters, ...filters },
+      page: 1,
+    })),
+
+  resetFilters: () =>
+    set({
+      filters: {},
+      page: 1,
+    }),
 
   // Pagination setters
   setPage: (page: number) => {

@@ -1,19 +1,45 @@
 "use client";
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { PageHeader } from "@/components/layout/page-header";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { StatusBadge } from "@/components/data-display/status-badge";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { mockMembers } from "@/lib/mock-data";
-import { Users, Plus, Mail, Phone, Globe } from "lucide-react";
-import { use, useState } from "react";
+import {  Plus, Grid3x3, List } from "lucide-react";
+import {  useEffect, useState } from "react";
 import CreateMemberModal from "@/components/features/members/new/CreateMemberModal";
+import MembersFilters from "@/components/features/members/list/MembersFilters";
+import { useMember } from "@/hooks/useMember";
+import { MembersSkeleton } from "@/components/features/members/list/MembersSkeleton";
+import EmptyState from "@/components/features/common/EmptyState";
+import MembersGrid from "@/components/features/members/list/MembersGrid";
+import MembersTable from "@/components/features/members/list/MembersTable";
+import { Pagination } from "@/components/ui/pagination";
 
 export default function MembersPage() {
+  const [view, setView] = useState<"grid" | "table">("grid");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  const {
+    members,
+    loading,
+    page,
+    limit,
+    count,
+    filters,
+    setPage,
+    fetchMembers,
+  } = useMember();
+
+  const hasMembers = members.length > 0;
+
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
+  const onViewChange = (view: "table" | "grid") => {
+    setView(view);
+  };
+
+  useEffect(() => {
+    fetchMembers();
+  }, [page, limit, filters]);
+
   return (
     <DashboardShell>
       <PageHeader
@@ -24,146 +50,44 @@ export default function MembersPage() {
           { label: "Members" },
         ]}
         action={
-          <Button variant="gold" onClick={handleOpenModal}>
-            <Plus className="h-4 w-4" />
-            Add Member
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="gold" onClick={handleOpenModal}>
+              <Plus className="h-4 w-4" />
+              Add Member
+            </Button>
+            <div className="flex rounded-lg border border-border bg-muted/50 p-1 gap-1">
+              <Button
+                size="icon"
+                variant={view === "table" ? "default" : "ghost"}
+                onClick={() => onViewChange("table")}
+                className="h-8 w-8"
+              >
+                <List className="h-4 w-4" />
+              </Button>
+              <Button
+                size="icon"
+                variant={view === "grid" ? "default" : "ghost"}
+                onClick={() => onViewChange("grid")}
+                className="h-8 w-8"
+              >
+                <Grid3x3 className="h-4 w-4" />
+              </Button>
+            </div>{" "}
+          </div>
         }
       />
 
-      {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-4 mb-6">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-slate-500">
-              Total Members
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{mockMembers.length}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-slate-500">
-              Active Members
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {
-                mockMembers.filter((m) => m.current_member_status === "Active")
-                  .length
-              }
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-slate-500">
-              Countries
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {new Set(mockMembers.map((m) => m.country)).size}
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-slate-500">
-              Refineries
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {mockMembers.filter((m) => m.type_member === "Refinery").length}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <MembersFilters />
+      {loading && <MembersSkeleton view={view} />}
+      {!loading && !hasMembers && <EmptyState type="members" />}
+      {!loading && hasMembers && (
+        <>
+          {view === "grid" && <MembersGrid members={members} />}
 
-      {/* Members Grid */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {mockMembers.map((member) => (
-          <Card
-            key={member.member_gic}
-            className="hover:shadow-md transition-shadow cursor-pointer"
-          >
-            <CardHeader>
-              <div className="flex items-start justify-between">
-                <div>
-                  <CardTitle className="text-lg">
-                    {member.entity_name}
-                  </CardTitle>
-                  <p className="text-sm text-slate-500 mt-1">
-                    {member.type_member}
-                  </p>
-                </div>
-                <StatusBadge status={member.current_member_status} />
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {/* GIC Code */}
-              <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                <span className="text-xs text-slate-500">GIC Code</span>
-                <span className="font-mono font-semibold text-sm text-slate-900">
-                  {member.member_gic}
-                </span>
-              </div>
-
-              {/* Location */}
-              <div className="flex items-center gap-2 text-sm">
-                <Globe className="h-4 w-4 text-slate-400" />
-                <span className="text-slate-600">
-                  {member.city}, {member.country}
-                </span>
-              </div>
-
-              {/* Roles */}
-              <div className="flex flex-wrap gap-1.5">
-                {member.member_roles.map((role) => (
-                  <Badge key={role} variant="secondary" className="text-xs">
-                    {role.replace("ROLE_", "")}
-                  </Badge>
-                ))}
-              </div>
-
-              {/* Contact Info */}
-              {member.contact_email && (
-                <div className="pt-3 border-t border-slate-200 space-y-2">
-                  <div className="flex items-center gap-2 text-sm text-slate-600">
-                    <Mail className="h-3.5 w-3.5 text-slate-400" />
-                    <span className="text-xs truncate">
-                      {member.contact_email}
-                    </span>
-                  </div>
-                  {member.contact_phone && (
-                    <div className="flex items-center gap-2 text-sm text-slate-600">
-                      <Phone className="h-3.5 w-3.5 text-slate-400" />
-                      <span className="text-xs">{member.contact_phone}</span>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Member Since */}
-              <div className="pt-2 border-t border-slate-200">
-                <p className="text-xs text-slate-400">
-                  Member since{" "}
-                  {new Date(
-                    member.membership_effective_date,
-                  ).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                  })}
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+          {view === "table" && <MembersTable members={members} />}
+        </>
+      )}
+      <Pagination page={page} limit={limit} total={count} setPage={setPage} />
       {/* Create Member Modal */}
       <CreateMemberModal isOpen={isModalOpen} onClose={handleCloseModal} />
     </DashboardShell>

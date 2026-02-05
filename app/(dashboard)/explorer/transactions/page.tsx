@@ -70,18 +70,14 @@ export default function BlockchainTransactionsPage() {
         }
       />
 
-      {/* Filters / View Switch */}
       <TransactionsFilters />
 
-      {/* Loading */}
       {loading && <TransactionsSkeleton view={view} />}
 
-      {/* Empty */}
       {!loading && !hasTransactions && (
         <EmptyState type="blockchainTransactions" />
       )}
 
-      {/* Content */}
       {!loading && hasTransactions && (
         <>
           {view === "grid" && <TransactionsGrid transactions={transactions} />}
@@ -91,7 +87,6 @@ export default function BlockchainTransactionsPage() {
           )}
         </>
       )}
-      {/* Pagination */}
       <Pagination page={page} limit={limit} total={count} setPage={setPage} />
     </DashboardShell>
   );
