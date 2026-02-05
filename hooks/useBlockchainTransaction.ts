@@ -1,48 +1,49 @@
-import { useEffect } from "react";
 import { useBlockchainTransactionStore } from "@/store/blockchainTransactionStore";
-import { BlockchainTransaction } from "@/types/blockchainTransaction";
 
-interface UseBlockchainTransactionsReturn {
-  transactions: BlockchainTransaction[];
-  totalCount: number;
-  page: number;
-  limit: number;
-  loading: boolean;
-  error?: string;
+export const useBlockchainTransactions = () => {
+  const {
+    transactions,
+    count,
 
-  fetchTransactions: (
-    page?: number,
-    limit?: number,
-  ) => Promise<void>;
-  setPage: (page: number) => void;
-  setLimit: (limit: number) => void;
-}
+    // pagination
+    page,
+    limit,
+    setPage,
+    setLimit,
 
-export const useBlockchainTransactions =
-  (): UseBlockchainTransactionsReturn => {
-    const {
-      transactions,
-      loading,
-      error,
-      fetchTransactions,
-      setPage,
-      setLimit,
-    } = useBlockchainTransactionStore((state) => state);
+    // ui state
+    loading,
+    error,
 
-    // Auto-fetch on mount if transactions list is empty
-    useEffect(() => {
-      if (transactions.items.length === 0) fetchTransactions();
-    }, []);
+    // filters
+    filters,
+    setFilters,
+    resetFilters,
 
-    return {
-      transactions: transactions.items,
-      totalCount: transactions.totalCount,
-      page: transactions.page,
-      limit: transactions.limit,
-      loading,
-      error,
-      fetchTransactions,
-      setPage,
-      setLimit,
-    };
+    // actions
+    fetchTransactions,
+  } = useBlockchainTransactionStore();
+
+  return {
+    transactions,
+    count,
+
+    // pagination
+    page,
+    limit,
+    setPage,
+    setLimit,
+
+    // ui state
+    loading,
+    error,
+
+    // filters
+    filters,
+    setFilters,
+    resetFilters,
+
+    // actions
+    fetchTransactions,
   };
+};

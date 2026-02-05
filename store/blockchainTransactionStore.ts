@@ -1,56 +1,83 @@
 import { create } from "zustand";
 import { blockchainTransactionService } from "@/services/blockchainTransactionService";
-import { PaginatedTransactions } from "@/types/blockchainTransaction";
+import {
+  BlockchainTransaction,
+  BlockchainTransactionFilters,
+  BlockchainTransactionResponse,
+} from "@/types/blockchainTransaction";
 
-interface BlockchainTransactionStore {
-  transactions: PaginatedTransactions;
+interface BlockchainTransactionState {
+  transactions: BlockchainTransaction[];
+  count: number;
+
+  page: number;
+  limit: number;
+
   loading: boolean;
   error?: string;
 
-  fetchTransactions: (page?: number, limit?: number) => Promise<void>;
+  filters: BlockchainTransactionFilters;
+
+  fetchTransactions: () => Promise<void>;
+  setFilters: (filters: Partial<BlockchainTransactionFilters>) => void;
+  resetFilters: () => void;
 
   setPage: (page: number) => void;
   setLimit: (limit: number) => void;
 }
 
-export const useBlockchainTransactionStore = create<BlockchainTransactionStore>(
+export const useBlockchainTransactionStore = create<BlockchainTransactionState>(
   (set, get) => ({
-    transactions: { items: [], totalCount: 0, page: 1, limit: 10 },
-    transaction: undefined,
+    transactions: [],
+    count: 0,
+
+    page: 1,
+    limit: 6,
+
     loading: false,
     error: undefined,
 
-    fetchTransactions: async (
-      page = get().transactions.page,
-      limit = get().transactions.limit,
-    ) => {
+    filters: {},
+
+    fetchTransactions: async () => {
       set({ loading: true, error: undefined });
+
       try {
-        const { data, totalCount } =
-          await blockchainTransactionService.getTransactions(page, limit);
-        set({
-          transactions: {
-            items: data,
-            totalCount,
+        const { page, limit, filters } = get();
+
+        const data: BlockchainTransactionResponse =
+          await blockchainTransactionService.getTransactions({
             page,
             limit,
-          },
+            filters,
+          });
+
+        set({
+          transactions: data.transactions,
+          count: data.count,
+          loading: false,
         });
       } catch (err: any) {
-        set({ error: err?.message || "Failed to fetch transactions" });
-      } finally {
-        set({ loading: false });
+        set({
+          error: err?.message || "Failed to fetch transactions",
+          loading: false,
+        });
       }
     },
 
-    setPage: (page) =>
+    setFilters: (filters) =>
       set((state) => ({
-        transactions: { ...state.transactions, page },
+        filters: { ...state.filters, ...filters },
+        page: 1,
       })),
 
-    setLimit: (limit) =>
-      set((state) => ({
-        transactions: { ...state.transactions, limit },
-      })),
+    resetFilters: () =>
+      set({
+        filters: {},
+        page: 1,
+      }),
+
+    setPage: (page) => set({ page }),
+    setLimit: (limit) => set({ limit, page: 1 }),
   }),
 );

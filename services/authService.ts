@@ -8,7 +8,7 @@ export const login = async (data: {
   grant_type: string;
   scope?: string;
 }) => {
-  const response = await axios.post(`${API_URL}/auth/token`, data);
+  const response = await axios.post(`${API_URL}/auth/token/dashboard`, data);
   return response.data; // { access_token, refresh_token, expires_in }
 };
 

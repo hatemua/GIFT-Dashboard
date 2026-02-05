@@ -9,22 +9,12 @@ import {
 } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 import { AddressDisplay } from "@/components/blockchain/address-display";
-
-interface Transaction {
-  hash: string;
-  block: number;
-  type: string;
-  asset: string;
-  from: string;
-  to: string;
-  status: string;
-  timestamp: string;
-}
+import { BlockchainTransaction } from "@/types/blockchainTransaction";
 
 interface TransactionsTableProps {
-  transactions: Transaction[];
+  transactions: BlockchainTransaction[];
 }
 
 const statusStyles: Record<string, string> = {
@@ -39,83 +29,72 @@ export default function TransactionsTable({
   return (
     <Card className="overflow-hidden">
       <CardContent className="p-0">
-        <div className="overflow-x-auto">
-          <Table>
+        {/* Horizontal scroll wrapper */}
+        <div className="relative w-full overflow-x-auto">
+          <Table className="min-w-[900px]">
             <TableHeader>
               <TableRow className="bg-muted/40">
-                <TableHead>Tx Hash</TableHead>
-                <TableHead>Block</TableHead>
-                <TableHead className="hidden md:table-cell">Type</TableHead>
-                <TableHead className="hidden lg:table-cell">Asset</TableHead>
-                <TableHead className="hidden xl:table-cell">From</TableHead>
-                <TableHead className="hidden xl:table-cell">To</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="hidden md:table-cell">
-                  Timestamp
-                </TableHead>
+                <TableHead className="whitespace-nowrap">Tx Hash</TableHead>
+                <TableHead className="whitespace-nowrap">Block</TableHead>
+                <TableHead className="whitespace-nowrap">From</TableHead>
+                <TableHead className="whitespace-nowrap">To</TableHead>
+                <TableHead className="whitespace-nowrap">Status</TableHead>
+                <TableHead className="whitespace-nowrap">Created At</TableHead>
               </TableRow>
             </TableHeader>
 
             <TableBody>
               {transactions.map((tx) => (
                 <TableRow
-                  key={tx.hash}
+                  key={tx.tx_hash}
                   className="transition hover:bg-muted/30"
                 >
-                  {/* Hash */}
+                  {/* Tx Hash */}
                   <TableCell
-                    className="max-w-[160px] truncate font-mono text-sm"
-                    title={tx.hash}
+                    className="max-w-[180px] font-mono text-xs whitespace-nowrap"
+                    title={tx.tx_hash}
                   >
                     <AddressDisplay
-                      address={tx.hash}
-                      truncate={true}
-                      startChars={6}
-                      endChars={6}
+                      address={tx.tx_hash}
+                      truncate
+                      startChars={4}
+                      endChars={4}
                     />
                   </TableCell>
 
                   {/* Block */}
-                  <TableCell className="font-medium">#{tx.block}</TableCell>
-
-                  {/* Type */}
-                  <TableCell className="hidden md:table-cell">
-                    {tx.type}
-                  </TableCell>
-
-                  {/* Asset */}
-                  <TableCell className="hidden lg:table-cell">
-                    {tx.asset}
+                  <TableCell className="font-medium whitespace-nowrap">
+                    #{tx.block_number}
                   </TableCell>
 
                   {/* From */}
                   <TableCell
-                    className="hidden max-w-[180px] truncate font-mono xl:table-cell"
-                    title={tx.from}
+                    className="max-w-[220px] font-mono text-xs whitespace-nowrap"
+                    title={tx.from_address}
                   >
                     <AddressDisplay
-                      address={tx.from}
-                      truncate={true}
-                      startChars={6}
-                      endChars={6}
+                      address={tx.from_address}
+                      truncate
+                      startChars={4}
+                      endChars={4}
                     />
                   </TableCell>
 
                   {/* To */}
                   <TableCell
-                    className="hidden max-w-[180px] truncate font-mono xl:table-cell"
-                    title={tx.to}
+                    className="max-w-[220px] font-mono text-xs whitespace-nowrap"
+                    title={tx.to_address}
                   >
                     <AddressDisplay
-                      address={tx.to}
-                      truncate={true}
-                      startChars={6}
-                      endChars={6}
+                      address={tx.to_address}
+                      truncate
+                      startChars={4}
+                      endChars={4}
                     />
                   </TableCell>
 
                   {/* Status */}
-                  <TableCell>
+                  <TableCell className="whitespace-nowrap">
                     <Badge
                       variant="outline"
                       className={cn(
@@ -129,8 +108,8 @@ export default function TransactionsTable({
                   </TableCell>
 
                   {/* Timestamp */}
-                  <TableCell className="hidden md:table-cell text-muted-foreground text-sm">
-                    {tx.timestamp}
+                  <TableCell className="text-muted-foreground text-xs whitespace-nowrap">
+                    {formatDate(tx.createdAt, "long")}
                   </TableCell>
                 </TableRow>
               ))}

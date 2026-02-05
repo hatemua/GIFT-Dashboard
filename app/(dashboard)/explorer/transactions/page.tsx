@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { PageHeader } from "@/components/layout/page-header";
@@ -11,6 +11,8 @@ import TransactionsTable from "@/components/features/explorer/transactions/Trans
 import { useBlockchainTransactions } from "@/hooks/useBlockchainTransaction";
 import { Pagination } from "@/components/ui/pagination";
 import EmptyState from "@/components/features/common/EmptyState";
+import { Button } from "@/components/ui/button";
+import { Grid3x3, List } from "lucide-react";
 
 export default function BlockchainTransactionsPage() {
   const [view, setView] = useState<"grid" | "table">("grid");
@@ -20,17 +22,21 @@ export default function BlockchainTransactionsPage() {
     loading,
     page,
     limit,
-    totalCount,
-    fetchTransactions,
+    count,
+    filters,
     setPage,
+    fetchTransactions,
   } = useBlockchainTransactions();
 
   const hasTransactions = transactions.length > 0;
 
-  // Optional: refetch when pagination changes
+  const onViewChange = (view: "table" | "grid") => {
+    setView(view);
+  };
+
   useEffect(() => {
-    fetchTransactions(page, limit);
-  }, [page, limit]);
+    fetchTransactions();
+  }, [page, limit, filters]);
 
   return (
     <DashboardShell>
@@ -42,10 +48,30 @@ export default function BlockchainTransactionsPage() {
           { label: "Explorer", href: "/explorer" },
           { label: "Transactions" },
         ]}
+        action={
+          <div className="flex rounded-lg border border-border bg-muted/50 p-1 gap-1">
+            <Button
+              size="icon"
+              variant={view === "table" ? "default" : "ghost"}
+              onClick={() => onViewChange("table")}
+              className="h-8 w-8"
+            >
+              <List className="h-4 w-4" />
+            </Button>
+            <Button
+              size="icon"
+              variant={view === "grid" ? "default" : "ghost"}
+              onClick={() => onViewChange("grid")}
+              className="h-8 w-8"
+            >
+              <Grid3x3 className="h-4 w-4" />
+            </Button>
+          </div>
+        }
       />
 
       {/* Filters / View Switch */}
-      <TransactionsFilters view={view} onViewChange={setView} />
+      <TransactionsFilters />
 
       {/* Loading */}
       {loading && <TransactionsSkeleton view={view} />}
@@ -66,12 +92,7 @@ export default function BlockchainTransactionsPage() {
         </>
       )}
       {/* Pagination */}
-      <Pagination
-        page={page}
-        limit={limit}
-        total={totalCount}
-        setPage={setPage}
-      />
+      <Pagination page={page} limit={limit} total={count} setPage={setPage} />
     </DashboardShell>
   );
 }
