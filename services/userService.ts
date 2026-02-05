@@ -1,10 +1,5 @@
 import { api } from "@/lib/axios";
-import { User } from "@/types/user";
-
-interface GetUsersParams {
-  page: number;
-  limit: number;
-}
+import { GetUsersParams, User, UsersResponse } from "@/types/user";
 
 export const userService = {
   createUser: async (data: User) => {
@@ -12,14 +7,22 @@ export const userService = {
     return response.data as User;
   },
 
-  getUsers: async ({ page, limit }: GetUsersParams) => {
-    const response = await api.get("/users", {
-      params: { page, limit },
+  getUsers: async ({
+    page = 1,
+    limit = 6,
+    filters = {},
+  }: GetUsersParams): Promise<UsersResponse> => {
+    const response = await api.get<UsersResponse>("/dashboard/users", {
+      params: {
+        page,
+        limit,
+        search: filters.search,
+        from_date: filters.from_date,
+        to_date: filters.to_date,
+        status: filters.status,
+      },
     });
 
-    return {
-      data: response.data.data as User[],
-      totalCount: response.data.totalCount as number,
-    };
+    return response.data;
   },
 };

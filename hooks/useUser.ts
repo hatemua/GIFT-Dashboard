@@ -1,18 +1,20 @@
-import { useEffect } from "react";
-import { User } from "@/types/user";
+import { User, UserItem, UsersFilters } from "@/types/user";
 import { useUserStore } from "@/store/userStore";
 
 interface UseUserReturn {
-  users: User[];
+  users: UserItem[];
   loading: boolean;
   error?: string;
 
   page: number;
   limit: number;
-  totalCount: number;
+  count: number;
+  filters: UsersFilters;
 
   setPage: (page: number) => void;
-  fetchUsers: (page?: number, limit?: number) => Promise<void>;
+  setLimit: (limit: number) => void;
+  setFilters: (filters: UsersFilters) => void;
+  fetchUsers: () => Promise<void>;
   createUser: (user: User) => Promise<User | undefined>;
 }
 
@@ -23,15 +25,14 @@ export const useUser = (): UseUserReturn => {
     error,
     page,
     limit,
-    totalCount,
+    count,
+    filters,
     setPage,
+    setLimit,
+    setFilters,
     fetchUsers,
     createUser,
   } = useUserStore();
-
-  useEffect(() => {
-    fetchUsers(page, limit);
-  }, [page, limit]);
 
   return {
     users,
@@ -39,8 +40,11 @@ export const useUser = (): UseUserReturn => {
     error,
     page,
     limit,
-    totalCount,
+    count,
+    filters,
     setPage,
+    setLimit,
+    setFilters,
     fetchUsers,
     createUser,
   };

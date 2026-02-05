@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Grid3x3, List, Plus } from "lucide-react";
 
 import UsersFilters from "@/components/features/admin/users/UsersFilters";
 import UsersGrid from "@/components/features/admin/users/UsersGrid";
@@ -16,32 +16,56 @@ import EmptyState from "@/components/features/common/EmptyState";
 import { ViewMode } from "@/types";
 
 export default function UsersPage() {
-  const { users, totalCount, page, limit, loading, fetchUsers, setPage } =
+  const { users, count, filters, page, limit, loading, fetchUsers, setPage } =
     useUser();
 
   const [view, setView] = useState<ViewMode>("grid");
 
-  const handleViewChange = (newView: "grid" | "table") => setView(newView);
+  const onViewChange = (newView: "grid" | "table") => setView(newView);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [page, limit, filters]);
 
   return (
     <DashboardShell>
       <PageHeader
         title="Users"
-        description="Registered users and account status"
+        description="All registered users and their current account status."
         breadcrumbs={[
           { label: "Dashboard", href: "/dashboard" },
           { label: "Users" },
         ]}
         action={
-          <Button variant="gold">
-            <Plus className="h-4 w-4" />
-            Add User
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="gold">
+              <Plus className="h-4 w-4" />
+              Add User
+            </Button>
+            <div className="flex rounded-lg border border-border bg-muted/50 p-1 gap-1">
+              <Button
+                size="icon"
+                variant={view === "table" ? "default" : "ghost"}
+                onClick={() => onViewChange("table")}
+                className="h-8 w-8"
+              >
+                <List className="h-4 w-4" />
+              </Button>
+              <Button
+                size="icon"
+                variant={view === "grid" ? "default" : "ghost"}
+                onClick={() => onViewChange("grid")}
+                className="h-8 w-8"
+              >
+                <Grid3x3 className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
         }
       />
 
       {/* Filters */}
-      <UsersFilters view={view} onViewChange={handleViewChange} />
+      <UsersFilters />
 
       {/* Content */}
       {loading && <UsersSkeleton />}
@@ -55,12 +79,7 @@ export default function UsersPage() {
         </>
       )}
       {/* Pagination */}
-      <Pagination
-        page={page}
-        limit={limit}
-        total={totalCount}
-        setPage={setPage}
-      />
+      <Pagination page={page} limit={limit} total={count} setPage={setPage} />
     </DashboardShell>
   );
 }

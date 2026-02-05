@@ -1,19 +1,22 @@
 import { create } from "zustand";
-import { User } from "@/types/user";
+import { User, UserItem, UsersFilters, UsersResponse } from "@/types/user";
 import { userService } from "@/services/userService";
 
 interface UserState {
-  users: User[];
+  users: UserItem[];
   loading: boolean;
   error?: string;
 
   page: number;
   limit: number;
-  totalCount: number;
+  count: number;
+  filters: UsersFilters;
 
   setPage: (page: number) => void;
+  setLimit: (limit: number) => void;
+  setFilters: (filters: UsersFilters) => void;
 
-  fetchUsers: (page?: number, limit?: number) => Promise<void>;
+  fetchUsers: () => Promise<void>;
   createUser: (user: User) => Promise<User | undefined>;
 }
 
@@ -23,28 +26,28 @@ export const useUserStore = create<UserState>((set, get) => ({
   error: undefined,
 
   page: 1,
-  limit: 10,
-  totalCount: 0,
+  limit: 6,
+  count: 0,
+  filters: {},
 
-  setPage: (page) => set({ page }),
-
-  fetchUsers: async (pageParam, limitParam) => {
-    const page = pageParam ?? get().page;
-    const limit = limitParam ?? get().limit;
-
+  fetchUsers: async () => {
     set({ loading: true, error: undefined });
 
     try {
-      const { data, totalCount } = await userService.getUsers({
+      const { page, limit, filters } = get();
+
+      const data: UsersResponse = await userService.getUsers({
         page,
         limit,
+        filters,
       });
 
       set({
-        users: data,
+        users: data.users,
         page,
         limit,
-        totalCount,
+        count: data.count,
+        loading: false,
       });
     } catch (err: any) {
       set({ error: err?.message || "Failed to fetch users" });
@@ -58,12 +61,6 @@ export const useUserStore = create<UserState>((set, get) => ({
 
     try {
       const data = await userService.createUser(user);
-
-      set({
-        users: [data, ...get().users],
-        totalCount: get().totalCount + 1,
-      });
-
       return data;
     } catch (err: any) {
       const message =
@@ -76,5 +73,26 @@ export const useUserStore = create<UserState>((set, get) => ({
     } finally {
       set({ loading: false });
     }
+  },
+
+  setFilters: (filters: UsersFilters) =>
+    set((state) => ({
+      filters: { ...state.filters, ...filters },
+      page: 1,
+    })),
+
+  resetFilters: () =>
+    set({
+      filters: {},
+      page: 1,
+    }),
+
+  // Pagination setters
+  setPage: (page: number) => {
+    set({ page });
+  },
+
+  setLimit: (limit: number) => {
+    set({ limit });
   },
 }));

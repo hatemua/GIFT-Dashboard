@@ -132,3 +132,8 @@ export const getDateRange = (
     to_date: to.toISOString(),
   };
 };
+
+export function capitalizeFirstLetter(value: string | undefined) {
+  if (!value) return "";
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
