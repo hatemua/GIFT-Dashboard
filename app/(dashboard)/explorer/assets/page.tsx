@@ -12,19 +12,19 @@ import AssetsSkeleton from "@/components/features/assets/gold-assets/AssetsSkele
 import AssetsTable from "@/components/features/assets/gold-assets/AssetsTable";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Grid3x3, List, Plus } from "lucide-react";
 import EmptyState from "@/components/features/common/EmptyState";
 
 export default function ExplorerAssetsPage() {
-  const { assets, loading, totalCount, page, limit, fetchAssets, setPage } =
+  const { assets, loading, count, filters, page, limit, fetchAssets, setPage } =
     useAsset();
   const [view, setView] = React.useState<"grid" | "table">("grid");
 
-  const handleViewChange = (newView: "grid" | "table") => setView(newView);
+  const onViewChange = (newView: "grid" | "table") => setView(newView);
 
   useEffect(() => {
-    fetchAssets(page, limit);
-  }, [page, limit]);
+    fetchAssets();
+  }, [page, limit, filters]);
 
   return (
     <DashboardShell>
@@ -37,17 +37,37 @@ export default function ExplorerAssetsPage() {
           { label: "Assets" },
         ]}
         action={
-          <Link href="/assets/mint">
-            <Button variant="outline">
-              <Plus className="h-4 w-4" />
-              Mint Asset
-            </Button>
-          </Link>
+          <div className="flex gap-2">
+            <Link href="/assets/mint">
+              <Button variant="outline">
+                <Plus className="h-4 w-4" />
+                Mint Asset
+              </Button>
+            </Link>
+            <div className="flex rounded-lg border border-border bg-muted/50 p-1 gap-1">
+              <Button
+                size="icon"
+                variant={view === "table" ? "default" : "ghost"}
+                onClick={() => onViewChange("table")}
+                className="h-8 w-8"
+              >
+                <List className="h-4 w-4" />
+              </Button>
+              <Button
+                size="icon"
+                variant={view === "grid" ? "default" : "ghost"}
+                onClick={() => onViewChange("grid")}
+                className="h-8 w-8"
+              >
+                <Grid3x3 className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
         }
       />
 
       {/* Filters + View toggle */}
-      <AssetsFilters view={view} onViewChange={handleViewChange} />
+      <AssetsFilters />
 
       {/* Content */}
       {loading ? (
@@ -61,12 +81,7 @@ export default function ExplorerAssetsPage() {
       )}
 
       {/* Pagination */}
-      <Pagination
-        page={page}
-        limit={limit}
-        total={totalCount}
-        setPage={setPage}
-      />
+      <Pagination page={page} limit={limit} total={count} setPage={setPage} />
     </DashboardShell>
   );
 }

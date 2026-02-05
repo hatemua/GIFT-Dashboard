@@ -86,3 +86,49 @@ export function generateId(prefix: string, length: number = 8): string {
   }
   return result;
 }
+
+export const getDateRange = (
+  range:
+    | "24h"
+    | "7d"
+    | "30d"
+    | "today"
+    | "yesterday"
+    | "this_month"
+    | "this_year",
+) => {
+  const to = new Date();
+  let from = new Date();
+
+  switch (range) {
+    case "24h":
+      from.setHours(to.getHours() - 24);
+      break;
+    case "7d":
+      from.setDate(to.getDate() - 7);
+      break;
+    case "30d":
+      from.setDate(to.getDate() - 30);
+      break;
+    case "today":
+      from.setHours(0, 0, 0, 0); // start of today
+      break;
+    case "yesterday":
+      from.setDate(to.getDate() - 1);
+      from.setHours(0, 0, 0, 0); // start of yesterday
+      to.setDate(to.getDate() - 1);
+      to.setHours(23, 59, 59, 999); // end of yesterday
+      break;
+    case "this_month":
+      from = new Date(to.getFullYear(), to.getMonth(), 1); // start of month
+      break;
+    case "this_year":
+      from = new Date(to.getFullYear(), 0, 1); // start of year
+      break;
+  }
+
+  return {
+    from_date: from.toISOString(),
+    to_date: to.toISOString(),
+  };
+};

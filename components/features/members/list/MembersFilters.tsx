@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 
 import { useState } from "react";
-import { cn } from "@/lib/utils";
+import { cn, getDateRange } from "@/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useMember } from "@/hooks/useMember";
 import { ROLES } from "@/constants/member";
+import { DATE_OPTIONS } from "@/constants/filters";
 
 const MembersFilters = () => {
   const { setFilters } = useMember();
@@ -129,59 +130,3 @@ const MembersFilters = () => {
 };
 
 export default MembersFilters;
-
-const getDateRange = (
-  range:
-    | "24h"
-    | "7d"
-    | "30d"
-    | "today"
-    | "yesterday"
-    | "this_month"
-    | "this_year",
-) => {
-  const to = new Date();
-  let from = new Date();
-
-  switch (range) {
-    case "24h":
-      from.setHours(to.getHours() - 24);
-      break;
-    case "7d":
-      from.setDate(to.getDate() - 7);
-      break;
-    case "30d":
-      from.setDate(to.getDate() - 30);
-      break;
-    case "today":
-      from.setHours(0, 0, 0, 0); // start of today
-      break;
-    case "yesterday":
-      from.setDate(to.getDate() - 1);
-      from.setHours(0, 0, 0, 0); // start of yesterday
-      to.setDate(to.getDate() - 1);
-      to.setHours(23, 59, 59, 999); // end of yesterday
-      break;
-    case "this_month":
-      from = new Date(to.getFullYear(), to.getMonth(), 1); // start of month
-      break;
-    case "this_year":
-      from = new Date(to.getFullYear(), 0, 1); // start of year
-      break;
-  }
-
-  return {
-    from_date: from.toISOString(),
-    to_date: to.toISOString(),
-  };
-};
-
-const DATE_OPTIONS = [
-  { label: "Last 24 Hours", value: "24h" },
-  { label: "Last 7 Days", value: "7d" },
-  { label: "Last 30 Days", value: "30d" },
-  { label: "Today", value: "today" },
-  { label: "Yesterday", value: "yesterday" },
-  { label: "This Month", value: "this_month" },
-  { label: "This Year", value: "this_year" },
-];

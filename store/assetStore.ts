@@ -1,6 +1,11 @@
 import { create } from "zustand";
 import { assetService } from "@/services/assetService";
-import { Asset } from "@/types/asset";
+import {
+  Asset,
+  AssetsFilters,
+  AssetsResponse,
+  MintAssetForm,
+} from "@/types/asset";
 
 interface AssetState {
   assets: Asset[];
@@ -8,9 +13,12 @@ interface AssetState {
   error?: string;
   page: number;
   limit: number;
-  totalCount: number;
+  count: number;
+  filters: AssetsFilters;
   fetchAssets: (page?: number, limit?: number) => Promise<void>;
-  mintAsset: (asset: Asset) => Promise<Asset | undefined>;
+  mintAsset: (asset: MintAssetForm) => Promise<Asset | undefined>;
+  setFilters: (filters: Partial<AssetsFilters>) => void;
+  resetFilters: () => void;
   setPage: (page: number) => void;
   setLimit: (limit: number) => void;
 }
@@ -20,14 +28,21 @@ export const useAssetStore = create<AssetState>((set, get) => ({
   loading: false,
   error: undefined,
   page: 1,
-  limit: 10,
-  totalCount: 0,
+  limit: 6,
+  count: 0,
+  filters: {},
 
-  fetchAssets: async (page = get().page, limit = get().limit) => {
+  fetchAssets: async () => {
     set({ loading: true, error: undefined });
     try {
-      const { data, totalCount } = await assetService.getAssets(page, limit);
-      set({ assets: data, totalCount, page, limit });
+      const { page, limit, filters } = get();
+
+      const data: AssetsResponse = await assetService.getAssets({
+        page,
+        limit,
+        filters,
+      });
+      set({ assets: data.assets, count: data.count, loading: false });
     } catch (err: any) {
       set({ error: err.message });
     } finally {
@@ -35,7 +50,7 @@ export const useAssetStore = create<AssetState>((set, get) => ({
     }
   },
 
-  mintAsset: async (asset: Asset) => {
+  mintAsset: async (asset: MintAssetForm) => {
     set({ loading: true, error: undefined });
     try {
       const data = await assetService.mintAsset(asset);
@@ -52,6 +67,18 @@ export const useAssetStore = create<AssetState>((set, get) => ({
       set({ loading: false });
     }
   },
+
+  setFilters: (filters) =>
+    set((state) => ({
+      filters: { ...state.filters, ...filters },
+      page: 1,
+    })),
+
+  resetFilters: () =>
+    set({
+      filters: {},
+      page: 1,
+    }),
 
   setPage: (page: number) => {
     set({ page });

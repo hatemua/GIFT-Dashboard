@@ -1,4 +1,4 @@
-import { Asset } from "@/types/asset";
+import { Asset, AssetsFilters, MintAssetForm } from "@/types/asset";
 import { useAssetStore } from "@/store/assetStore";
 
 interface UseAssetReturn {
@@ -7,9 +7,11 @@ interface UseAssetReturn {
   error?: string;
   page: number;
   limit: number;
-  totalCount: number;
-  fetchAssets: (page?: number, limit?: number) => Promise<void>;
-  mintAsset: (asset: Asset) => Promise<Asset | undefined>;
+  count: number;
+  filters: AssetsFilters;
+  fetchAssets: () => Promise<void>;
+  mintAsset: (asset: MintAssetForm) => Promise<Asset | undefined>;
+  setFilters: (filters: AssetsFilters) => void;
   setPage: (page: number) => void;
   setLimit: (limit: number) => void;
 }
@@ -21,11 +23,13 @@ export const useAsset = (): UseAssetReturn => {
     error,
     page,
     limit,
-    totalCount,
+    count,
+    filters,
     fetchAssets,
     mintAsset,
     setPage,
     setLimit,
+    setFilters,
   } = useAssetStore();
 
   return {
@@ -34,9 +38,11 @@ export const useAsset = (): UseAssetReturn => {
     error,
     page,
     limit,
-    totalCount,
+    count,
+    filters,
     fetchAssets,
     mintAsset,
+    setFilters,
     setPage,
     setLimit,
   };

@@ -8,6 +8,7 @@ import { AddressDisplay } from "@/components/blockchain/address-display";
 import { getAssetStatusLabel } from "@/lib/assets";
 import { Asset } from "@/types/asset";
 import { GoldAccountAsset } from "@/types/goldAccount";
+import { useEffect } from "react";
 
 interface AssetCardProps {
   asset: Asset | GoldAccountAsset;
@@ -15,7 +16,7 @@ interface AssetCardProps {
 
 export default function AssetCard({ asset }: AssetCardProps) {
   const a = normalizeAsset(asset);
-
+  useEffect(() => {console.log(a, "zzzzzzzzzz")}, [a])
   return (
     <Card className="group hover:shadow-lg transition-shadow cursor-pointer rounded-xl border border-slate-200 overflow-hidden bg-white dark:bg-gray-800 dark:border-gray-700">
       {/* Header */}
@@ -101,10 +102,10 @@ export default function AssetCard({ asset }: AssetCardProps) {
           <div className="flex items-center justify-between text-xs pt-2 border-t">
             <div className="flex items-center gap-1.5">
               <Calendar className="h-3 w-3 text-slate-400" />
-              <span className="text-slate-500">Manufactured</span>
+              <span className="text-slate-500">Created At</span>
             </div>
             <span className="font-medium">
-              {formatDate(a.manufactureDate, "short")}
+              {formatDate(a.createdAt, "short")}
             </span>
           </div>
         )}
@@ -112,8 +113,8 @@ export default function AssetCard({ asset }: AssetCardProps) {
     </Card>
   );
 }
-function isFullAsset(asset: Asset | GoldAccountAsset): asset is Asset {
-  return "metadata" in asset;
+function isStandardAsset(asset: Asset | GoldAccountAsset): asset is Asset {
+  return "status" in asset;
 }
 
 interface NormalizedAsset {
@@ -124,25 +125,27 @@ interface NormalizedAsset {
   ownerIgan?: string;
   weightGrams: number;
   fineness: number;
-  fineWeightGrams: number;
+  fineWeightGrams?: number;
   value?: number;
   manufactureDate?: string;
+  createdAt: string;
 }
 function normalizeAsset(
   asset: Asset | GoldAccountAsset
 ): NormalizedAsset {
-  if (isFullAsset(asset)) {
+  if (isStandardAsset(asset)) {
     return {
       tokenId: asset.token_id,
-      serialNumber: asset.metadata.serial_number,
-      productType: asset.metadata.gold_product_type_id,
-      status: asset.ownership.asset_status,
-      ownerIgan: asset.ownership.current_owner_igan,
-      weightGrams: asset.metadata.weight_grams,
-      fineness: asset.metadata.fineness,
-      fineWeightGrams: asset.metadata.fine_weight_grams,
-      value: asset.valuation.asset_value,
-      manufactureDate: asset.metadata.manufacture_date,
+      serialNumber: asset.serial_number,
+      productType: asset.gold_product_type_id,
+      status: asset.status,
+      ownerIgan: asset.owner_igan,
+      weightGrams: asset.weight_grams,
+      fineness: asset.fineness,
+      fineWeightGrams: undefined,
+      value: 0,
+      manufactureDate: asset.manufacture_date,
+      createdAt: asset.createdAt
     };
   }
 
@@ -155,5 +158,6 @@ function normalizeAsset(
     fineness: asset.fineness,
     fineWeightGrams: asset.fine_weight_grams,
     manufactureDate: asset.created_on_chain_at,
+    createdAt: asset.created_on_chain_at
   };
 }

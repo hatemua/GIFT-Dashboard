@@ -78,12 +78,12 @@ export default function AssetsTable({ assets }: AssetsTableProps) {
               <TableCell>
                 <div className="space-y-0.5">
                   <p className="font-medium text-slate-900 dark:text-white">
-                    {asset.metadata.serial_number}
+                    {asset.serial_number}
                   </p>
                   <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
                     <User className="h-3 w-3" />
                     <span className="truncate max-w-[120px]">
-                      {asset.ownership.current_owner_igan}
+                      {asset.owner_igan}
                     </span>
                   </div>
                 </div>
@@ -93,13 +93,13 @@ export default function AssetsTable({ assets }: AssetsTableProps) {
               <TableCell>
                 <div className="space-y-0.5">
                   <p className="font-medium text-slate-900 dark:text-white">
-                    {asset.metadata.gold_product_type_id.toUpperCase()}
+                    {asset.gold_product_type_id.toUpperCase()}
                   </p>
                   <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
                     <Scale className="h-3 w-3" />
-                    <span>{formatWeight(asset.metadata.weight_grams)}</span>
+                    <span>{formatWeight(asset.weight_grams)}</span>
                     <Gem className="h-3 w-3" />
-                    <span>{asset.metadata.fineness}‰</span>
+                    <span>{asset.fineness}‰</span>
                   </div>
                 </div>
               </TableCell>
@@ -117,7 +117,7 @@ export default function AssetsTable({ assets }: AssetsTableProps) {
                   </div>
                   <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
                     <Calendar className="h-3 w-3" />
-                    {formatDate(asset.metadata.manufacture_date, "short")}
+                    {formatDate(asset.createdAt, "short")}
                   </div>
                 </div>
               </TableCell>
@@ -125,14 +125,14 @@ export default function AssetsTable({ assets }: AssetsTableProps) {
               {/* Value */}
               <TableCell>
                 <p className="font-semibold text-gold-700 dark:text-gold-300">
-                  {formatCurrency(asset.valuation.asset_value)}
+                  {formatCurrency(0)}
                 </p>
               </TableCell>
 
               {/* Status */}
               <TableCell>
                 <StatusBadge
-                  status={getAssetStatusLabel(asset.ownership.asset_status)}
+                  status={getAssetStatusLabel(asset.status)}
                 />
               </TableCell>
             </TableRow>
