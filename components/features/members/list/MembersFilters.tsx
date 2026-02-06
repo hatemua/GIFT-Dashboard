@@ -23,7 +23,7 @@ const MembersFilters = () => {
   const { setFilters } = useMember();
 
   const [search, setSearch] = useState("");
-  const [role, setRole] = useState<string>("");
+  const [roles, setRoles] = useState<string>("");
   const [dateRange, setDateRange] = useState<
     "24h" | "7d" | "30d" | "today" | "yesterday" | "this_month" | "this_year"
   >("24h");
@@ -36,9 +36,9 @@ const MembersFilters = () => {
   };
 
   const handleRoleChange = (value: string) => {
-    setRole(value);
+    setRoles(value);
     setFilters({
-      role: value === "" ? undefined : value,
+      roles: value === "" ? undefined : value,
     });
   };
 
@@ -74,7 +74,7 @@ const MembersFilters = () => {
             >
               Role:
               <span className="font-medium capitalize">
-                {role ? ROLES.find((r) => r.value === role)?.label : "All"}
+                {roles ? ROLES.find((r) => r.value === roles)?.label : "All"}
               </span>
               <ChevronDown className="h-4 w-4 opacity-60" />
             </div>
@@ -87,7 +87,7 @@ const MembersFilters = () => {
                 onClick={() => handleRoleChange(option.value)}
                 className={cn(
                   "flex items-center gap-2",
-                  role === option.value && "font-medium",
+                  roles === option.value && "font-medium",
                 )}
               >
                 {option.label}

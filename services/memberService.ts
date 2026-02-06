@@ -25,7 +25,7 @@ export const memberService = {
         search: filters.search,
         from_date: filters.from_date,
         to_date: filters.to_date,
-        role: filters.role,
+        roles: filters.roles,
       },
     });
 
