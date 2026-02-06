@@ -4,7 +4,7 @@ import { BlacklistedMember } from "@/types/member";
 
 interface UseMemberReturn {
   members: Member[];
-  blacklistedMembers: BlacklistedMember[];
+  blacklistedMembers: Member[];
   loading: boolean;
   error?: string;
   page: number;
@@ -13,11 +13,11 @@ interface UseMemberReturn {
   count: number;
   fetchMembers: () => Promise<void>;
   createMember: (member: CreateMemberInput) => Promise<CreateMemberResponse | undefined>;
-  fetchBlacklistedMembers: (page?: number, limit?: number) => Promise<void>;
+  fetchBlacklistedMembers: () => Promise<void>;
   addToBlacklist: (
     member_gic: string,
     reason: string,
-  ) => Promise<BlacklistedMember | undefined>;
+  ) => Promise<Member | undefined>;
   removeFromBlacklist: (member_gic: string) => Promise<void>;
   setFilters: (filters: MembersFilters) => void;
   setPage: (page: number) => void;

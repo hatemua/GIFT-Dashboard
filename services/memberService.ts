@@ -4,6 +4,7 @@ import {
   CreateMemberInput,
   CreateMemberResponse,
   GetMembersParams,
+  Member,
   MembersResponse,
 } from "@/types/member";
 
@@ -37,7 +38,7 @@ export const memberService = {
     const response = await api.post(`/members/blacklist/${member_gic}`, {
       reason,
     });
-    return response.data as BlacklistedMember;
+    return response.data as Member;
   },
 
   removeFromBlacklist: async (member_gic: string) => {
@@ -45,13 +46,23 @@ export const memberService = {
     return response.data;
   },
 
-  getBlacklistedMembers: async (page = 1, limit = 10) => {
-    const response = await api.get(`/members/blacklist`, {
-      params: { page, limit },
+  getBlacklistedMembers: async ({
+    page = 1,
+    limit = 6,
+    filters = {},
+  }: GetMembersParams): Promise<MembersResponse> => {
+    const response = await api.get<MembersResponse>("/dashboard/members", {
+      params: {
+        page,
+        limit,
+        search: filters.search,
+        from_date: filters.from_date,
+        to_date: filters.to_date,
+        status: "blacklisted",
+        roles: filters.roles,
+      },
     });
-    return response.data as {
-      count: number;
-      members: BlacklistedMember[];
-    };
+
+    return response.data;
   },
 };

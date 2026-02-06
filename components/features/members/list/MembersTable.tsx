@@ -23,6 +23,7 @@ import { AddressDisplay } from "@/components/blockchain/address-display";
 
 interface MembersTableProps {
   members: Member[];
+  onRemove?: (id: string) => void;
 }
 
 export default function MembersTable({ members }: MembersTableProps) {

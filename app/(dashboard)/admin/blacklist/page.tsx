@@ -1,39 +1,42 @@
 "use client";
 
-import BlacklistFilters from "@/components/features/admin/blacklist/BlacklistFilters";
-import BlacklistGrid from "@/components/features/admin/blacklist/BlacklistGrid";
-import BlacklistSkeleton from "@/components/features/admin/blacklist/BlacklistSkeleton";
-import BlacklistTable from "@/components/features/admin/blacklist/BlacklistTable";
 import EmptyState from "@/components/features/common/EmptyState";
+import MembersFilters from "@/components/features/members/list/MembersFilters";
+import MembersGrid from "@/components/features/members/list/MembersGrid";
+import { MembersSkeleton } from "@/components/features/members/list/MembersSkeleton";
+import MembersTable from "@/components/features/members/list/MembersTable";
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { PageHeader } from "@/components/layout/page-header";
+import { Button } from "@/components/ui/button";
 import { Pagination } from "@/components/ui/pagination";
 import { useMember } from "@/hooks/useMember";
 import { ViewMode } from "@/types";
+import { Grid3x3, List } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
 export default function BlacklistPage() {
   const {
     blacklistedMembers,
-    totalCount,
+    count,
     page,
     limit,
     loading,
+    filters,
     fetchBlacklistedMembers,
     removeFromBlacklist,
     setPage,
   } = useMember();
   const [view, setView] = useState<ViewMode>("grid");
 
-  const handleViewChange = (newView: "grid" | "table") => setView(newView);
+  const onViewChange = (newView: "grid" | "table") => setView(newView);
 
   const handleRemove = useCallback((member_gic: string) => {
     removeFromBlacklist(member_gic);
   }, []);
 
   useEffect(() => {
-    fetchBlacklistedMembers(page, limit);
-  }, [page, limit]);
+    fetchBlacklistedMembers();
+  }, [page, limit, filters]);
 
   return (
     <DashboardShell>
@@ -44,30 +47,45 @@ export default function BlacklistPage() {
           { label: "Dashboard", href: "/dashboard" },
           { label: "Blacklist" },
         ]}
+        action={
+          <div className="flex rounded-lg border border-border bg-muted/50 p-1 gap-1">
+            <Button
+              size="icon"
+              variant={view === "table" ? "default" : "ghost"}
+              onClick={() => onViewChange("table")}
+              className="h-8 w-8"
+            >
+              <List className="h-4 w-4" />
+            </Button>
+            <Button
+              size="icon"
+              variant={view === "grid" ? "default" : "ghost"}
+              onClick={() => onViewChange("grid")}
+              className="h-8 w-8"
+            >
+              <Grid3x3 className="h-4 w-4" />
+            </Button>
+          </div>
+        }
       />
-      <BlacklistFilters view={view} onViewChange={handleViewChange} />
+      <MembersFilters />
 
-      {loading && <BlacklistSkeleton view={view} />}
+      {loading && <MembersSkeleton view={view} />}
 
       {!loading && blacklistedMembers.length === 0 && (
         <EmptyState type="blacklist" />
       )}
 
       {view === "table" && (
-        <BlacklistTable members={blacklistedMembers} onRemove={handleRemove} />
+        <MembersTable members={blacklistedMembers} onRemove={handleRemove} />
       )}
 
       {view === "grid" && (
-        <BlacklistGrid members={blacklistedMembers} onRemove={handleRemove} />
+        <MembersGrid members={blacklistedMembers} onRemove={handleRemove} />
       )}
 
       {/* Pagination */}
-      <Pagination
-        page={page}
-        limit={limit}
-        total={totalCount}
-        setPage={setPage}
-      />
+      <Pagination page={page} limit={limit} total={count} setPage={setPage} />
     </DashboardShell>
   );
 }

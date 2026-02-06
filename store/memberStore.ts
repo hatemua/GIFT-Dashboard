@@ -12,7 +12,7 @@ import { memberService } from "@/services/memberService";
 interface MemberState {
   // All members
   members: Member[];
-  blacklistedMembers: BlacklistedMember[];
+  blacklistedMembers: Member[];
   count: number;
 
   // Pagination
@@ -34,7 +34,7 @@ interface MemberState {
   addToBlacklist: (
     member_gic: string,
     reason: string,
-  ) => Promise<BlacklistedMember | undefined>;
+  ) => Promise<Member | undefined>;
   removeFromBlacklist: (member_gic: string) => Promise<void>;
   setFilters: (filters: MembersFilters) => void;
   setPage: (page: number) => void;
@@ -91,11 +91,13 @@ export const useMemberStore = create<MemberState>((set, get) => ({
   fetchBlacklistedMembers: async (page = get().page, limit = get().limit) => {
     set({ loading: true, error: undefined });
     try {
-      const { members, count } = await memberService.getBlacklistedMembers(
+            const { page, limit, filters } = get();
+      const data: MembersResponse = await memberService.getBlacklistedMembers({
         page,
         limit,
-      );
-      set({ blacklistedMembers: members, count, page, limit });
+        filters,
+      });
+      set({ blacklistedMembers: data.members, count: data.count, loading: false });
     } catch (err: any) {
       set({ error: err?.message || "Failed to fetch blacklisted members" });
     } finally {
@@ -107,10 +109,6 @@ export const useMemberStore = create<MemberState>((set, get) => ({
     set({ loading: true, error: undefined });
     try {
       const data = await memberService.addToBlacklist(member_gic, reason);
-      set({
-        blacklistedMembers: [data, ...get().blacklistedMembers],
-        count: get().count + 1,
-      });
       return data;
     } catch (err: any) {
       const message =
@@ -128,12 +126,6 @@ export const useMemberStore = create<MemberState>((set, get) => ({
     set({ loading: true, error: undefined });
     try {
       await memberService.removeFromBlacklist(member_gic);
-      set({
-        blacklistedMembers: get().blacklistedMembers.filter(
-          (m) => m.member_gic !== member_gic,
-        ),
-        count: get().count - 1,
-      });
     } catch (err: any) {
       const message =
         err?.response?.data?.error_description ||

@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 
 interface MembersGridProps {
   members: Member[];
+  onRemove?: (id: string) => void;
 }
 
 const statusStyles: Record<string, string> = {
