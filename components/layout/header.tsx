@@ -26,9 +26,9 @@ export function Header() {
         <Button variant="ghost" size="icon">
           <Bell className="h-5 w-5" />
         </Button>
-        <Button variant="ghost" size="icon">
+        {/* <Button variant="ghost" size="icon">
           <Settings className="h-5 w-5" />
-        </Button>
+        </Button> */}
 
         {/* Gold Price Ticker */}
         <div className="ml-4 flex items-center gap-2 rounded-lg bg-gold-50 px-4 py-2">

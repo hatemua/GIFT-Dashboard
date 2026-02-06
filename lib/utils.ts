@@ -137,3 +137,10 @@ export function capitalizeFirstLetter(value: string | undefined) {
   if (!value) return "";
   return value.charAt(0).toUpperCase() + value.slice(1);
 }
+
+export function formatCurrencyCompact(value: number) {
+  if (value >= 1_000_000_000) return (value / 1_000_000_000).toFixed(2) + "B";
+  if (value >= 1_000_000) return (value / 1_000_000).toFixed(2) + "M";
+  if (value >= 1_000) return (value / 1_000).toFixed(2) + "K";
+  return value.toFixed(2);
+}

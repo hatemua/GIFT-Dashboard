@@ -127,11 +127,6 @@ export const navigation: NavItem[] = [
         href: "/admin/blacklist",
         icon: Ban,
       },
-      {
-        title: "Configuration",
-        href: "/admin/config",
-        icon: Settings,
-      },
     ],
   },
   {

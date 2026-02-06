@@ -118,11 +118,11 @@ export function Sidebar() {
           {/* User Info */}
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-gold-500 to-gold-600 text-sm font-semibold text-white shadow-sm">
-              JD
+              GA
             </div>
 
             <div className="leading-tight">
-              <p className="text-sm font-semibold text-slate-900">John Doe</p>
+              <p className="text-sm font-semibold text-slate-900">GIFT Admin</p>
               <p className="text-xs text-slate-500">Admin</p>
             </div>
           </div>
