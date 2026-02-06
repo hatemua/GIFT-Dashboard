@@ -112,7 +112,7 @@ export default function MembersPage() {
             <MembersGrid members={members} onAdd={handleAdd} />
           )}
 
-          {view === "table" && <MembersTable members={members} />}
+          {view === "table" && <MembersTable members={members} onAdd={handleAdd} />}
         </>
       )}
       <Pagination page={page} limit={limit} total={count} setPage={setPage} />

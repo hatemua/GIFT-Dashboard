@@ -97,11 +97,11 @@ export default function BlacklistPage() {
         <EmptyState type="blacklist" />
       )}
 
-      {view === "table" && (
+      {view === "table" && !loading && (
         <MembersTable members={blacklistedMembers} onRemove={handleRemove} />
       )}
 
-      {view === "grid" && (
+      {view === "grid" && !loading && (
         <MembersGrid members={blacklistedMembers} onRemove={handleRemove} />
       )}
 

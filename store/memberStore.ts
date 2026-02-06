@@ -115,25 +115,22 @@ export const useMemberStore = create<MemberState>((set, get) => {
         set({ loading: false });
       }
     },
-
     addToBlacklist: async (member_gic: string) => {
       set({ actionLoading: true, actionError: undefined });
       try {
-        const newBlacklistedMember = await memberService.addToBlacklist(member_gic);
-
-        if (newBlacklistedMember) {
-          set((state) => ({
+        const data = await memberService.addToBlacklist(member_gic);
+        set((state) => {
+          const member = state.members.find((m) => m.member_gic === member_gic);
+          if (!member) return state;
+          return {
             members: state.members.filter((m) => m.member_gic !== member_gic),
-            blacklistedMembers: [newBlacklistedMember, ...state.blacklistedMembers],
-          }));
-        }
-
-        return newBlacklistedMember;
+            blacklistedMembers: [member, ...state.blacklistedMembers],
+            count: state.count + 1,
+          };
+        });
+        return data;
       } catch (err: any) {
-        const message =
-          err?.response?.data?.error_description ||
-          err?.message ||
-          "Failed to blacklist member";
+        const message = err?.response?.data?.error_description || err?.message || "Failed to blacklist member";
         set({ actionError: message });
         throw new Error(message);
       } finally {
@@ -141,28 +138,32 @@ export const useMemberStore = create<MemberState>((set, get) => {
       }
     },
 
-    removeFromBlacklist: async (member_gic: string) => {
+
+
+
+     removeFromBlacklist: async (member_gic: string) => {
       set({ actionLoading: true, actionError: undefined });
       try {
-        await memberService.removeFromBlacklist(member_gic);
+        const data = await memberService.removeFromBlacklist(member_gic);
 
-        set((state) => ({
-          blacklistedMembers: state.blacklistedMembers.filter(
-            (m) => m.member_gic !== member_gic
-          ),
-        }));
+        set((state) => {
+          const member = state.blacklistedMembers.find((m) => m.member_gic === member_gic);
+          if (!member) return state;
+          return {
+            blacklistedMembers: state.blacklistedMembers.filter((m) => m.member_gic !== member_gic),
+            members: [member, ...state.members],
+            count: Math.max(state.count - 1, 0),
+          };
+        });
+        return data;
       } catch (err: any) {
-        const message =
-          err?.response?.data?.error_description ||
-          err?.message ||
-          "Failed to remove from blacklist";
+        const message = err?.response?.data?.error_description || err?.message || "Failed to remove from blacklist";
         set({ actionError: message });
         throw new Error(message);
       } finally {
         set({ actionLoading: false });
       }
     },
-
     setFilters: (filters: MembersFilters) =>
       set((state) => ({ filters: { ...state.filters, ...filters }, page: 1 })),
 

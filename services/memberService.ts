@@ -27,6 +27,7 @@ export const memberService = {
         from_date: filters.from_date,
         to_date: filters.to_date,
         roles: filters.roles,
+        status: 'active'
       },
     });
 
