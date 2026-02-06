@@ -1,4 +1,4 @@
-import { User, UserItem, UsersFilters } from "@/types/user";
+import { CreateUserForm, User, UserItem, UsersFilters } from "@/types/user";
 import { useUserStore } from "@/store/userStore";
 
 interface UseUserReturn {
@@ -15,7 +15,7 @@ interface UseUserReturn {
   setLimit: (limit: number) => void;
   setFilters: (filters: UsersFilters) => void;
   fetchUsers: () => Promise<void>;
-  createUser: (user: User) => Promise<User | undefined>;
+  createUser: (user: CreateUserForm) => Promise<User | undefined>;
 }
 
 export const useUser = (): UseUserReturn => {

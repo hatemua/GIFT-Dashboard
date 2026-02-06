@@ -1,8 +1,8 @@
 import { api } from "@/lib/axios";
-import { GetUsersParams, User, UsersResponse } from "@/types/user";
+import { CreateUserForm, GetUsersParams, User, UsersResponse } from "@/types/user";
 
 export const userService = {
-  createUser: async (data: User) => {
+  createUser: async (data: CreateUserForm) => {
     const response = await api.post("/users/create", data);
     return response.data as User;
   },

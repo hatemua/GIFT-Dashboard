@@ -42,3 +42,8 @@ export interface UsersResponse {
 }
 
 export type UserStatus = "active" | "inactive";
+
+export interface CreateUserForm {
+  offchain_user_id: string;
+  member_gic: string;
+}

@@ -70,7 +70,7 @@ const UsersFilters = () => {
             onChange={(e) => handleSearchChange(e.target.value)}
             className="h-10 pl-9"
           />
-        </div>
+          </div>
 
         {/* Status filter */}
         <DropdownMenu>

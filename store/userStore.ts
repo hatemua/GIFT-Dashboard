@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { User, UserItem, UsersFilters, UsersResponse } from "@/types/user";
+import { CreateUserForm, User, UserItem, UsersFilters, UsersResponse } from "@/types/user";
 import { userService } from "@/services/userService";
 
 interface UserState {
@@ -17,7 +17,7 @@ interface UserState {
   setFilters: (filters: UsersFilters) => void;
 
   fetchUsers: () => Promise<void>;
-  createUser: (user: User) => Promise<User | undefined>;
+  createUser: (user: CreateUserForm) => Promise<User | undefined>;
 }
 
 export const useUserStore = create<UserState>((set, get) => ({
@@ -56,11 +56,12 @@ export const useUserStore = create<UserState>((set, get) => ({
     }
   },
 
-  createUser: async (user: User) => {
+  createUser: async (user: CreateUserForm) => {
     set({ loading: true, error: undefined });
 
     try {
       const data = await userService.createUser(user);
+      await get().fetchUsers();
       return data;
     } catch (err: any) {
       const message =

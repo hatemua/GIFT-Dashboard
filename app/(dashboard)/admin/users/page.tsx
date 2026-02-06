@@ -6,23 +6,26 @@ import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
 import { Grid3x3, List, Plus } from "lucide-react";
 
-import UsersFilters from "@/components/features/admin/users/UsersFilters";
-import UsersGrid from "@/components/features/admin/users/UsersGrid";
-import UsersTable from "@/components/features/admin/users/UsersTable";
-import UsersSkeleton from "@/components/features/admin/users/UsersSkeleton";
+import UsersFilters from "@/components/features/admin/users/list/UsersFilters";
+import UsersGrid from "@/components/features/admin/users/list/UsersGrid";
+import UsersTable from "@/components/features/admin/users/list/UsersTable";
+import UsersSkeleton from "@/components/features/admin/users/list/UsersSkeleton";
 import { Pagination } from "@/components/ui/pagination";
 import { useUser } from "@/hooks/useUser";
 import EmptyState from "@/components/features/common/EmptyState";
 import { ViewMode } from "@/types";
+import CreateUserModal from "@/components/features/admin/users/new/NewUserModal";
 
 export default function UsersPage() {
   const { users, count, filters, page, limit, loading, fetchUsers, setPage } =
     useUser();
 
   const [view, setView] = useState<ViewMode>("grid");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const onViewChange = (newView: "grid" | "table") => setView(newView);
-
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
   useEffect(() => {
     fetchUsers();
   }, [page, limit, filters]);
@@ -38,7 +41,7 @@ export default function UsersPage() {
         ]}
         action={
           <div className="flex gap-2">
-            <Button variant="gold">
+            <Button variant="gold" onClick={handleOpenModal}>
               <Plus className="h-4 w-4" />
               Add User
             </Button>
@@ -80,6 +83,7 @@ export default function UsersPage() {
       )}
       {/* Pagination */}
       <Pagination page={page} limit={limit} total={count} setPage={setPage} />
+      <CreateUserModal isOpen={isModalOpen} onClose={handleCloseModal}/>
     </DashboardShell>
   );
 }
