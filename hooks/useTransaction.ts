@@ -1,20 +1,21 @@
-import { useEffect } from "react";
 import { useTransactionStore } from "@/store/transactionStore";
-import { Transaction } from "@/types/transaction";
+import { Transaction, TransactionItem, TransactionOrdersFilters } from "@/types/transaction";
 
 interface UseTransactionReturn {
-  transactions: Transaction[];
-  totalCount: number;
+  transactions: TransactionItem[];
+  count: number;
   page: number;
   limit: number;
   loading: boolean;
   error?: string;
+  filters: TransactionOrdersFilters;
 
-  fetchTransactions: (page?: number, limit?: number) => Promise<void>;
+  fetchTransactions: () => Promise<void>;
 
   createTransaction: (
     transaction: Transaction,
   ) => Promise<Transaction | undefined>;
+  setFilters: (filters: TransactionOrdersFilters) => void;
   setPage: (page: number) => void;
   setLimit: (limit: number) => void;
 }
@@ -26,30 +27,30 @@ interface UseTransactionReturn {
 export const useTransaction = (): UseTransactionReturn => {
   const {
     transactions,
-    totalCount,
+    count,
     page,
     limit,
     loading,
     error,
+    filters,
     fetchTransactions,
     createTransaction,
+    setFilters,
     setPage,
     setLimit,
   } = useTransactionStore((state) => state);
 
-  useEffect(() => {
-    if (transactions.length === 0) fetchTransactions();
-  }, []);
-
   return {
     transactions,
-    totalCount,
+    count,
     page,
     limit,
     loading,
     error,
+    filters,
     fetchTransactions,
     createTransaction,
+    setFilters,
     setPage,
     setLimit,
   };

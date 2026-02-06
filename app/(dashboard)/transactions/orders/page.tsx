@@ -13,7 +13,7 @@ import { useTransaction } from "@/hooks/useTransaction";
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Grid3x3, List, Plus } from "lucide-react";
 import EmptyState from "@/components/features/common/EmptyState";
 import { Pagination } from "@/components/ui/pagination";
 
@@ -25,16 +25,17 @@ export default function TransactionOrdersPage() {
     loading,
     page,
     limit,
-    totalCount,
+    count,
+    filters,
     setPage,
     fetchTransactions,
   } = useTransaction();
 
-  const handleViewChange = (newView: "grid" | "table") => setView(newView);
+  const onViewChange = (newView: "grid" | "table") => setView(newView);
 
   useEffect(() => {
-    fetchTransactions(page, limit);
-  }, [page, limit]);
+    fetchTransactions();
+  }, [page, limit, filters]);
 
   return (
     <DashboardShell>
@@ -46,17 +47,37 @@ export default function TransactionOrdersPage() {
           { label: "Transactions", href: "/transactions/orders" },
         ]}
         action={
+          <div className="flex gap-2">
           <Link href="/transactions/new">
             <Button variant="gold">
               <Plus className="h-4 w-4" />
               New Transaction
             </Button>
           </Link>
+          <div className="flex rounded-lg border border-border bg-muted/50 p-1 gap-1">
+            <Button
+              size="icon"
+              variant={view === "table" ? "default" : "ghost"}
+              onClick={() => onViewChange("table")}
+              className="h-8 w-8"
+            >
+              <List className="h-4 w-4" />
+            </Button>
+            <Button
+              size="icon"
+              variant={view === "grid" ? "default" : "ghost"}
+              onClick={() => onViewChange("grid")}
+              className="h-8 w-8"
+            >
+              <Grid3x3 className="h-4 w-4" />
+            </Button>
+          </div>
+          </div>
         }
       />
 
       {/* Filters + search + actions */}
-      <TransactionOrdersFilters view={view} onViewChange={handleViewChange} />
+      <TransactionOrdersFilters />
 
       {/* Content */}
       {loading ? (
@@ -70,11 +91,11 @@ export default function TransactionOrdersPage() {
       )}
 
       {/* Pagination */}
-      {!loading && totalCount > limit && (
+      {!loading && count > limit && (
         <Pagination
           page={page}
           limit={limit}
-          total={totalCount}
+          total={count}
           setPage={setPage}
         />
       )}

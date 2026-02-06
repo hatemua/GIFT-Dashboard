@@ -1,39 +1,54 @@
 import { create } from "zustand";
 import { transactionService } from "@/services/transactionService";
-import { Transaction } from "@/types/transaction";
+import {
+  Transaction,
+  TransactionItem,
+  TransactionOrdersFilters,
+  TransactionOrdersResponse,
+} from "@/types/transaction";
 
 interface TransactionState {
-  transactions: Transaction[];
-  totalCount: number;
+  transactions: TransactionItem[];
+  count: number;
   page: number;
   limit: number;
   loading: boolean;
   error?: string;
+  filters: TransactionOrdersFilters;
 
-  fetchTransactions: (page?: number, limit?: number) => Promise<void>;
+  fetchTransactions: () => Promise<void>;
 
   createTransaction: (
     transaction: Transaction,
   ) => Promise<Transaction | undefined>;
+  setFilters: (filters: TransactionOrdersFilters) => void;
   setPage: (page: number) => void;
   setLimit: (limit: number) => void;
 }
 
 export const useTransactionStore = create<TransactionState>((set, get) => ({
   transactions: [],
-  totalCount: 0,
+  count: 0,
   page: 1,
   limit: 6,
   loading: false,
   error: undefined,
+  filters: {},
 
-  fetchTransactions: async (page = get().page, limit = get().limit) => {
+  fetchTransactions: async () => {
     set({ loading: true, error: undefined });
     try {
-      const data = await transactionService.getTransactions(page, limit);
+      const { page, limit, filters } = get();
+
+      const data: TransactionOrdersResponse =
+        await transactionService.getTransactions({
+          page,
+          limit,
+          filters,
+        });
       set({
-        transactions: data.data,
-        totalCount: data.totalCount,
+        transactions: data.transactions,
+        count: data.count,
         page,
         limit,
       });
@@ -62,6 +77,17 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
     }
   },
 
+  setFilters: (filters) =>
+    set((state) => ({
+      filters: { ...state.filters, ...filters },
+      page: 1,
+    })),
+
+  resetFilters: () =>
+    set({
+      filters: {},
+      page: 1,
+    }),
   setPage: (page: number) => set({ page }),
   setLimit: (limit: number) => set({ limit }),
 }));

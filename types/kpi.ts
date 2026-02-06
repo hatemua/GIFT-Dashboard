@@ -1,6 +1,7 @@
 export interface DashboardKPIs {
-  total_gold_under_management_grams: number;
-  active_transactions: number;
-  total_gold_accounts: number;
-  members_network: number;
+  gold_weight: number;
+  number_of_gold_accounts: number;
+  number_of_members: number;
+  number_of_users: number;
+  value_in_dollars: number;
 }

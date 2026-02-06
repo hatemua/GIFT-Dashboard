@@ -1,3 +1,4 @@
+"use client";
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { PageHeader } from "@/components/layout/page-header";
 import { MetricCard } from "@/components/data-display/metric-card";
@@ -8,6 +9,8 @@ import { Package, ArrowLeftRight, Wallet, Users, Plus } from "lucide-react";
 import { mockTransactions, mockAssets, mockAccounts, mockMembers } from "@/lib/mock-data";
 import { formatDate, formatCurrency, formatWeight } from "@/lib/utils";
 import Link from "next/link";
+import { useKPIs } from "@/hooks/useKpi";
+import { useEffect } from "react";
 
 export default function DashboardPage() {
   // Calculate metrics
@@ -22,6 +25,12 @@ export default function DashboardPage() {
 
   // Sparkline data (mock)
   const sparklineData = [45, 52, 48, 65, 58, 72, 68, 75, 80, 85];
+
+  const {kpis, fetchKPIs} = useKPIs();
+
+    useEffect(() => {
+    fetchKPIs();
+  }, []);
 
   return (
     <DashboardShell>
@@ -50,26 +59,26 @@ export default function DashboardPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
         <MetricCard
           title="Total Gold Under Management"
-          value={`${formatWeight(totalGoldWeight)} / ${formatCurrency(totalGoldValue)}`}
+          value={`${formatWeight(kpis.gold_weight)} / ${formatCurrency(kpis.value_in_dollars)}`}
           change={{ value: 8.2, trend: "up" }}
           sparklineData={sparklineData}
           icon={<Package className="h-5 w-5" />}
         />
         <MetricCard
           title="Active Transactions"
-          value={activeTransactions.toString()}
+          value={kpis.number_of_users.toString()}
           change={{ value: 12.5, trend: "up" }}
           icon={<ArrowLeftRight className="h-5 w-5" />}
         />
         <MetricCard
           title="Total Gold Accounts"
-          value={mockAccounts.length.toString()}
+          value={kpis.number_of_gold_accounts.toString()}
           change={{ value: 3.1, trend: "up" }}
           icon={<Wallet className="h-5 w-5" />}
         />
         <MetricCard
           title="Members Network"
-          value={mockMembers.length.toString()}
+          value={kpis.number_of_members.toString()}
           change={{ value: 0, trend: "up" }}
           icon={<Users className="h-5 w-5" />}
         />

@@ -3,7 +3,7 @@ import { DashboardKPIs } from "@/types/kpi";
 import { kpiService } from "@/services/kpiService";
 
 interface KPIState {
-  kpis: DashboardKPIs | null;
+  kpis: DashboardKPIs;
   loading: boolean;
   error: string | null;
   fetchKPIs: () => Promise<void>;
@@ -11,7 +11,13 @@ interface KPIState {
 }
 
 export const useKPIStore = create<KPIState>((set) => ({
-  kpis: null,
+  kpis: {
+    gold_weight: 0,
+    number_of_gold_accounts: 0,
+    number_of_members: 0,
+    number_of_users: 0,
+    value_in_dollars: 0,
+  },
   loading: false,
   error: null,
 

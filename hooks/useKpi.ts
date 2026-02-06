@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useKPIStore } from "@/store/kpiStore";
 
 export const useKPIs = () => {
@@ -10,15 +9,11 @@ export const useKPIs = () => {
     clearError,
   } = useKPIStore();
 
-  useEffect(() => {
-    fetchKPIs();
-  }, [fetchKPIs]);
-
   return {
     kpis,
     loading,
     error,
-    refresh: fetchKPIs,
+    fetchKPIs,
     clearError,
   };
 };
