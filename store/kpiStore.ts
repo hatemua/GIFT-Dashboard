@@ -15,7 +15,7 @@ export const useKPIStore = create<KPIState>((set) => ({
     gold_weight: 0,
     number_of_gold_accounts: 0,
     number_of_members: 0,
-    number_of_users: 0,
+    number_of_transactions: 0,
     value_in_dollars: 0,
   },
   loading: false,

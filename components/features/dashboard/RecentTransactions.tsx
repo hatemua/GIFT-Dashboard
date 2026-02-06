@@ -2,7 +2,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatusBadge } from "@/components/data-display/status-badge";
 import { Button } from "@/components/ui/button";
-import { ArrowLeftRight, ShoppingCart, CreditCard, ShieldCheck } from "lucide-react";
+import {
+  ArrowLeftRight,
+  ShoppingCart,
+  CreditCard,
+  ShieldCheck,
+} from "lucide-react";
 import { formatDate, formatCurrency } from "@/lib/utils";
 import Link from "next/link";
 import { useEffect } from "react";
@@ -77,12 +82,14 @@ export default function RecentTransactions() {
                     </div>
                   </div>
                 ))
-              : transactions.map((tx) => {
-                  const type = transactionTypeStyles[tx.transaction_type] || transactionTypeStyles.TRANSFER;
+              : transactions.map((tx, index) => {
+                  const type =
+                    transactionTypeStyles[tx.transaction_type] ||
+                    transactionTypeStyles.TRANSFER;
 
                   return (
                     <Link
-                      key={tx.transaction_id}
+                      key={index}
                       href={`/transactions/${tx.transaction_id}`}
                       className="flex items-center justify-between p-4 rounded-lg border border-slate-200 hover:border-gold-300 hover:bg-gold-50/30 transition-all cursor-pointer"
                     >

@@ -40,7 +40,7 @@ export default function MetricsGrid() {
             />
             <MetricCard
               title="Active Transactions"
-              value={kpis.number_of_users.toString()}
+              value={kpis.number_of_transactions.toString()}
               change={{ value: 12.5, trend: "up" }}
               icon={<ArrowLeftRight className="h-5 w-5" />}
             />
