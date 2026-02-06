@@ -2,8 +2,8 @@
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
-import {  Plus, Grid3x3, List } from "lucide-react";
-import {  useEffect, useState } from "react";
+import { Plus, Grid3x3, List } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 import CreateMemberModal from "@/components/features/members/new/CreateMemberModal";
 import MembersFilters from "@/components/features/members/list/MembersFilters";
 import { useMember } from "@/hooks/useMember";
@@ -12,11 +12,14 @@ import EmptyState from "@/components/features/common/EmptyState";
 import MembersGrid from "@/components/features/members/list/MembersGrid";
 import MembersTable from "@/components/features/members/list/MembersTable";
 import { Pagination } from "@/components/ui/pagination";
+import { useToast } from "@/providers/toast-provider";
 
 export default function MembersPage() {
+  const { showToast } = useToast();
+
   const [view, setView] = useState<"grid" | "table">("grid");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
+
   const {
     members,
     loading,
@@ -26,6 +29,8 @@ export default function MembersPage() {
     filters,
     setPage,
     fetchMembers,
+    addToBlacklist,
+    reset,
   } = useMember();
 
   const hasMembers = members.length > 0;
@@ -36,8 +41,29 @@ export default function MembersPage() {
     setView(view);
   };
 
+  const handleAdd = useCallback(async (member_gic: string) => {
+    try {
+      await addToBlacklist(member_gic);
+
+      showToast({
+        title: "Success",
+        message: "Member blacklisted successfully",
+        variant: "success",
+      });
+    } catch (err: any) {
+      showToast({
+        title: "Error",
+        message: err?.message || "Failed to blacklist member",
+        variant: "error",
+      });
+    }
+  }, []);
+
   useEffect(() => {
     fetchMembers();
+    return () => {
+      reset();
+    };
   }, [page, limit, filters]);
 
   return (
@@ -82,7 +108,9 @@ export default function MembersPage() {
       {!loading && !hasMembers && <EmptyState type="members" />}
       {!loading && hasMembers && (
         <>
-          {view === "grid" && <MembersGrid members={members} />}
+          {view === "grid" && (
+            <MembersGrid members={members} onAdd={handleAdd} />
+          )}
 
           {view === "table" && <MembersTable members={members} />}
         </>

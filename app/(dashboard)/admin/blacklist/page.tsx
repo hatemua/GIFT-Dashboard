@@ -10,11 +10,14 @@ import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
 import { Pagination } from "@/components/ui/pagination";
 import { useMember } from "@/hooks/useMember";
+import { useToast } from "@/providers/toast-provider";
 import { ViewMode } from "@/types";
 import { Grid3x3, List } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
 export default function BlacklistPage() {
+  const { showToast } = useToast();
+
   const {
     blacklistedMembers,
     count,
@@ -25,17 +28,35 @@ export default function BlacklistPage() {
     fetchBlacklistedMembers,
     removeFromBlacklist,
     setPage,
+    reset,
   } = useMember();
   const [view, setView] = useState<ViewMode>("grid");
 
   const onViewChange = (newView: "grid" | "table") => setView(newView);
 
-  const handleRemove = useCallback((member_gic: string) => {
-    removeFromBlacklist(member_gic);
+  const handleRemove = useCallback(async (member_gic: string) => {
+    try {
+      await removeFromBlacklist(member_gic);
+
+      showToast({
+        title: "Success",
+        message: "Member blacklisted successfully",
+        variant: "success",
+      });
+    } catch (err: any) {
+      showToast({
+        title: "Error",
+        message: err?.message || "Failed to blacklist member",
+        variant: "error",
+      });
+    }
   }, []);
 
   useEffect(() => {
     fetchBlacklistedMembers();
+    return () => {
+      reset();
+    };
   }, [page, limit, filters]);
 
   return (

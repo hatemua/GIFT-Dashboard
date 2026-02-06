@@ -34,10 +34,8 @@ export const memberService = {
   },
 
   // Blacklist endpoints
-  addToBlacklist: async (member_gic: string, reason: string) => {
-    const response = await api.post(`/members/blacklist/${member_gic}`, {
-      reason,
-    });
+  addToBlacklist: async (member_gic: string) => {
+    const response = await api.post(`/members/blacklist/${member_gic}`);
     return response.data as Member;
   },
 

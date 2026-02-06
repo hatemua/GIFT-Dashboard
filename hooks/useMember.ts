@@ -1,27 +1,33 @@
 import { useMemberStore } from "@/store/memberStore";
-import { Member, CreateMemberInput, MembersFilters, CreateMemberResponse } from "@/types/member";
-import { BlacklistedMember } from "@/types/member";
+import {
+  Member,
+  CreateMemberInput,
+  MembersFilters,
+  CreateMemberResponse,
+} from "@/types/member";
 
 interface UseMemberReturn {
   members: Member[];
   blacklistedMembers: Member[];
   loading: boolean;
   error?: string;
+  actionLoading: boolean;
+  actionError?: string;
   page: number;
   limit: number;
   filters: MembersFilters;
   count: number;
   fetchMembers: () => Promise<void>;
-  createMember: (member: CreateMemberInput) => Promise<CreateMemberResponse | undefined>;
+  createMember: (
+    member: CreateMemberInput,
+  ) => Promise<CreateMemberResponse | undefined>;
   fetchBlacklistedMembers: () => Promise<void>;
-  addToBlacklist: (
-    member_gic: string,
-    reason: string,
-  ) => Promise<Member | undefined>;
+  addToBlacklist: (member_gic: string) => Promise<Member | undefined>;
   removeFromBlacklist: (member_gic: string) => Promise<void>;
   setFilters: (filters: MembersFilters) => void;
   setPage: (page: number) => void;
   setLimit: (limit: number) => void;
+  reset: () => void;
 }
 
 /**
@@ -34,6 +40,8 @@ export const useMember = (): UseMemberReturn => {
     blacklistedMembers,
     loading,
     error,
+    actionLoading,
+    actionError,
     page,
     limit,
     filters,
@@ -46,6 +54,7 @@ export const useMember = (): UseMemberReturn => {
     setFilters,
     setPage,
     setLimit,
+    reset,
   } = useMemberStore();
 
   return {
@@ -53,6 +62,8 @@ export const useMember = (): UseMemberReturn => {
     blacklistedMembers,
     loading,
     error,
+    actionLoading,
+    actionError,
     page,
     limit,
     filters,
@@ -65,5 +76,6 @@ export const useMember = (): UseMemberReturn => {
     setFilters,
     setPage,
     setLimit,
+    reset,
   };
 };

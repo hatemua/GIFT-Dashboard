@@ -31,7 +31,7 @@ export default function CreateMemberModal({
   } = useForm<CreateMemberInput>({
     defaultValues: {
       member_gic: "",
-      entity_type: "company",
+      entity_type: "COMPANY",
       compliance_level: "enhanced",
       roles: [],
     },
@@ -68,6 +68,7 @@ export default function CreateMemberModal({
           render={({ field, fieldState }) => (
             <Input
               {...field}
+              required={true}
               label="Member GIC"
               placeholder="GIC-2025-0001"
               error={fieldState.error?.message}
@@ -82,6 +83,7 @@ export default function CreateMemberModal({
           control={control}
           render={({ field }) => (
             <Select
+              required={true}
               label="Entity Type"
               value={field.value}
               onChange={field.onChange}
@@ -109,6 +111,7 @@ export default function CreateMemberModal({
           control={control}
           render={({ field }) => (
             <Select
+              required={true}
               label="Compliance Level"
               value={field.value}
               onChange={field.onChange}
@@ -133,12 +136,15 @@ export default function CreateMemberModal({
         {/* Roles */}
         <Controller
           name="roles"
+          rules={{ required: "You should select at only one role!" }}
           control={control}
-          render={({ field }) => (
+          render={({ field, fieldState }) => (
             <Select
+              required={true}
               label="Roles"
               multiple
               value={field.value}
+              error={fieldState.error?.message}
               placeholder="Select member roles"
               onChange={field.onChange}
               displayLabel={(val) =>
