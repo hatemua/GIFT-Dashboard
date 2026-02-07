@@ -81,6 +81,7 @@ export default function LoginPage() {
             {/* Client ID */}
             <div>
               <Input
+                required={true}
                 label="Client ID"
                 type="text"
                 icon={
@@ -98,6 +99,7 @@ export default function LoginPage() {
             {/* Client Secret */}
             <div>
               <Input
+                required={true}
                 icon={
                   <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                 }

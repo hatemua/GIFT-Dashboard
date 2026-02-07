@@ -29,7 +29,7 @@ const statusStyles = {
 
   // Member statuses
   Active: "bg-emerald-50 text-emerald-700 border-emerald-200",
-  Inactive: "bg-slate-100 text-slate-600 border-slate-200",
+  Inactive: "bg-red-100 text-red-600 border-red-200",
   Revoked: "bg-red-50 text-red-700 border-red-200",
 
   // Blockchain statuses

@@ -1,6 +1,5 @@
 import { api } from "@/lib/axios";
 import {
-  BlacklistedMember,
   CreateMemberInput,
   CreateMemberResponse,
   GetMembersParams,
@@ -19,6 +18,7 @@ export const memberService = {
     limit = 6,
     filters = {},
   }: GetMembersParams): Promise<MembersResponse> => {
+    console.log(filters, "filters")
     const response = await api.get<MembersResponse>("/dashboard/members", {
       params: {
         page,

@@ -1,5 +1,11 @@
 import { api } from "@/lib/axios";
-import { CreateUserForm, GetUsersParams, User, UsersResponse } from "@/types/user";
+import {
+  CreateUserForm,
+  GetUsersParams,
+  UpdateUserStatusPayload,
+  User,
+  UsersResponse,
+} from "@/types/user";
 
 export const userService = {
   createUser: async (data: CreateUserForm) => {
@@ -23,6 +29,13 @@ export const userService = {
       },
     });
 
+    return response.data;
+  },
+
+  updateUserStatus: async (payload: UpdateUserStatusPayload) => {
+    const response = await api.put(`/users/${payload.user_id}/status`, {
+      action: payload.action,
+    });
     return response.data;
   },
 };

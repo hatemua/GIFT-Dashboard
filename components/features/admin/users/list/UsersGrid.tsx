@@ -1,26 +1,33 @@
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatusBadge } from "@/components/data-display/status-badge";
 import {
   Calendar,
   User as UserIcon,
   ShieldCheck,
   ExternalLink,
+  MoreVertical,
+  Plus,
+  UserPlus,
+  UserMinus,
 } from "lucide-react";
 import { UserItem } from "@/types/user";
 import { AddressDisplay } from "@/components/blockchain/address-display";
 import { capitalizeFirstLetter, formatDate } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useUser } from "@/hooks/useUser";
 
 interface UsersGridProps {
   users: UserItem[];
 }
 
 export default function UsersGrid({ users }: UsersGridProps) {
+  const { updateUserStatus } = useUser();
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {users.map((user) => (
@@ -55,7 +62,56 @@ export default function UsersGrid({ users }: UsersGridProps) {
                 </div>
               </div>
 
-              <StatusBadge status={capitalizeFirstLetter(user.status)} />
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <div className="cursor-pointer h-8 w-8 p-0 rounded-full flex items-center justify-center hover:bg-slate-100">
+                    <MoreVertical className="h-4 w-4" />
+                  </div>
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent
+                  align="end"
+                  className="z-50 min-w-[180px] rounded-lg border border-slate-200 bg-white/95 backdrop-blur-md shadow-lg py-1 animate-slide-down-fade"
+                >
+                  {/* View Details */}
+                  <DropdownMenuItem
+                    onClick={() => console.log("View Details", user.user_id)}
+                    className="flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 rounded-md transition-colors"
+                  >
+                    <ExternalLink className="h-4 w-4 text-slate-500" />
+                    View Details
+                  </DropdownMenuItem>
+
+                  {/* Conditional Activate / Deactivate */}
+                  {user.status === "active" ? (
+                    <DropdownMenuItem
+                      onClick={() =>
+                        updateUserStatus({
+                          user_id: user.user_id,
+                          action: "deactivate",
+                        })
+                      }
+                      className="flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                    >
+                      <UserMinus className="h-4 w-4 text-red-500" />
+                      Deactivate
+                    </DropdownMenuItem>
+                  ) : (
+                    <DropdownMenuItem
+                      onClick={() =>
+                        updateUserStatus({
+                          user_id: user.user_id,
+                          action: "activate",
+                        })
+                      }
+                      className="flex items-center gap-2 px-3 py-2 text-sm text-green-600 hover:bg-green-50 rounded-md transition-colors"
+                    >
+                      <UserPlus className="h-4 w-4 text-green-500" />
+                      Activate
+                    </DropdownMenuItem>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </CardHeader>
 
@@ -95,18 +151,8 @@ export default function UsersGrid({ users }: UsersGridProps) {
                   {formatDate(user.created_at, "short")}
                 </time>
               </div>
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-8 gap-1.5 text-xs"
-                >
-                  <ExternalLink className="h-3.5 w-3.5" />
-                  View Details
-                </Button>
-              </div>
+              <StatusBadge status={capitalizeFirstLetter(user.status)} />
             </div>
-            
           </CardContent>
         </Card>
       ))}

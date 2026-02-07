@@ -18,13 +18,12 @@ import {
   ROLES,
 } from "@/constants/member";
 import { AddressDisplay } from "@/components/blockchain/address-display";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-} from "@/components/ui/dropdown-menu"; // Adjust import based on your project
+} from "@/components/ui/dropdown-menu";
 
 interface MembersGridProps {
   members: Member[];

@@ -69,7 +69,7 @@ export const navigation: NavItem[] = [
     icon: Package,
     children: [
       {
-        title: "Vaults",
+        title: "Vault Sites",
         href: "/assets/vaults",
         icon: Settings,
       },
@@ -128,10 +128,5 @@ export const navigation: NavItem[] = [
         icon: Ban,
       },
     ],
-  },
-  {
-    title: "Billing",
-    href: "/billing",
-    icon: Receipt,
   },
 ];

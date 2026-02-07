@@ -1,10 +1,12 @@
-import { CreateUserForm, User, UserItem, UsersFilters } from "@/types/user";
+import { CreateUserForm, UpdateUserStatusPayload, User, UserItem, UsersFilters } from "@/types/user";
 import { useUserStore } from "@/store/userStore";
 
 interface UseUserReturn {
   users: UserItem[];
   loading: boolean;
   error?: string;
+  actionLoading: boolean;
+  actionError?: string;
 
   page: number;
   limit: number;
@@ -16,6 +18,7 @@ interface UseUserReturn {
   setFilters: (filters: UsersFilters) => void;
   fetchUsers: () => Promise<void>;
   createUser: (user: CreateUserForm) => Promise<User | undefined>;
+  updateUserStatus: (payload: UpdateUserStatusPayload) => Promise<void>;
 }
 
 export const useUser = (): UseUserReturn => {
@@ -27,17 +30,22 @@ export const useUser = (): UseUserReturn => {
     limit,
     count,
     filters,
+    actionLoading,
+    actionError,
     setPage,
     setLimit,
     setFilters,
     fetchUsers,
     createUser,
+    updateUserStatus
   } = useUserStore();
 
   return {
     users,
     loading,
     error,
+    actionLoading,
+    actionError,
     page,
     limit,
     count,
@@ -47,5 +55,6 @@ export const useUser = (): UseUserReturn => {
     setFilters,
     fetchUsers,
     createUser,
+    updateUserStatus
   };
 };

@@ -60,11 +60,10 @@ export default function MembersPage() {
   }, []);
 
   useEffect(() => {
+    console.log(filters, 'filters')
     fetchMembers();
-    return () => {
-      reset();
-    };
-  }, [page, limit, filters]);
+    return () => reset();
+  }, [page, limit, JSON.stringify(filters)]);
 
   return (
     <DashboardShell>
@@ -112,7 +111,9 @@ export default function MembersPage() {
             <MembersGrid members={members} onAdd={handleAdd} />
           )}
 
-          {view === "table" && <MembersTable members={members} onAdd={handleAdd} />}
+          {view === "table" && (
+            <MembersTable members={members} onAdd={handleAdd} />
+          )}
         </>
       )}
       <Pagination page={page} limit={limit} total={count} setPage={setPage} />

@@ -1,5 +1,13 @@
 import { create } from "zustand";
-import { CreateUserForm, User, UserItem, UsersFilters, UsersResponse } from "@/types/user";
+import {
+  CreateUserForm,
+  UpdateUserStatusPayload,
+  User,
+  UserItem,
+  UsersFilters,
+  UsersResponse,
+  UserStatus,
+} from "@/types/user";
 import { userService } from "@/services/userService";
 
 interface UserState {
@@ -12,12 +20,16 @@ interface UserState {
   count: number;
   filters: UsersFilters;
 
+  actionLoading: boolean;
+  actionError?: string;
+
   setPage: (page: number) => void;
   setLimit: (limit: number) => void;
   setFilters: (filters: UsersFilters) => void;
 
   fetchUsers: () => Promise<void>;
   createUser: (user: CreateUserForm) => Promise<User | undefined>;
+  updateUserStatus: (payload: UpdateUserStatusPayload) => Promise<void>;
 }
 
 export const useUserStore = create<UserState>((set, get) => ({
@@ -29,6 +41,9 @@ export const useUserStore = create<UserState>((set, get) => ({
   limit: 6,
   count: 0,
   filters: {},
+
+  actionLoading: false,
+  actionError: undefined,
 
   fetchUsers: async () => {
     set({ loading: true, error: undefined });
@@ -73,6 +88,38 @@ export const useUserStore = create<UserState>((set, get) => ({
       throw new Error(message);
     } finally {
       set({ loading: false });
+    }
+  },
+
+  updateUserStatus: async (payload: UpdateUserStatusPayload) => {
+    set({ actionLoading: true, actionError: undefined });
+
+    try {
+      await userService.updateUserStatus(payload);
+
+      set((state) => {
+        const users = state.users.map((u) =>
+          u.user_id === payload.user_id
+            ? {
+                ...u,
+                status:
+                  payload.action === "activate"
+                    ? ("active" as UserStatus)
+                    : ("inactive" as UserStatus),
+              }
+            : u,
+        );
+        return { users };
+      });
+    } catch (err: any) {
+      const message =
+        err?.response?.data?.error_description ||
+        err?.message ||
+        "Failed to update user status";
+      set({ actionError: message });
+      throw new Error(message);
+    } finally {
+      set({ actionLoading: false });
     }
   },
 

@@ -28,24 +28,21 @@ const MembersFilters = () => {
     "24h" | "7d" | "30d" | "today" | "yesterday" | "this_month" | "this_year"
   >("24h");
 
-  const handleSearchChange = (value: string) => {
-    setSearch(value);
-    setFilters({
-      search: value || undefined,
-    });
-  };
+const handleSearchChange = (value: string) => {
+  setSearch(value);
+  setFilters({ search: value || undefined });
+};
 
-  const handleRoleChange = (value: string) => {
-    setRoles(value);
-    setFilters({
-      roles: value === "" ? undefined : value,
-    });
-  };
+const handleRoleChange = (value: string) => {
+  setRoles(value);
+  setFilters({ roles: value === "" ? undefined : value });
+};
 
-  const handleDateChange = (value: "24h" | "7d" | "30d") => {
-    setDateRange(value);
-    setFilters(getDateRange(value));
-  };
+const handleDateChange = (value: "24h" | "7d" | "30d") => {
+  setDateRange(value);
+  setFilters(getDateRange(value));
+};
+
 
   return (
     <div className="mb-3 rounded-xl border border-border/60 bg-card p-2 shadow-sm">

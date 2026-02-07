@@ -18,13 +18,20 @@ import { Button } from "@/components/ui/button";
 import {
   ShieldCheck,
   Eye,
+  MoreVertical,
+  ExternalLink,
+  UserMinus,
+  UserPlus,
 } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { useUser } from "@/hooks/useUser";
 
 interface UsersTableProps {
   users: UserItem[];
 }
 
 export default function UsersTable({ users }: UsersTableProps) {
+  const { updateUserStatus } = useUser();
   return (
     <Table>
       <TableHeader>
@@ -93,14 +100,56 @@ export default function UsersTable({ users }: UsersTableProps) {
 
             {/* Action */}
             <TableCell className="text-right">
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-8 gap-1.5 text-xs"
-              >
-                <Eye className="h-3.5 w-3.5" />
-                View
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <div className="cursor-pointer h-8 w-8 p-0 rounded-full flex items-center justify-center hover:bg-slate-100">
+                    <MoreVertical className="h-4 w-4" />
+                  </div>
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent
+                  align="end"
+                  className="z-50 min-w-[180px] rounded-lg border border-slate-200 bg-white/95 backdrop-blur-md shadow-lg py-1 animate-slide-down-fade"
+                >
+                  {/* View Details */}
+                  <DropdownMenuItem
+                    onClick={() => console.log("View Details", user.user_id)}
+                    className="flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 rounded-md transition-colors"
+                  >
+                    <ExternalLink className="h-4 w-4 text-slate-500" />
+                    View Details
+                  </DropdownMenuItem>
+
+                  {/* Conditional Activate / Deactivate */}
+                  {user.status === "active" ? (
+                    <DropdownMenuItem
+                      onClick={() =>
+                        updateUserStatus({
+                          user_id: user.user_id,
+                          action: "deactivate",
+                        })
+                      }
+                      className="flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                    >
+                      <UserMinus className="h-4 w-4 text-red-500" />
+                      Deactivate
+                    </DropdownMenuItem>
+                  ) : (
+                    <DropdownMenuItem
+                      onClick={() =>
+                        updateUserStatus({
+                          user_id: user.user_id,
+                          action: "activate",
+                        })
+                      }
+                      className="flex items-center gap-2 px-3 py-2 text-sm text-green-600 hover:bg-green-50 rounded-md transition-colors"
+                    >
+                      <UserPlus className="h-4 w-4 text-green-500" />
+                      Activate
+                    </DropdownMenuItem>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </TableCell>
           </TableRow>
         ))}
