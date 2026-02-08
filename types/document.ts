@@ -3,7 +3,7 @@ export interface DocumentUploadInput {
   document_base64: string;
   document_type: string; // e.g., 'certificate'
   document_url: string;
-  sod_id: string;
+  sod_id?: string;
 }
 
 export interface DocumentUploadResponse {

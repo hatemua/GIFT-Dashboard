@@ -11,16 +11,27 @@ interface DatePickerProps {
   placeholder?: string;
   label?: string;
   error?: string;
+  required?: boolean;
 }
 
 export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
-  ({ value, onChange, placeholder = "Select date", label, error }, ref) => {
+  (
+    {
+      value,
+      onChange,
+      placeholder = "Select date",
+      label,
+      error,
+      required,
+    },
+    ref,
+  ) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [isOpen, setIsOpen] = useState(false);
     const [currentMonth, setCurrentMonth] = useState(dayjs());
     const selectedDate = value || "";
 
-    // Close calendar on outside click
+    /* Close calendar on outside click */
     useEffect(() => {
       const handleClickOutside = (event: MouseEvent) => {
         if (
@@ -44,24 +55,28 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
     const startDay = currentMonth.startOf("month").day();
     const daysInMonth = currentMonth.daysInMonth();
 
-    const prevMonth = () => setCurrentMonth(currentMonth.subtract(1, "month"));
+    const prevMonth = () =>
+      setCurrentMonth(currentMonth.subtract(1, "month"));
     const nextMonth = () => setCurrentMonth(currentMonth.add(1, "month"));
 
     const renderCalendarDays = () => {
       const blanks = Array.from({ length: startDay }, (_, i) => (
         <div key={`b${i}`} />
       ));
+
       const days = Array.from({ length: daysInMonth }, (_, i) => {
         const day = i + 1;
         const date = currentMonth.date(day);
-        const isSelected = selectedDate === date.format("YYYY-MM-DD");
+        const isSelected =
+          selectedDate === date.format("YYYY-MM-DD");
 
         return (
           <button
             key={day}
             type="button"
             onClick={() => handleDateClick(date)}
-            className={`w-8 h-8 flex items-center justify-center rounded hover:bg-gold-100 transition
+            className={`w-8 h-8 flex items-center justify-center rounded
+              hover:bg-gold-100 transition
               ${isSelected ? "bg-gold-500 text-white" : ""}`}
           >
             {day}
@@ -76,23 +91,48 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
       <div className="space-y-1">
         {/* Label */}
         {label && (
-          <label className="text-sm font-medium text-slate-700">{label}</label>
+          <label className="text-sm font-medium text-slate-700">
+            {label}{" "}
+            {required ? (
+              <span className="text-red-500">*</span>
+            ) : (
+              <span className="text-gray-400 text-xs ml-1">
+                (optional)
+              </span>
+            )}
+          </label>
         )}
+
         <div className="relative w-full" ref={containerRef}>
           {/* Input */}
           <input
+            ref={ref}
             type="text"
             readOnly
-            value={selectedDate ? dayjs(selectedDate).format("DD/MM/YYYY") : ""}
+            aria-required={required}
+            value={
+              selectedDate
+                ? dayjs(selectedDate).format("DD/MM/YYYY")
+                : ""
+            }
             placeholder={placeholder}
             onClick={() => setIsOpen((prev) => !prev)}
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-gold-500 cursor-pointer bg-white placeholder:text-slate-400 hover:border-slate-400 transition"
+            className={`w-full rounded-lg border px-3 py-2 pr-10 text-sm
+              cursor-pointer bg-white transition
+              placeholder:text-slate-400
+              focus:outline-none focus:ring-2
+              ${
+                error
+                  ? "border-red-500 focus:ring-red-500"
+                  : "border-slate-300 focus:ring-gold-500 hover:border-slate-400"
+              }`}
           />
 
           {/* Calendar icon */}
           <Calendar
             size={16}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-gold-500 transition"
+            className="absolute right-3 top-1/2 -translate-y-1/2
+              text-slate-400 cursor-pointer hover:text-gold-500 transition"
             onClick={() => setIsOpen((prev) => !prev)}
           />
 
@@ -108,9 +148,11 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
                 >
                   <ChevronLeft size={16} />
                 </button>
+
                 <div className="font-medium text-sm">
                   {currentMonth.format("MMMM YYYY")}
                 </div>
+
                 <button
                   type="button"
                   onClick={nextMonth}
@@ -120,11 +162,13 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
                 </button>
               </div>
 
-              {/* Weekday headers */}
+              {/* Weekdays */}
               <div className="grid grid-cols-7 text-xs text-slate-500 mb-1 text-center">
-                {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((d) => (
-                  <div key={d}>{d}</div>
-                ))}
+                {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map(
+                  (d) => (
+                    <div key={d}>{d}</div>
+                  ),
+                )}
               </div>
 
               {/* Days */}
@@ -134,6 +178,8 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
             </div>
           )}
         </div>
+
+        {/* Error */}
         {error && <p className="text-xs text-red-600">{error}</p>}
       </div>
     );

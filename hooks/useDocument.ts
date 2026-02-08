@@ -8,6 +8,7 @@ import {
 
 export const useDocument = () => {
   const {
+    documentSet,
     documents,
     selectedDocument,
     documentHash,
@@ -52,6 +53,7 @@ export const useDocument = () => {
   const handleClearError = useCallback(() => clearError(), [clearError]);
 
   return {
+    documentSet,
     documents,
     selectedDocument,
     documentHash,

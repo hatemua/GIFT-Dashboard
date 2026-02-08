@@ -6,9 +6,14 @@ export const activityService = {
     page: number = 1,
     limit: number = 10,
   ): Promise<ActivitiesResponse> => {
-    const res = await api.get<ActivitiesResponse>("/activities", {
+    const res = await api.get("/dashboard/activity", {
       params: { page, limit },
     });
-    return res.data;
+    return {
+      data: res.data,
+      count: res.data.length,
+      page,
+      limit
+    };
   },
 };

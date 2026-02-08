@@ -42,6 +42,9 @@ export interface MintAssetForm {
   manufacture_date?: string;
   certification_framework: string;
   certified: boolean;
+  auto_verify_hash: boolean;
+  certificate_base64: string;
+  certificate_path?: string;
 }
 
 export interface GetAssetsParams {

@@ -1,14 +1,13 @@
 // store/activityStore.ts
 import { create } from "zustand";
-import { ActivityItem, ActivitiesResponse } from "@/types/activity";
+import { ActivitiesResponse, ActivityLog } from "@/types/activity";
 import { activityService } from "@/services/activityService";
 
 interface ActivityState {
-  activities: ActivityItem[];
+  activities: ActivityLog[];
   page: number;
   limit: number;
-  total: number;
-  totalPages: number;
+  count: number;
   loading: boolean;
   error: string | null;
 
@@ -20,8 +19,7 @@ export const useActivityStore = create<ActivityState>((set) => ({
   activities: [],
   page: 1,
   limit: 10,
-  total: 0,
-  totalPages: 0,
+  count: 0,
   loading: false,
   error: null,
 
@@ -35,8 +33,7 @@ export const useActivityStore = create<ActivityState>((set) => ({
         activities: data.data,
         page: data.page,
         limit: data.limit,
-        total: data.total,
-        totalPages: data.total_pages,
+        count: data.count,
         loading: false,
       });
     } catch (err: any) {

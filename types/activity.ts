@@ -1,21 +1,20 @@
-export type ActivityType =
-  | "ASSET_MINTED"
-  | "TRANSACTION_SETTLED"
-  | "MEMBER_JOINED"
-  | "ACCOUNT_CREATED";
-
-export interface ActivityItem {
-  id: string;
-  type: ActivityType;
-  title: string;
-  reference: string;
-  created_at: string;
-}
-
 export interface ActivitiesResponse {
-  data: ActivityItem[];
-  page: number;
+  data: ActivityLog[];
+  count: number;
   limit: number;
-  total: number;
-  total_pages: number;
+  page: number;
 }
+
+export interface NewMemberAddedLog {
+  created_at: string;
+  event: 'new_member_added';
+  member_gic: string;
+}
+
+export interface NewUserAddedLog {
+  created_at: string;
+  event: 'new_user_added';
+  user_id: string;
+}
+
+export type ActivityLog = NewMemberAddedLog | NewUserAddedLog;

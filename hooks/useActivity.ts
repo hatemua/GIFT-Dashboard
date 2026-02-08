@@ -6,8 +6,7 @@ export const useActivity = (page = 1, limit = 10) => {
     activities,
     loading,
     error,
-    total,
-    totalPages,
+    count,
     fetchActivities,
     clearError,
   } = useActivityStore();
@@ -20,8 +19,7 @@ export const useActivity = (page = 1, limit = 10) => {
     activities,
     loading,
     error,
-    total,
-    totalPages,
+    count,
     refresh: () => fetchActivities(page, limit),
     clearError,
   };
