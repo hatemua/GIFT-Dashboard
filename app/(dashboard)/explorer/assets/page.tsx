@@ -33,7 +33,7 @@ export default function ExplorerAssetsPage() {
         description="All gold assets minted on the blockchain"
         breadcrumbs={[
           { label: "Dashboard", href: "/dashboard" },
-          { label: "Explorer", href: "/explorer" },
+          { label: "Explorer" },
           { label: "Assets" },
         ]}
         action={

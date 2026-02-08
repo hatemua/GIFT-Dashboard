@@ -45,7 +45,7 @@ export default function BlockchainTransactionsPage() {
         description="All on-chain transactions related to gold assets"
         breadcrumbs={[
           { label: "Dashboard", href: "/dashboard" },
-          { label: "Explorer", href: "/explorer" },
+          { label: "Explorer" },
           { label: "Transactions" },
         ]}
         action={

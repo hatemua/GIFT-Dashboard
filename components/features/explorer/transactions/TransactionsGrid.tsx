@@ -1,11 +1,9 @@
-import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BlockchainTransaction } from "@/types/blockchainTransaction";
 import { cn, formatDate } from "@/lib/utils";
 import { AddressDisplay } from "@/components/blockchain/address-display";
-import { Calendar, ExternalLink } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Calendar } from "lucide-react";
 
 interface TransactionsGridProps {
   transactions: BlockchainTransaction[];
@@ -99,25 +97,16 @@ export default function TransactionsGrid({
             </div>
 
             {/* Footer with date and actions */}
-            <div className="flex items-center justify-between border-t pt-3">
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <Calendar className="h-3.5 w-3.5" />
-                <time dateTime={tx.createdAt.toString()}>
-                  {formatDate(tx.createdAt, "short")}
-                </time>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-8 gap-1.5 text-xs"
-                >
-                  <ExternalLink className="h-3.5 w-3.5" />
-                  View Details
-                </Button>
-              </div>
+            <div className="flex items-center justify-between text-xs pt-2 border-t">
+            <div className="flex items-center gap-1.5">
+              <Calendar className="h-3 w-3 text-slate-400" />
+              <span className="text-slate-500">Created At</span>
             </div>
+            <span className="font-medium">
+              {formatDate(tx.createdAt, "short")}
+            </span>
+          </div>
+            
           </CardContent>
         </Card>
       ))}

@@ -1,20 +1,12 @@
-import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 import { AddressDisplay } from "@/components/blockchain/address-display";
-
-export interface BlockchainBlock {
-  height: number;
-  hash: string;
-  timestamp: string;
-  transactionsCount: number;
-  producer: string;
-  size?: number;
-}
+import { BlockItem } from "@/types/block";
+import { Calendar } from "lucide-react";
+import { formatDate } from "@/lib/utils";
 
 interface BlocksGridProps {
-  blocks: BlockchainBlock[];
+  blocks: BlockItem[];
 }
 
 export default function BlocksGrid({ blocks }: BlocksGridProps) {
@@ -22,7 +14,7 @@ export default function BlocksGrid({ blocks }: BlocksGridProps) {
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {blocks.map((block) => (
         <Card
-          key={block.hash}
+          key={block.block_hash}
           className="group relative overflow-hidden rounded-2xl border bg-background/60 backdrop-blur transition-all hover:-translate-y-1 hover:shadow-lg"
         >
           <CardContent className="space-y-4 p-5">
@@ -32,48 +24,38 @@ export default function BlocksGrid({ blocks }: BlocksGridProps) {
                 <p className="text-xs text-muted-foreground">Block hash</p>
                 <p
                   className="truncate font-mono text-sm font-medium"
-                  title={block.hash}
+                  title={block.block_hash}
                 >
                   <AddressDisplay
-                    address={block.hash}
+                    address={block.block_hash}
                     truncate
                     startChars={4}
                     endChars={4}
                   />
                 </p>
               </div>
-
-              <Badge variant="outline">#{block.height}</Badge>
-            </div>
-
-            {/* Producer */}
-            <div>
-              <p className="text-xs text-muted-foreground">Producer</p>
-              <p className="font-mono text-sm truncate" title={block.producer}>
-                <AddressDisplay
-                  address={block.producer}
-                  truncate
-                  startChars={4}
-                  endChars={4}
-                />
-              </p>
             </div>
 
             {/* Meta */}
             <div className="flex items-center justify-between text-sm">
               <span className="text-muted-foreground">Transactions</span>
-              <span className="font-medium">{block.transactionsCount}</span>
+              <span className="font-medium">
+                {block.number_of_transactions}
+              </span>
             </div>
 
             {/* Footer */}
             <div className="flex items-center justify-between pt-2">
-              {block.size && (
-                <Badge variant="secondary">{block.size} bytes</Badge>
+              {block.block_number && (
+                <Badge variant="secondary">#{block.block_number}</Badge>
               )}
 
-              <span className="text-xs text-muted-foreground">
-                {block.timestamp}
-              </span>
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <Calendar className="h-3.5 w-3.5" />
+                <time dateTime={block.timestamp.toString()}>
+                  {formatDate(new Date(block.timestamp * 1000), "short")}
+                </time>
+              </div>
             </div>
           </CardContent>
         </Card>

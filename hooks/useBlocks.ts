@@ -4,12 +4,14 @@ import { useEffect } from "react";
 export const useBlocks = () => {
   const {
     blocks,
-    totalCount,
+    count,
     page,
     limit,
     loading,
     error,
+    filters,
     fetchBlocks,
+    setFilters,
     setPage,
     setLimit,
   } = useBlocksStore((state) => state);
@@ -20,12 +22,14 @@ export const useBlocks = () => {
 
   return {
     blocks,
-    totalCount,
+    count,
     page,
     limit,
     loading,
     error,
+    filters,
     fetchBlocks,
+    setFilters,
     setPage,
     setLimit,
   };

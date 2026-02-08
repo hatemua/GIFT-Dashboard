@@ -1,34 +1,42 @@
 import { blocksService } from "@/services/blocksService";
-import { Block } from "@/types/block";
+import { BlockItem, BlocksFilters } from "@/types/block";
 import { create } from "zustand";
 
 interface BlocksStore {
-  blocks: Block[];
-  totalCount: number;
+  blocks: BlockItem[];
+  count: number;
   page: number;
   limit: number;
+  filters: BlocksFilters;
   loading: boolean;
   error?: string;
-  fetchBlocks: (page?: number, limit?: number) => Promise<void>;
+  fetchBlocks: () => Promise<void>;
+  setFilters: (filters: BlocksFilters) => void;
   setPage: (page: number) => void;
   setLimit: (limit: number) => void;
 }
 
 export const useBlocksStore = create<BlocksStore>((set, get) => ({
   blocks: [],
-  totalCount: 0,
+  count: 0,
   page: 1,
-  limit: 10,
+  limit: 6,
   loading: false,
   error: undefined,
+  filters: {},
 
   fetchBlocks: async (page = get().page, limit = get().limit) => {
     set({ loading: true, error: undefined });
     try {
-      const { data, totalCount }= await blocksService.getBlocks(page, limit);
+      const { page, limit, filters } = get();
+      const data = await blocksService.getBlocks({
+        page,
+        limit,
+        filters,
+      });
       set({
-        blocks: data,
-        totalCount,
+        blocks: data.transactions,
+        count: data.count,
         page,
         limit,
       });
@@ -38,7 +46,17 @@ export const useBlocksStore = create<BlocksStore>((set, get) => ({
       set({ loading: false });
     }
   },
+  setFilters: (filters) =>
+    set((state) => ({
+      filters: { ...state.filters, ...filters },
+      page: 1,
+    })),
 
+  resetFilters: () =>
+    set({
+      filters: {},
+      page: 1,
+    }),
   setPage: (page) => set({ page }),
   setLimit: (limit) => set({ limit }),
 }));

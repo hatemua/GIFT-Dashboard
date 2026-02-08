@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Table,
   TableBody,
@@ -10,18 +9,11 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AddressDisplay } from "@/components/blockchain/address-display";
-
-interface BlockchainBlock {
-  height: number;
-  hash: string;
-  timestamp: string;
-  transactionsCount: number;
-  producer: string;
-  size?: number;
-}
+import { BlockItem } from "@/types/block";
+import { formatDate } from "@/lib/utils";
 
 interface BlocksTableProps {
-  blocks: BlockchainBlock[];
+  blocks: BlockItem[];
 }
 
 export default function BlocksTable({ blocks }: BlocksTableProps) {
@@ -32,65 +24,49 @@ export default function BlocksTable({ blocks }: BlocksTableProps) {
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/40">
-                <TableHead>Height</TableHead>
                 <TableHead>Block Hash</TableHead>
-                <TableHead className="hidden md:table-cell">Producer</TableHead>
-                <TableHead>Txs</TableHead>
-                <TableHead className="hidden lg:table-cell">Size</TableHead>
-                <TableHead className="hidden md:table-cell">
-                  Timestamp
-                </TableHead>
+                <TableHead>Block Number</TableHead>
+                <TableHead>Transactions</TableHead>
+                <TableHead>Created At</TableHead>
               </TableRow>
             </TableHeader>
 
             <TableBody>
               {blocks.map((block) => (
                 <TableRow
-                  key={block.hash}
+                  key={block.block_hash}
                   className="transition hover:bg-muted/30"
                 >
-                  {/* Height */}
-                  <TableCell className="font-medium">#{block.height}</TableCell>
-
                   {/* Hash */}
                   <TableCell
                     className="max-w-[180px] truncate font-mono text-sm"
-                    title={block.hash}
+                    title={block.block_hash}
                   >
                     <AddressDisplay
-                      address={block.hash}
+                      address={block.block_hash}
                       truncate
                       startChars={6}
                       endChars={6}
                     />
                   </TableCell>
 
-                  {/* Producer */}
-                  <TableCell
-                    className="hidden md:table-cell max-w-[180px] truncate font-mono"
-                    title={block.producer}
-                  >
-                    <AddressDisplay
-                      address={block.producer}
-                      truncate
-                      startChars={6}
-                      endChars={6}
-                    />
+                  {/* Block Number */}
+                  <TableCell>
+                    {block.block_number ? `#${block.block_number}` : "-"}
                   </TableCell>
 
                   {/* Transactions */}
                   <TableCell>
-                    <Badge variant="outline">{block.transactionsCount}</Badge>
-                  </TableCell>
-
-                  {/* Size */}
-                  <TableCell className="hidden lg:table-cell">
-                    {block.size ? `${block.size} bytes` : "-"}
+                    <Badge variant="outline">
+                      {block.number_of_transactions}
+                    </Badge>
                   </TableCell>
 
                   {/* Timestamp */}
-                  <TableCell className="hidden md:table-cell text-muted-foreground text-sm">
-                    {block.timestamp}
+                  <TableCell>
+                    <time dateTime={block.timestamp.toString()}>
+                      {formatDate(new Date(block.timestamp * 1000), "relative")}
+                    </time>
                   </TableCell>
                 </TableRow>
               ))}

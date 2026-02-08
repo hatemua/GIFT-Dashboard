@@ -12,18 +12,23 @@ import BlocksFilters from "@/components/features/explorer/blocks/BlocksFilters";
 import BlocksGrid from "@/components/features/explorer/blocks/BlocksGrid";
 import BlocksTable from "@/components/features/explorer/blocks/BlocksTable";
 import BlocksSkeleton from "@/components/features/explorer/blocks/BlocksSkeleton";
+import { Button } from "@/components/ui/button";
+import { Grid3x3, List } from "lucide-react";
 
 export default function BlocksPage() {
   const [view, setView] = useState<"grid" | "table">("grid");
 
-  const { blocks, loading, page, limit, totalCount, fetchBlocks, setPage } =
+  const { blocks, loading, page, limit, count, filters, fetchBlocks, setPage } =
     useBlocks();
 
   const hasBlocks = blocks.length > 0;
 
+  const onViewChange = (view: "table" | "grid") => {
+    setView(view);
+  };
   useEffect(() => {
-    fetchBlocks(page, limit);
-  }, [page, limit]);
+    fetchBlocks();
+  }, [page, limit, filters]);
 
   return (
     <DashboardShell>
@@ -32,13 +37,33 @@ export default function BlocksPage() {
         description="All blocks produced on the blockchain"
         breadcrumbs={[
           { label: "Dashboard", href: "/dashboard" },
-          { label: "Explorer", href: "/explorer" },
+          { label: "Explorer" },
           { label: "Blocks" },
         ]}
+        action={
+          <div className="flex rounded-lg border border-border bg-muted/50 p-1 gap-1">
+            <Button
+              size="icon"
+              variant={view === "table" ? "default" : "ghost"}
+              onClick={() => onViewChange("table")}
+              className="h-8 w-8"
+            >
+              <List className="h-4 w-4" />
+            </Button>
+            <Button
+              size="icon"
+              variant={view === "grid" ? "default" : "ghost"}
+              onClick={() => onViewChange("grid")}
+              className="h-8 w-8"
+            >
+              <Grid3x3 className="h-4 w-4" />
+            </Button>
+          </div>
+        }
       />
 
       {/* Filters / View Switch */}
-      <BlocksFilters view={view} onViewChange={setView} />
+      <BlocksFilters />
 
       {/* Loading */}
       {loading && <BlocksSkeleton view={view} />}
@@ -55,12 +80,7 @@ export default function BlocksPage() {
       )}
 
       {/* Pagination */}
-      <Pagination
-        page={page}
-        limit={limit}
-        total={totalCount}
-        setPage={setPage}
-      />
+      <Pagination page={page} limit={limit} total={count} setPage={setPage} />
     </DashboardShell>
   );
 }
