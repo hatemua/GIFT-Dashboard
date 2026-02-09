@@ -2,6 +2,8 @@ import { api } from "@/lib/axios";
 import {
   CreateMemberInput,
   CreateMemberResponse,
+  GetMemberAccountsResponse,
+  GetMemberResponse,
   GetMembersParams,
   Member,
   MembersResponse,
@@ -30,6 +32,18 @@ export const memberService = {
       },
     });
 
+    return response.data;
+  },
+
+    // Get single member by GIC
+  getMemberByGic: async (member_gic: string): Promise<GetMemberResponse> => {
+    const response = await api.get<GetMemberResponse>(`/members/${member_gic}`);
+    return response.data;
+  },
+
+  // Get member accounts
+  getMemberAccounts: async (member_gic: string): Promise<GetMemberAccountsResponse> => {
+    const response = await api.get<GetMemberAccountsResponse>(`/members/${member_gic}/accounts`);
     return response.data;
   },
 

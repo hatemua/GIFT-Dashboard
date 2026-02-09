@@ -21,7 +21,8 @@ export type EmptyStateType =
   | "users"
   | "blacklist"
   | "asset"
-  | "transaction";
+  | "transaction"
+  | "member";
 
 interface EmptyStateConfig {
   title: string;
@@ -91,6 +92,12 @@ export const EMPTY_STATES: Record<EmptyStateType, EmptyStateConfig> = {
     title: "Transaction not available",
     description:
       "The details of this transaction could not be loaded or do not exist.",
+    icon: <Box className="h-6 w-6" />,
+  },
+  member: {
+    title: "Member not available",
+    description:
+      "The details of this member could not be loaded or do not exist.",
     icon: <Box className="h-6 w-6" />,
   },
 };

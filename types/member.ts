@@ -64,3 +64,38 @@ export interface MembersResponse {
   page: string;
   members: Member[];
 }
+
+export interface MemberDetails {
+  member_gic: string;
+  status: "active" | "blacklisted";
+  compliance_level: string;
+  member_role: number;
+  entity_type: string;
+  member_hash: string;
+  createdAt: string;
+  updatedAt: string;
+  added_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface MemberAccount {
+  igan: string;
+  gold_account_purpose: string;
+  active: boolean;
+  member_gic: string;
+  vault_site_id: string;
+  created_at: string;
+  vault_id: string | null;
+}
+
+export interface GetMemberResponse {
+  member: MemberDetails;
+  roles: string[];
+}
+
+export interface GetMemberAccountsResponse {
+  member_gic: string;
+  goldAccounts: MemberAccount[];
+}
+

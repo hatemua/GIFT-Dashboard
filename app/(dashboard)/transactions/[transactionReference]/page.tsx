@@ -59,7 +59,7 @@ export default function TransactionOrderDetailsPage({
             <TransactionEvents transactionReference={transactionReference} />
           </>
         ) : (
-          <EmptyState type="transactions" />
+          <EmptyState type="transaction" />
         )}
       </div>
     </DashboardShell>

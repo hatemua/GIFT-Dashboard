@@ -32,6 +32,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
+import Link from "next/link";
 
 interface MembersTableProps {
   members: Member[];
@@ -138,13 +139,12 @@ export default function MembersTable({
                         className="min-w-[180px] rounded-lg border bg-white shadow-md"
                       >
                         {/* View */}
-                        <DropdownMenuItem
-                          onClick={() => console.log("View", member.member_gic)}
-                          className="flex items-center gap-2"
-                        >
-                          <ExternalLink className="h-4 w-4 text-slate-500" />
-                          View Details
-                        </DropdownMenuItem>
+                        <Link href={`/members/${member.member_gic}`}>
+                          <DropdownMenuItem className="flex items-center gap-2">
+                            <ExternalLink className="h-4 w-4 text-slate-500" />
+                            View Details
+                          </DropdownMenuItem>
+                        </Link>
 
                         {/* Add to Blacklist */}
                         {onAdd && (
