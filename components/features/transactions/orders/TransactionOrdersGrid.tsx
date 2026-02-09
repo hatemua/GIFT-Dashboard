@@ -151,7 +151,7 @@ const TransactionOrdersGrid = ({ transactions }: Props) => {
 
                 {/* Action */}
                 <Link
-                  href={`/transactions/orders/${transaction.transaction_reference}`}
+                  href={`/transactions/${transaction.transaction_reference}`}
                 >
                   <Button
                     variant="outline"

@@ -2,10 +2,22 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import RealSkeleton from "@/components/ui/real-skeleton";
-import { Wallet, Users } from "lucide-react";
+import {
+  Wallet,
+  Users,
+  Gem,
+  CreditCard,
+  RefreshCw,
+  Trash2,
+  Archive,
+} from "lucide-react";
 import { useActivity } from "@/hooks/useActivity";
 import { ActivityLog } from "@/types/activity";
 import { formatDate } from "@/lib/utils";
+
+/* -----------------------------
+   Activity Configuration
+------------------------------*/
 
 const activityConfig = {
   new_member_added: {
@@ -19,6 +31,36 @@ const activityConfig = {
     title: "New user created",
     color: "text-amber-600",
     bg: "bg-amber-100",
+  },
+  new_asset_minted: {
+    icon: Gem,
+    title: "New asset minted",
+    color: "text-green-600",
+    bg: "bg-green-100",
+  },
+  new_gold_account_added: {
+    icon: CreditCard,
+    title: "New gold account added",
+    color: "text-blue-600",
+    bg: "bg-blue-100",
+  },
+  asset_status_change: {
+    icon: RefreshCw,
+    title: "Asset status changed",
+    color: "text-indigo-600",
+    bg: "bg-indigo-100",
+  },
+  asset_burned: {
+    icon: Trash2,
+    title: "Asset burned",
+    color: "text-red-600",
+    bg: "bg-red-100",
+  },
+  asset_custody_change: {
+    icon: Archive,
+    title: "Asset custody changed",
+    color: "text-teal-600",
+    bg: "bg-teal-100",
   },
 } as const;
 
@@ -34,6 +76,15 @@ function renderDescription(activity: ActivityLog) {
     case "new_user_added":
       return activity.user_id;
 
+    case "new_asset_minted":
+    case "asset_status_change":
+    case "asset_burned":
+    case "asset_custody_change":
+      return activity.token_id;
+
+    case "new_gold_account_added":
+      return activity.igan;
+
     default:
       return "";
   }
@@ -43,7 +94,6 @@ function ActivitySkeletonItem() {
   return (
     <div className="flex gap-3">
       <RealSkeleton className="h-8 w-8 rounded-lg" />
-
       <div className="flex-1 space-y-1">
         <RealSkeleton className="h-3 w-40" />
         <RealSkeleton className="h-3 w-56" />

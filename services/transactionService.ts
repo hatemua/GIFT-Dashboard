@@ -1,5 +1,11 @@
 import { api } from "@/lib/axios";
-import { GetTransactionsParams, Transaction, TransactionOrdersResponse } from "@/types/transaction";
+import {
+  GetTransactionsParams,
+  Transaction,
+  TransactionDetails,
+  TransactionEventsResponse,
+  TransactionOrdersResponse,
+} from "@/types/transaction";
 
 export const transactionService = {
   createTransaction: async (data: Transaction) => {
@@ -26,6 +32,23 @@ export const transactionService = {
       },
     );
 
+    return response.data;
+  },
+  getTransactionByReference: async (
+    transaction_reference: string,
+  ): Promise<TransactionDetails> => {
+    const response = await api.get<TransactionDetails>(
+      `/transactions/${transaction_reference}`,
+    );
+    return response.data;
+  },
+
+  getTransactionEventsByReference: async (
+    transaction_reference: string,
+  ): Promise<TransactionEventsResponse> => {
+    const response = await api.get<TransactionEventsResponse>(
+      `/transactions/${transaction_reference}/events`,
+    );
     return response.data;
   },
 };
