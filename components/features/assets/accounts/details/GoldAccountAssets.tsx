@@ -4,7 +4,7 @@ import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Gem } from "lucide-react";
 import { useGoldAccount } from "@/hooks/useGoldAccount";
 import { useEffect } from "react";
-import AssetCard from "../../gold-assets/AssetCard";
+import AssetCard from "../../gold-assets/list/AssetCard";
 
 interface GoldAccountAssetsProps {
   igan: string;

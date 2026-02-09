@@ -9,6 +9,7 @@ import { getAssetStatusLabel } from "@/lib/assets";
 import { Asset } from "@/types/asset";
 import { GoldAccountAsset } from "@/types/goldAccount";
 import { useEffect } from "react";
+import Link from "next/link";
 
 interface AssetCardProps {
   asset: Asset | GoldAccountAsset;
@@ -16,8 +17,9 @@ interface AssetCardProps {
 
 export default function AssetCard({ asset }: AssetCardProps) {
   const a = normalizeAsset(asset);
-  useEffect(() => {console.log(a, "zzzzzzzzzz")}, [a])
+
   return (
+    <Link href={`/assets/${a.tokenId}`}>
     <Card className="group hover:shadow-lg transition-shadow cursor-pointer rounded-xl border border-slate-200 overflow-hidden bg-white dark:bg-gray-800 dark:border-gray-700">
       {/* Header */}
       <div className="relative h-24 bg-gradient-to-r from-gold-100 to-amber-100 dark:from-gold-900/30 dark:to-amber-900/30">
@@ -111,6 +113,7 @@ export default function AssetCard({ asset }: AssetCardProps) {
         )}
       </CardContent>
     </Card>
+    </Link>
   );
 }
 function isStandardAsset(asset: Asset | GoldAccountAsset): asset is Asset {

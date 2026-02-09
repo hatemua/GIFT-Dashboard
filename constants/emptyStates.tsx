@@ -1,5 +1,13 @@
 import React from "react";
-import { Inbox, Package as PackageIcon, Box, Layers, Users, User, CreditCard } from "lucide-react";
+import {
+  Inbox,
+  Package as PackageIcon,
+  Box,
+  Layers,
+  Users,
+  User,
+  CreditCard,
+} from "lucide-react";
 
 export type EmptyStateType =
   | "transactions"
@@ -11,7 +19,8 @@ export type EmptyStateType =
   | "vaultSites"
   | "members"
   | "users"
-  | "blacklist";
+  | "blacklist"
+  | "asset";
 
 interface EmptyStateConfig {
   title: string;
@@ -27,7 +36,8 @@ export const EMPTY_STATES: Record<EmptyStateType, EmptyStateConfig> = {
   },
   blockchainTransactions: {
     title: "No blockchain transactions",
-    description: "On-chain transactions will appear here once they are available.",
+    description:
+      "On-chain transactions will appear here once they are available.",
     icon: <Layers className="h-6 w-6" />,
   },
   vaults: {
@@ -69,5 +79,11 @@ export const EMPTY_STATES: Record<EmptyStateType, EmptyStateConfig> = {
     title: "No blacklisted members",
     description: "Blacklisted members will appear here once added.",
     icon: <User className="h-6 w-6" />,
+  },
+  asset: {
+    title: "Asset not available",
+    description:
+      "The details of this asset could not be loaded or do not exist.",
+    icon: <Box className="h-6 w-6" />,
   },
 };

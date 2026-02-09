@@ -1,5 +1,11 @@
 import { api } from "@/lib/axios";
-import { AssetsResponse, GetAssetsParams, MintAssetForm } from "@/types/asset";
+import {
+  AssetDetails,
+  AssetsResponse,
+  AssetTrackingResponse,
+  GetAssetsParams,
+  MintAssetForm,
+} from "@/types/asset";
 
 export const assetService = {
   mintAsset: async (data: MintAssetForm) => {
@@ -23,6 +29,16 @@ export const assetService = {
       },
     });
 
+    return response.data;
+  },
+
+  getAssetByTokenId: async (token_id: string): Promise<AssetDetails> => {
+    const response = await api.get<AssetDetails>(`/assets/${token_id}`);
+    return response.data;
+  },
+
+  getAssetTracking: async (tokenId: string): Promise<AssetTrackingResponse> => {
+    const response = await api.get<AssetTrackingResponse>(`/assets/${tokenId}/track`);
     return response.data;
   },
 };

@@ -6,10 +6,10 @@ import { PageHeader } from "@/components/layout/page-header";
 import { Pagination } from "@/components/ui/pagination";
 
 import { useAsset } from "@/hooks/useAsset";
-import AssetsFilters from "@/components/features/assets/gold-assets/AssetsFilters";
-import AssetsGrid from "@/components/features/assets/gold-assets/AssetsGrid";
-import AssetsSkeleton from "@/components/features/assets/gold-assets/AssetsSkeleton";
-import AssetsTable from "@/components/features/assets/gold-assets/AssetsTable";
+import AssetsFilters from "@/components/features/assets/gold-assets/list/AssetsFilters";
+import AssetsGrid from "@/components/features/assets/gold-assets/list/AssetsGrid";
+import AssetsSkeleton from "@/components/features/assets/gold-assets/list/AssetsSkeleton";
+import AssetsTable from "@/components/features/assets/gold-assets/list/AssetsTable";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Grid3x3, List, Plus } from "lucide-react";

@@ -1,17 +1,25 @@
-import { Asset, AssetsFilters, MintAssetForm } from "@/types/asset";
+import { Asset, AssetDetails, AssetsFilters, AssetTrackingResponse, MintAssetForm } from "@/types/asset";
 import { useAssetStore } from "@/store/assetStore";
 
 interface UseAssetReturn {
   assets: Asset[];
+  assetDetails?: AssetDetails;
+  assetTracking?: AssetTrackingResponse;
   loading: boolean;
   error?: string;
   page: number;
   limit: number;
   count: number;
   filters: AssetsFilters;
+
   fetchAssets: () => Promise<void>;
   mintAsset: (asset: MintAssetForm) => Promise<Asset | undefined>;
-  setFilters: (filters: AssetsFilters) => void;
+  fetchAssetByTokenId: (token_id: string) => Promise<void>;
+  fetchAssetTracking: (token_id: string) => Promise<void>;
+  clearAssetDetails: () => void;
+  clearAssetTracking: () => void;
+  setFilters: (filters: Partial<AssetsFilters>) => void;
+  resetFilters: () => void;
   setPage: (page: number) => void;
   setLimit: (limit: number) => void;
 }
@@ -19,6 +27,8 @@ interface UseAssetReturn {
 export const useAsset = (): UseAssetReturn => {
   const {
     assets,
+    assetDetails,
+    assetTracking,
     loading,
     error,
     page,
@@ -27,13 +37,20 @@ export const useAsset = (): UseAssetReturn => {
     filters,
     fetchAssets,
     mintAsset,
+    fetchAssetByTokenId,
+    fetchAssetTracking,
+    clearAssetDetails,
+    clearAssetTracking,
+    setFilters,
+    resetFilters,
     setPage,
     setLimit,
-    setFilters,
   } = useAssetStore();
 
   return {
     assets,
+    assetDetails,
+    assetTracking,
     loading,
     error,
     page,
@@ -42,7 +59,12 @@ export const useAsset = (): UseAssetReturn => {
     filters,
     fetchAssets,
     mintAsset,
+    fetchAssetByTokenId,
+    fetchAssetTracking,
+    clearAssetDetails,
+    clearAssetTracking,
     setFilters,
+    resetFilters,
     setPage,
     setLimit,
   };
