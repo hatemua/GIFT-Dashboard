@@ -70,8 +70,8 @@ export function InventoryOverview() {
     inventoryByOwner,
     inventoryByProductType,
     inventoryByVault,
+    inventoryLoading,
     fetchVaultSiteInventory,
-    loading,
   } = useVaultSite();
 
   const vaultSiteId = vaultSiteDetails?.vault_site_id;
@@ -89,7 +89,7 @@ export function InventoryOverview() {
     fetchVaultSiteInventory(vaultSiteId, "vault_id");
   }, [vaultSiteId]);
 
-  if (loading || !inventorySummary) {
+  if (inventoryLoading || !inventorySummary) {
     return (
       <Card className="border shadow-sm">
         <CardHeader className="pb-3">

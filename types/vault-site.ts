@@ -53,7 +53,7 @@ export interface vaultSiteDetails {
     audit_frequency: "annual" | "semi-annual" | "quarterly" | "monthly";
   };
 
-  status: "active" | "inactive" | "under_audit" | "suspended";
+  status: "active";
 
   vaults: any[]; // if nested vault objects are added later, replace 'any' with a proper type
   total_assets: string; // number of assets as string
@@ -145,6 +145,10 @@ export interface VaultSiteStore {
   country?: string;
   loading: boolean;
   error: string | null;
+  vaultsLoading: boolean;
+  vaultsError: string | null;
+  inventoryLoading: boolean;
+  inventoryError: string | null;
   filters: VaultSiteFilters;
 
   fetchVaultSites: (

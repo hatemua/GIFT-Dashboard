@@ -65,7 +65,7 @@ export default function VaultSitesPage() {
         ]}
         action={
           <div className="flex gap-2">
-            <Link href="/assets/vaults/new">
+            <Link href="/assets/vault-sites/new">
               <Button
                 variant="gold"
                 className="flex items-center gap-2 transition-transform hover:scale-105"

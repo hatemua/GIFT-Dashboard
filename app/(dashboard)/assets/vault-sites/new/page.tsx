@@ -84,7 +84,7 @@ export default function NewVaultSitePage() {
         description="Complete all required fields to register a new secure vault facility"
         breadcrumbs={[
           { label: "Dashboard", href: "/dashboard" },
-          { label: "Vault Sites", href: "/assets/vaults" },
+          { label: "Vault Sites", href: "/assets/vault-sites" },
           { label: "New Vault Site" },
         ]}
       />

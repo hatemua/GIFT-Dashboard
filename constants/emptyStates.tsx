@@ -22,7 +22,8 @@ export type EmptyStateType =
   | "blacklist"
   | "asset"
   | "transaction"
-  | "member";
+  | "member"
+  | "vaultsite";
 
 interface EmptyStateConfig {
   title: string;
@@ -98,6 +99,12 @@ export const EMPTY_STATES: Record<EmptyStateType, EmptyStateConfig> = {
     title: "Member not available",
     description:
       "The details of this member could not be loaded or do not exist.",
+    icon: <Box className="h-6 w-6" />,
+  },
+    vaultsite: {
+    title: "Vault Site not available",
+    description:
+      "The details of this vault site could not be loaded or do not exist.",
     icon: <Box className="h-6 w-6" />,
   },
 };

@@ -34,7 +34,7 @@ export function VaultsListCard() {
 
   const {
     vaults = [],
-    loading,
+    vaultsLoading,
     fetchVaultsByVaultSiteId,
   } = useVaultSiteStore();
 
@@ -105,7 +105,7 @@ export function VaultsListCard() {
       </CardHeader>
 
       <CardContent className="space-y-3">
-        {loading ? (
+        {vaultsLoading ? (
           <div className="space-y-3">
             {Array.from({ length: 3 }).map((_, idx) => (
               <div

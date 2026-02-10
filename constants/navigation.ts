@@ -70,7 +70,7 @@ export const navigation: NavItem[] = [
     children: [
       {
         title: "Vault Sites",
-        href: "/assets/vaults",
+        href: "/assets/vault-sites",
         icon: Settings,
       },
       {

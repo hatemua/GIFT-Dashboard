@@ -9,7 +9,6 @@ import {
 import type {
   VaultSiteStore,
   CreateVaultSitePayload,
-  VaultSiteFilters,
 } from "@/types/vault-site";
 
 export const useVaultSiteStore = create<VaultSiteStore>((set, get) => ({
@@ -27,14 +26,14 @@ export const useVaultSiteStore = create<VaultSiteStore>((set, get) => ({
   country: undefined,
   loading: false,
   error: null,
+  vaultsLoading: false,
+  vaultsError: null,
+      inventoryLoading: false,
+    inventoryError: null,
   filters: {},
 
   // actions
-  fetchVaultSites: async (
-    limit = get().limit,
-    offset = get().offset,
-    country = get().country,
-  ) => {
+  fetchVaultSites: async () => {
     set({ loading: true, error: null });
 
     try {
@@ -102,24 +101,24 @@ export const useVaultSiteStore = create<VaultSiteStore>((set, get) => ({
   },
 
   fetchVaultsByVaultSiteId: async (vaultSiteId: string) => {
-    set({ loading: true, error: null });
+    set({ vaultsLoading: true, vaultsError: null });
 
     try {
       const data = await fetchVaultsByVaultSiteApi(vaultSiteId);
-      set({ vaults: data?.vaults ?? [], loading: false });
+      set({ vaults: data?.vaults ?? [], vaultsLoading: false });
     } catch (err: any) {
       set({
-        error:
+        vaultsError:
           err?.response?.data?.message ||
           err?.message ||
           "Failed to fetch vaults for this site",
-        loading: false,
+        vaultsLoading: false,
       });
     }
   },
 
   fetchVaultSiteInventory: async (vaultSiteId, groupBy) => {
-    set({ loading: true, error: null });
+    set({ inventoryLoading: true, inventoryError: null });
 
     try {
       const data = await fetchVaultSiteInventoryApi(
@@ -139,7 +138,7 @@ export const useVaultSiteStore = create<VaultSiteStore>((set, get) => ({
             total_fine_weight_grams: data.total_fine_weight_grams,
             total_valuation: data.total_valuation,
           },
-          loading: false,
+          inventoryLoading: false,
         });
         return;
       }
@@ -147,22 +146,22 @@ export const useVaultSiteStore = create<VaultSiteStore>((set, get) => ({
       // Handle grouped data
       switch (groupBy) {
         case "owner":
-          set({ inventoryByOwner: data.by_owner, loading: false });
+          set({ inventoryByOwner: data.by_owner, inventoryLoading: false });
           break;
         case "product_type":
-          set({ inventoryByProductType: data.product_type, loading: false });
+          set({ inventoryByProductType: data.product_type, inventoryLoading: false });
           break;
         case "vault_id":
-          set({ inventoryByVault: data.vault_id, loading: false });
+          set({ inventoryByVault: data.vault_id, inventoryLoading: false });
           break;
       }
     } catch (err: any) {
       set({
-        error:
+        inventoryError:
           err?.response?.data?.message ||
           err?.message ||
           "Failed to fetch inventory",
-        loading: false,
+        inventoryLoading: false,
       });
     }
   },
