@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Clock, User, CheckCircle, ArrowRight } from "lucide-react";
+import { Clock, User, CheckCircle, ArrowRight, Activity } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTransaction } from "@/hooks/useTransaction";
 
@@ -28,8 +28,8 @@ export const TransactionEvents: React.FC<TransactionEventsProps> = ({
     <Card className="rounded-2xl">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <ArrowRight className="h-5 w-5 text-slate-500" />
-          Transaction Events
+          <Activity className="h-5 w-5 text-slate-500" />
+          History
         </CardTitle>
       </CardHeader>
 

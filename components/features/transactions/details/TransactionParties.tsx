@@ -5,6 +5,7 @@ import { TransactionDetails } from "@/types/transaction";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { User, Building2, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { AddressDisplay } from "@/components/blockchain/address-display";
 
 interface TransactionPartiesProps {
   transaction: TransactionDetails;
@@ -33,22 +34,30 @@ export const TransactionParties: React.FC<TransactionPartiesProps> = ({
 
           <div className="flex-1 space-y-1">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="font-medium text-slate-900">
-                Initiator
-              </span>
+              <span className="font-medium text-slate-900">Initiator</span>
               <Badge variant="outline" className="text-xs">
                 Sender
               </Badge>
             </div>
 
-            <div className="text-xs text-slate-500">
+            <div className="flex flex-col gap-1 text-xs text-slate-500">
               <div>
                 <span className="font-medium text-slate-700">GIC:</span>{" "}
-                {initiator.gic}
+                <AddressDisplay
+                  address={initiator.gic}
+                  truncate
+                  startChars={3}
+                  endChars={3}
+                />
               </div>
               <div>
                 <span className="font-medium text-slate-700">IGAN:</span>{" "}
-                {initiator.igan}
+                <AddressDisplay
+                  address={initiator.igan}
+                  truncate
+                  startChars={3}
+                  endChars={3}
+                />
               </div>
             </div>
           </div>
@@ -62,22 +71,30 @@ export const TransactionParties: React.FC<TransactionPartiesProps> = ({
 
           <div className="flex-1 space-y-1">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="font-medium text-slate-900">
-                Counterparty
-              </span>
+              <span className="font-medium text-slate-900">Counterparty</span>
               <Badge variant="outline" className="text-xs">
                 Receiver
               </Badge>
             </div>
 
-            <div className="text-xs text-slate-500">
+            <div className="flex flex-col gap-1 text-xs text-slate-500">
               <div>
                 <span className="font-medium text-slate-700">GIC:</span>{" "}
-                {counterparty.gic}
+                <AddressDisplay
+                  address={counterparty.gic}
+                  truncate
+                  startChars={3}
+                  endChars={3}
+                />
               </div>
               <div>
                 <span className="font-medium text-slate-700">IGAN:</span>{" "}
-                {counterparty.igan}
+                <AddressDisplay
+                  address={counterparty.igan}
+                  truncate
+                  startChars={3}
+                  endChars={3}
+                />
               </div>
             </div>
           </div>

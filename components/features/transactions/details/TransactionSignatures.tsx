@@ -5,6 +5,7 @@ import { TransactionDetails } from "@/types/transaction";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ShieldCheck, UserCheck, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { AddressDisplay } from "@/components/blockchain/address-display";
 
 interface TransactionSignaturesProps {
   transaction: TransactionDetails;
@@ -37,7 +38,12 @@ export const TransactionSignatures: React.FC<TransactionSignaturesProps> = ({
             <div className="flex-1 space-y-1">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="font-medium text-slate-900">
-                  {sig.signer}
+                                   <AddressDisplay
+                                    address={sig.signer}
+                                    truncate
+                                    startChars={3}
+                                    endChars={3}
+                                  />
                 </span>
 
                 <Badge

@@ -13,6 +13,22 @@ interface TransactionAssetsProps {
 export const TransactionAssets: React.FC<TransactionAssetsProps> = ({
   transaction,
 }) => {
+  if (transaction.assets.length === 0)
+    return (
+      <div className="text-center py-10 px-6 bg-white rounded-2xl shadow-sm border border-slate-200">
+        <div className="w-16 h-16 flex items-center justify-center mx-auto mb-4 rounded-full bg-gradient-to-br from-yellow-50 to-yellow-100">
+          <Gem className="w-8 h-8 text-yellow-500" />
+        </div>
+
+        <h4 className="text-lg font-semibold text-slate-800 mb-1">
+          No Gold Assets Found
+        </h4>
+
+        <p className="text-sm text-slate-500 max-w-xs mx-auto">
+          This transaction currently has no gold assets attached.
+        </p>
+      </div>
+    );
   return (
     <Card className="rounded-2xl">
       <CardHeader>
@@ -30,8 +46,12 @@ export const TransactionAssets: React.FC<TransactionAssetsProps> = ({
           >
             {/* Token ID */}
             <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-              <span className="text-xs text-slate-500 font-medium">Token ID:</span>
-              <p className="font-medium text-slate-900 truncate">{asset.token_id}</p>
+              <span className="text-xs text-slate-500 font-medium">
+                Token ID:
+              </span>
+              <p className="font-medium text-slate-900 truncate">
+                {asset.token_id}
+              </p>
             </div>
 
             {/* Asset details */}
@@ -50,12 +70,6 @@ export const TransactionAssets: React.FC<TransactionAssetsProps> = ({
             </div>
           </div>
         ))}
-
-        {transaction.assets.length === 0 && (
-          <div className="text-sm text-slate-500 text-center py-4">
-            No assets attached to this transaction.
-          </div>
-        )}
       </CardContent>
     </Card>
   );
