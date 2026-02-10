@@ -26,6 +26,7 @@ interface UserState {
   setPage: (page: number) => void;
   setLimit: (limit: number) => void;
   setFilters: (filters: UsersFilters) => void;
+  resetFilters: () => void;
 
   fetchUsers: () => Promise<void>;
   createUser: (user: CreateUserForm) => Promise<User | undefined>;

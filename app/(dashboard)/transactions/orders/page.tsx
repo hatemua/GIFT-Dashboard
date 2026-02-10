@@ -29,6 +29,7 @@ export default function TransactionOrdersPage() {
     filters,
     setPage,
     fetchTransactions,
+    resetFilters
   } = useTransaction();
 
   const onViewChange = (newView: "grid" | "table") => setView(newView);
@@ -37,6 +38,10 @@ export default function TransactionOrdersPage() {
     fetchTransactions();
   }, [page, limit, filters]);
 
+  useEffect(() => {
+    return () => resetFilters();
+  }, []);
+  
   return (
     <DashboardShell>
       <PageHeader

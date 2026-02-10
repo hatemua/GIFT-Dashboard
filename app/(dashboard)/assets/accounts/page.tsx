@@ -27,6 +27,7 @@ export default function GoldAccountsPage() {
     filters,
     setPage,
     fetchAccounts,
+    resetFilters
   } = useGoldAccount();
 
   const [view, setView] = React.useState<"grid" | "table">("grid");
@@ -36,6 +37,10 @@ export default function GoldAccountsPage() {
   useEffect(() => {
     fetchAccounts();
   }, [page, limit, filters]);
+
+  useEffect(() => {
+    return () => resetFilters();
+  }, []);
 
   return (
     <DashboardShell>

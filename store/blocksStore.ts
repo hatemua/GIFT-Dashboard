@@ -12,6 +12,7 @@ interface BlocksStore {
   error?: string;
   fetchBlocks: () => Promise<void>;
   setFilters: (filters: BlocksFilters) => void;
+  resetFilters: () => void;
   setPage: (page: number) => void;
   setLimit: (limit: number) => void;
 }

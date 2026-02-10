@@ -12,13 +12,10 @@ export const useBlocks = () => {
     filters,
     fetchBlocks,
     setFilters,
+    resetFilters,
     setPage,
     setLimit,
   } = useBlocksStore((state) => state);
-
-  useEffect(() => {
-    if (blocks.length === 0) fetchBlocks();
-  }, []);
 
   return {
     blocks,
@@ -28,6 +25,7 @@ export const useBlocks = () => {
     loading,
     error,
     filters,
+    resetFilters,
     fetchBlocks,
     setFilters,
     setPage,

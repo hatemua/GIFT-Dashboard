@@ -28,7 +28,7 @@ export default function BlacklistPage() {
     fetchBlacklistedMembers,
     removeFromBlacklist,
     setPage,
-    reset,
+    resetFilters,
   } = useMember();
   const [view, setView] = useState<ViewMode>("grid");
 
@@ -54,10 +54,11 @@ export default function BlacklistPage() {
 
   useEffect(() => {
     fetchBlacklistedMembers();
-    return () => {
-      reset();
-    };
   }, [page, limit, filters]);
+
+  useEffect(() => {
+    return () => resetFilters();
+  }, []);
 
   return (
     <DashboardShell>

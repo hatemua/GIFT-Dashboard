@@ -61,8 +61,12 @@ export default function MembersPage() {
 
   useEffect(() => {
     fetchMembers();
-    return () => resetFilters();
+    
   }, [page, limit, JSON.stringify(filters)]);
+
+  useEffect(() => {
+    return () => resetFilters();
+  }, [])
 
   return (
     <DashboardShell>

@@ -16,8 +16,17 @@ import { Grid3x3, List, Plus } from "lucide-react";
 import EmptyState from "@/components/features/common/EmptyState";
 
 export default function GoldAssetsPage() {
-  const { assets, loading, count, filters, page, limit, fetchAssets, setPage } =
-    useAsset();
+  const {
+    assets,
+    loading,
+    count,
+    filters,
+    page,
+    limit,
+    resetFilters,
+    fetchAssets,
+    setPage,
+  } = useAsset();
   const [view, setView] = React.useState<"grid" | "table">("grid");
 
   const onViewChange = (view: "table" | "grid") => {
@@ -27,6 +36,10 @@ export default function GoldAssetsPage() {
   useEffect(() => {
     fetchAssets();
   }, [page, limit, filters]);
+
+  useEffect(() => {
+    return () => resetFilters();
+  }, []);
 
   return (
     <DashboardShell>
@@ -82,12 +95,7 @@ export default function GoldAssetsPage() {
       )}
 
       {/* Pagination */}
-      <Pagination
-        page={page}
-        limit={limit}
-        total={count}
-        setPage={setPage}
-      />
+      <Pagination page={page} limit={limit} total={count} setPage={setPage} />
     </DashboardShell>
   );
 }

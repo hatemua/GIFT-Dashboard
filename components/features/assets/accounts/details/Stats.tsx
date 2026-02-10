@@ -66,7 +66,7 @@ export const Stats: React.FC<StatsProps> = ({ account }) => {
       {/* TOTAL VALUE */}
       <StatCard
         icon={<DollarSign className="h-5 w-5 text-white" />}
-        gradient="amber"
+        gradient="gold"
         badge={<ChangeBadge positive={isPositive} value={valueChangePercent} />}
         label="Current Value"
         value={`${total_valuation_currency} ${formatted.currentValueK}K`}

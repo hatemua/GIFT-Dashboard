@@ -16,8 +16,17 @@ import { Grid3x3, List, Plus } from "lucide-react";
 import EmptyState from "@/components/features/common/EmptyState";
 
 export default function ExplorerAssetsPage() {
-  const { assets, loading, count, filters, page, limit, fetchAssets, setPage } =
-    useAsset();
+  const {
+    assets,
+    loading,
+    count,
+    filters,
+    page,
+    limit,
+    resetFilters,
+    fetchAssets,
+    setPage,
+  } = useAsset();
   const [view, setView] = React.useState<"grid" | "table">("grid");
 
   const onViewChange = (newView: "grid" | "table") => setView(newView);
@@ -25,6 +34,10 @@ export default function ExplorerAssetsPage() {
   useEffect(() => {
     fetchAssets();
   }, [page, limit, filters]);
+
+  useEffect(() => {
+    return () => resetFilters();
+  }, []);
 
   return (
     <DashboardShell>

@@ -26,6 +26,7 @@ export default function BlockchainTransactionsPage() {
     filters,
     setPage,
     fetchTransactions,
+    resetFilters,
   } = useBlockchainTransactions();
 
   const hasTransactions = transactions.length > 0;
@@ -37,6 +38,10 @@ export default function BlockchainTransactionsPage() {
   useEffect(() => {
     fetchTransactions();
   }, [page, limit, filters]);
+
+  useEffect(() => {
+    return () => resetFilters();
+  }, []);
 
   return (
     <DashboardShell>

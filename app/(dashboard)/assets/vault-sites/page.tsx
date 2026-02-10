@@ -26,6 +26,7 @@ export default function VaultSitesPage() {
     error,
     fetchVaultSites,
     setOffset,
+    resetFilters,
   } = useVaultSite();
 
   const [view, setView] = useState<"grid" | "table">("grid");
@@ -35,6 +36,10 @@ export default function VaultSitesPage() {
   useEffect(() => {
     fetchVaultSites();
   }, [limit, offset, filters]);
+
+  useEffect(() => {
+    return () => resetFilters();
+  }, []);
 
   // Conditional content rendering
   let content;

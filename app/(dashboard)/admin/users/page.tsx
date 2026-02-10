@@ -17,7 +17,7 @@ import { ViewMode } from "@/types";
 import CreateUserModal from "@/components/features/admin/users/new/NewUserModal";
 
 export default function UsersPage() {
-  const { users, count, filters, page, limit, loading, fetchUsers, setPage } =
+  const { users, count, filters, page, limit, loading, resetFilters, fetchUsers, setPage } =
     useUser();
 
   const [view, setView] = useState<ViewMode>("grid");
@@ -26,9 +26,14 @@ export default function UsersPage() {
   const onViewChange = (newView: "grid" | "table") => setView(newView);
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
+  
   useEffect(() => {
     fetchUsers();
   }, [page, limit, filters]);
+
+  useEffect(() => {
+    return () => resetFilters();
+  }, []);
 
   return (
     <DashboardShell>

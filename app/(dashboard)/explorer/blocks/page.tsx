@@ -18,8 +18,17 @@ import { Grid3x3, List } from "lucide-react";
 export default function BlocksPage() {
   const [view, setView] = useState<"grid" | "table">("grid");
 
-  const { blocks, loading, page, limit, count, filters, fetchBlocks, setPage } =
-    useBlocks();
+  const {
+    blocks,
+    loading,
+    page,
+    limit,
+    count,
+    filters,
+    resetFilters,
+    fetchBlocks,
+    setPage,
+  } = useBlocks();
 
   const hasBlocks = blocks.length > 0;
 
@@ -29,6 +38,10 @@ export default function BlocksPage() {
   useEffect(() => {
     fetchBlocks();
   }, [page, limit, filters]);
+
+  useEffect(() => {
+    return () => resetFilters();
+  }, []);
 
   return (
     <DashboardShell>
