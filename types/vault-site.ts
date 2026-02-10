@@ -1,4 +1,4 @@
-import { Vault } from "./vault";
+import { VaultItem } from "./vault";
 
 export interface VaultSite {
   vault_site_id: string;
@@ -134,7 +134,7 @@ export interface InventorySummary {
 export interface VaultSiteStore {
   vaultSites: VaultSite[];
   vaultSiteDetails: vaultSiteDetails | null;
-  vaults: Vault[];
+  vaults: VaultItem[];
   inventorySummary: InventorySummary | null;
   inventoryByOwner: VaultSiteInventory["by_owner"] | [];
   inventoryByProductType: VaultSiteInventory["product_type"] | [];

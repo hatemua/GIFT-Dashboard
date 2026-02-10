@@ -17,16 +17,7 @@ import { cn } from "@/lib/utils";
 import { useVaultSiteStore } from "@/store/vaultSiteStore";
 import { useVaultSite } from "@/hooks/useVaultSite";
 import { Tooltip } from "@/components/ui/tooltip";
-
-export interface Vault {
-  vault_id: string;
-  member_internal_vault_id: string;
-  vault_gold_capacity_kg: number;
-  current_weight_kg: number;
-  utilization_percent: number;
-  vault_status: "Used" | "Active" | "Inactive" | "Under Audit" | string;
-  asset_count: number;
-}
+import Link from "next/link";
 
 export function VaultsListCard() {
   const vaultSiteId = useVaultSite().vaultSiteDetails?.vault_site_id;
@@ -138,7 +129,7 @@ export function VaultsListCard() {
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
                         <p className="text-sm font-medium text-gray-900 truncate">
-                          {vault.vault_id} | {vault.member_internal_vault_id}
+                          {vault.vault_id} | <span className="text-xs text-gray-400">Member GIC:  {vault.member_internal_vault_id}</span>
                         </p>
                       </div>
                       <div className="flex items-center gap-4 mt-1 text-xs text-gray-500">
@@ -164,10 +155,12 @@ export function VaultsListCard() {
                         />
                       </div>
                     </div>
-                    <Button variant="ghost" size="sm" className="h-8">
-                      <Eye className="h-3.5 w-3.5" />
-                      <span className="sr-only">View</span>
-                    </Button>
+                    <Link href={`/assets/vaults/${vault.vault_id}`}>
+                      <Button variant="ghost" size="sm" className="h-8">
+                        <Eye className="h-3.5 w-3.5" />
+                        <span className="sr-only">View</span>
+                      </Button>
+                    </Link>
                   </div>
                 </div>
               );

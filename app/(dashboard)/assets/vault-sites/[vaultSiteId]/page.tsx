@@ -20,7 +20,7 @@ interface VaultDetailsPageProps {
   params: Promise<{ vaultSiteId: string }>;
 }
 
-export default function VaultDetailsPage({ params }: VaultDetailsPageProps) {
+export default function VaultSiteDetailsPage({ params }: VaultDetailsPageProps) {
   const { vaultSiteId } = React.use(params);
   const { vaultSiteDetails, loading, fetchVaultSiteById } = useVaultSite();
   const [hasFetched, setHasFetched] = useState(false);

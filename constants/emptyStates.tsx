@@ -23,7 +23,8 @@ export type EmptyStateType =
   | "asset"
   | "transaction"
   | "member"
-  | "vaultsite";
+  | "vaultsite"
+  | "vault";
 
 interface EmptyStateConfig {
   title: string;
@@ -101,10 +102,17 @@ export const EMPTY_STATES: Record<EmptyStateType, EmptyStateConfig> = {
       "The details of this member could not be loaded or do not exist.",
     icon: <Box className="h-6 w-6" />,
   },
-    vaultsite: {
+  vaultsite: {
     title: "Vault Site not available",
     description:
       "The details of this vault site could not be loaded or do not exist.",
+    icon: <Box className="h-6 w-6" />,
+  },
+
+  vault: {
+    title: "Vault not available",
+    description:
+      "The details of this vault could not be loaded or do not exist.",
     icon: <Box className="h-6 w-6" />,
   },
 };
