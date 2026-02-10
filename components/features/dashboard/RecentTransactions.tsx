@@ -90,7 +90,7 @@ export default function RecentTransactions() {
                   return (
                     <Link
                       key={index}
-                      href={`/transactions/${tx.transaction_id}`}
+                      href={`/transactions/${tx.transaction_reference}`}
                       className="flex items-center justify-between p-4 rounded-lg border border-slate-200 hover:border-gold-300 hover:bg-gold-50/30 transition-all cursor-pointer"
                     >
                       <div className="flex items-center gap-4">

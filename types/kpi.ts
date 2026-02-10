@@ -5,3 +5,7 @@ export interface DashboardKPIs {
   number_of_transactions: number;
   value_in_dollars: number;
 }
+
+export interface GoldPriceResponse {
+  price_of_one_ounce: number;
+}

@@ -4,6 +4,7 @@ export const ASSET_STATUS_LABELS = {
   stationary: "IN_VAULT",
   in_transit: "IN_TRANSIT",
   liquidated: "LIQUIDATED",
+  burned: "BURNED",
 } as const;
 
 export const ASSET_STATUS_OPTIONS = [
@@ -30,8 +31,13 @@ export const ASSET_STATUS_OPTIONS = [
     icon: Flame,
     color: "text-rose-600",
   },
+  {
+    label: "Burned",
+    value: "burned",
+    icon: Flame,
+    color: "text-gray-600",
+  },
 ] as const;
 
 export type AssetStatus =
   (typeof ASSET_STATUS_OPTIONS)[number]["value"];
-

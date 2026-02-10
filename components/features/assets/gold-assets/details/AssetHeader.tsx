@@ -17,38 +17,6 @@ interface Props {
   asset: any;
 }
 export function AssetHeader({ asset }: Props) {
-  const getStatusConfig = (status: string) => {
-    const configs = {
-      stationary: {
-        icon: TrendingUp,
-        text: "Active",
-        badge: "success" as const,
-        dot: "bg-emerald-500",
-      },
-      in_transit: {
-        icon: Package,
-        text: "Pending",
-        badge: "warning" as const,
-        dot: "bg-amber-500",
-      },
-      liquidated: {
-        icon: Barcode,
-        text: "Inactive",
-        badge: "secondary" as const,
-        dot: "bg-gray-400",
-      },
-    };
-
-    return configs[status?.toLowerCase() as keyof typeof configs] || null;
-  };
-
-  const statusConfig = getStatusConfig(asset.ownership.asset_status);
-  const StatusIcon = statusConfig.icon;
-
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(asset.token_id);
-  };
-
   return (
     <div
       className="
