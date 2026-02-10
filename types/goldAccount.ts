@@ -39,6 +39,13 @@ export interface CreateGoldAccountResponse {
 export interface GetAllAccountsParams {
   limit?: number;
   page?: number;
+  filters?: AccountsFilters;
+}
+
+export interface AccountsFilters {
+  search?: string;
+  from_date?: string;
+  to_date?: string;
 }
 
 export interface GoldAccountsResponse {

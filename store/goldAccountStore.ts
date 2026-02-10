@@ -9,6 +9,7 @@ import {
   GoldAccountMovementsResponse,
   CreateGoldAccountPayload,
   CreateGoldAccountResponse,
+  AccountsFilters,
 } from "@/types/goldAccount";
 
 interface GoldAccountStore {
@@ -17,6 +18,7 @@ interface GoldAccountStore {
   totalCount: number;
   limit: number;
   page: number;
+  filters: AccountsFilters;
 
   // Global loading/error for fetchAccounts and fetchAccountByIgan
   loading: boolean;
@@ -45,13 +47,14 @@ interface GoldAccountStore {
 
   // Actions
   createAccount: (payload: CreateGoldAccountPayload) => Promise<void>;
-  fetchAccounts: (limit?: number, page?: number) => Promise<void>;
+  fetchAccounts: () => Promise<void>;
   fetchAccountByIgan: (igan: string) => Promise<void>;
   fetchAccountBalance: (igan: string, currency?: string) => Promise<void>;
   fetchAccountAssets: (igan: string, params?: any) => Promise<void>;
   searchAccountAssets: (igan: string, params?: any) => Promise<void>;
   fetchAccountMovements: (igan: string, params?: any) => Promise<void>;
-
+  setFilters: (filters: AccountsFilters) => void;
+  resetFilters: () => void;
   resetSelectedAccount: () => void;
   setLimit: (limit: number) => void;
   setPage: (page: number) => void;
@@ -62,6 +65,7 @@ export const useGoldAccountStore = create<GoldAccountStore>((set, get) => ({
   totalCount: 0,
   limit: 6,
   page: 1,
+  filters: {},
 
   // Global loading/error for fetching accounts
   loading: false,
@@ -105,10 +109,16 @@ export const useGoldAccountStore = create<GoldAccountStore>((set, get) => ({
     }
   },
 
-  fetchAccounts: async (limit = get().limit, page = get().page) => {
+  fetchAccounts: async () => {
     set({ loading: true, error: undefined });
     try {
-      const data = await goldAccountService.getAllAccounts({ limit, page });
+      const { page, limit, filters } = get();
+
+      const data = await goldAccountService.getAllAccounts({
+        page,
+        limit,
+        filters,
+      });
       set({
         accounts: data.accounts,
         totalCount: data.total_count,
@@ -201,6 +211,18 @@ export const useGoldAccountStore = create<GoldAccountStore>((set, get) => ({
       searchAssetsError: undefined,
       movementsLoading: false,
       movementsError: undefined,
+    }),
+
+  setFilters: (filters) =>
+    set((state) => ({
+      filters: { ...state.filters, ...filters },
+      page: 1,
+    })),
+
+  resetFilters: () =>
+    set({
+      filters: {},
+      page: 1,
     }),
 
   setLimit: (limit: number) => set({ limit }),

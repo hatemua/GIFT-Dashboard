@@ -27,14 +27,17 @@ export const goldAccountService = {
   getAllAccounts: async (
     params: GetAllAccountsParams = {},
   ): Promise<GoldAccountsResponse> => {
-    const { limit = 10, page = 1 } = params;
-    console.log("Fetching accounts with params:", params);
-    const queryParams = new URLSearchParams({
-      limit: limit.toString(),
-      page: page.toString(),
-    });
+    const { limit = 10, page = 1, filters = {} } = params;
 
-    const response = await api.get(`/accounts?${queryParams.toString()}`);
+    const response = await api.get(`/accounts`, {
+      params: {
+        page,
+        limit,
+        search: filters.search,
+        from_date: filters.from_date,
+        to_date: filters.to_date,
+      },
+    });
 
     return response.data as GoldAccountsResponse;
   },

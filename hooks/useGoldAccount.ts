@@ -9,6 +9,7 @@ import {
   GoldAccountMovementsResponse,
   CreateGoldAccountResponse,
   CreateGoldAccountPayload,
+  AccountsFilters,
 } from "@/types/goldAccount";
 
 interface UseGoldAccountReturn {
@@ -26,6 +27,7 @@ interface UseGoldAccountReturn {
   page: number;
   limit: number;
   totalCount: number;
+  filters: AccountsFilters;
 
   // Per-function loading/error states
   balanceLoading: boolean;
@@ -43,9 +45,11 @@ interface UseGoldAccountReturn {
   // Actions
   setPage: (page: number) => void;
   setLimit: (limit: number) => void;
+  setFilters: (filters: AccountsFilters) => void;
+  resetFilters: () => void;
   resetSelectedAccount: () => void;
   createAccount: (payload: CreateGoldAccountPayload) => Promise<void>;
-  fetchAccounts: (limit?: number, page?: number) => Promise<void>;
+  fetchAccounts: () => Promise<void>;
   fetchAccountByIgan: (igan: string) => Promise<void>;
   fetchAccountBalance: (igan: string, currency?: string) => Promise<void>;
   fetchAccountAssets: (igan: string, params?: any) => Promise<void>;
@@ -55,11 +59,6 @@ interface UseGoldAccountReturn {
 
 export const useGoldAccount = (): UseGoldAccountReturn => {
   const store = useGoldAccountStore();
-
-  // Auto-fetch accounts on mount if empty
-  useEffect(() => {
-     store.fetchAccounts(store.limit, store.page);
-  }, [store.page, store.limit]);
 
   return {
     // Data
@@ -77,6 +76,7 @@ export const useGoldAccount = (): UseGoldAccountReturn => {
     page: store.page,
     limit: store.limit,
     totalCount: store.totalCount,
+    filters: store.filters,
 
     // Per-function loading/error
     balanceLoading: store.balanceLoading,
@@ -94,6 +94,8 @@ export const useGoldAccount = (): UseGoldAccountReturn => {
     // Actions
     setPage: store.setPage,
     setLimit: store.setLimit,
+    setFilters: store.setFilters,
+    resetFilters: store.resetFilters,
     resetSelectedAccount: store.resetSelectedAccount,
     createAccount: store.createAccount,
     fetchAccounts: store.fetchAccounts,
