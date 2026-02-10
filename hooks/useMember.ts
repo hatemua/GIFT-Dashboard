@@ -45,6 +45,7 @@ interface UseMemberReturn {
 
   // Setters
   setFilters: (filters: MembersFilters) => void;
+  resetFilters: () => void;
   setPage: (page: number) => void;
   setLimit: (limit: number) => void;
   reset: () => void;
@@ -78,6 +79,7 @@ export const useMember = (): UseMemberReturn => {
     fetchMemberByGic,
     fetchMemberAccounts,
     setFilters,
+    resetFilters,
     setPage,
     setLimit,
     reset,
@@ -106,6 +108,7 @@ export const useMember = (): UseMemberReturn => {
     fetchMemberByGic,
     fetchMemberAccounts,
     setFilters,
+    resetFilters,
     setPage,
     setLimit,
     reset,

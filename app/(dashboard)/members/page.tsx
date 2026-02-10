@@ -30,7 +30,7 @@ export default function MembersPage() {
     setPage,
     fetchMembers,
     addToBlacklist,
-    reset,
+    resetFilters,
   } = useMember();
 
   const hasMembers = members.length > 0;
@@ -60,9 +60,8 @@ export default function MembersPage() {
   }, []);
 
   useEffect(() => {
-    console.log(filters, 'filters')
     fetchMembers();
-    return () => reset();
+    return () => resetFilters();
   }, [page, limit, JSON.stringify(filters)]);
 
   return (

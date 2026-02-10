@@ -48,6 +48,7 @@ interface MemberState {
   fetchMemberAccounts: (member_gic: string) => Promise<void>;
 
   setFilters: (filters: MembersFilters) => void;
+  resetFilters: () => void;
   setPage: (page: number) => void;
   setLimit: (limit: number) => void;
   reset: () => void;
@@ -182,7 +183,8 @@ export const useMemberStore = create<MemberState>((set, get) => ({
   fetchMemberByGic: async (member_gic: string) => {
     set({ loading: true, error: undefined, selectedMember: undefined });
     try {
-      const data: GetMemberResponse = await memberService.getMemberByGic(member_gic);
+      const data: GetMemberResponse =
+        await memberService.getMemberByGic(member_gic);
       set({ selectedMember: data });
     } catch (err: any) {
       const message =
@@ -196,7 +198,11 @@ export const useMemberStore = create<MemberState>((set, get) => ({
   },
 
   fetchMemberAccounts: async (member_gic: string) => {
-    set({ accountsLoading: true, accountsError: undefined, memberAccounts: undefined });
+    set({
+      accountsLoading: true,
+      accountsError: undefined,
+      memberAccounts: undefined,
+    });
     try {
       const data: GetMemberAccountsResponse =
         await memberService.getMemberAccounts(member_gic);
@@ -214,8 +220,13 @@ export const useMemberStore = create<MemberState>((set, get) => ({
 
   setFilters: (filters: MembersFilters) =>
     set((state) => ({ filters: { ...state.filters, ...filters }, page: 1 })),
+  resetFilters: () =>
+    set({
+      filters: {},
+      page: 1,
+    }),
 
   setPage: (page: number) => set({ page }),
   setLimit: (limit: number) => set({ limit }),
-  reset: () => {}
+  reset: () => {},
 }));
