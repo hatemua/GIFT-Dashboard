@@ -1,19 +1,26 @@
 import { api } from "@/lib/axios";
-import { CreateVaultSitePayload } from "@/types/vault-site";
+import {
+  CreateVaultSitePayload,
+  GetVaultSitesParams,
+} from "@/types/vault-site";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // Get list of vault sites
-export const fetchVaultSitesApi = async (
-  limit = 50,
-  offset = 0,
-  country?: string,
-) => {
-  const params: any = { limit, offset };
-  if (country) params.country = country;
-
+export const fetchVaultSitesApi = async ({
+  offset,
+  limit,
+  filters = {},
+}: GetVaultSitesParams) => {
   const response = await api.get(`${API_URL}/vault-sites`, {
-    params,
+    params: {
+      offset,
+      limit,
+      country: filters.country,
+      search: filters.search,
+      from_date: filters.from_date,
+      to_date: filters.to_date,
+    },
   });
 
   return response.data;
@@ -33,18 +40,23 @@ export const createVaultSiteApi = async (payload: CreateVaultSitePayload) => {
 
 // Get vaults for a specific vault site
 export const fetchVaultsByVaultSiteApi = async (vaultSiteId: string) => {
-  const response = await api.get(`${API_URL}/vault-sites/${vaultSiteId}/vaults`);
+  const response = await api.get(
+    `${API_URL}/vault-sites/${vaultSiteId}/vaults`,
+  );
   return response.data;
 };
 
 // Get inventory for a specific vault site, with optional grouping
 export const fetchVaultSiteInventoryApi = async (
   vaultSiteId: string,
-  groupBy?: "owner" | "product_type" | "asset_status" | "vault_id" | undefined
+  groupBy?: "owner" | "product_type" | "asset_status" | "vault_id" | undefined,
 ) => {
   const params: any = {};
   if (groupBy) params.group_by = groupBy;
 
-  const response = await api.get(`${API_URL}/vault-sites/${vaultSiteId}/inventory`, { params });
+  const response = await api.get(
+    `${API_URL}/vault-sites/${vaultSiteId}/inventory`,
+    { params },
+  );
   return response.data;
 };

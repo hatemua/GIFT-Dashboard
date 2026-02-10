@@ -13,7 +13,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useMember } from "@/hooks/useMember";
 import { DATE_OPTIONS } from "@/constants/filters";
 import { useGoldAccount } from "@/hooks/useGoldAccount";
 
@@ -36,7 +35,7 @@ const AccountsFilters = () => {
   };
 
   return (
-    <div className="mb-3 rounded-xl border border-border/60 bg-card p-2 shadow-sm">
+    <div className="mb-3 roundaed-xl border border-border/60 bg-card p-2 shadow-sm">
       <div className="flex flex-wrap items-center gap-3">
         {/* Search */}
         <div className="flex-1 min-w-[260px]">

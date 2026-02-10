@@ -9,6 +9,7 @@ import {
 import type {
   VaultSiteStore,
   CreateVaultSitePayload,
+  VaultSiteFilters,
 } from "@/types/vault-site";
 
 export const useVaultSiteStore = create<VaultSiteStore>((set, get) => ({
@@ -26,6 +27,7 @@ export const useVaultSiteStore = create<VaultSiteStore>((set, get) => ({
   country: undefined,
   loading: false,
   error: null,
+  filters: {},
 
   // actions
   fetchVaultSites: async (
@@ -36,7 +38,9 @@ export const useVaultSiteStore = create<VaultSiteStore>((set, get) => ({
     set({ loading: true, error: null });
 
     try {
-      const data = await fetchVaultSitesApi(limit, offset, country);
+      const { offset, limit, filters } = get();
+
+      const data = await fetchVaultSitesApi({ offset, limit, filters });
 
       set({
         vaultSites: data.vault_sites ?? [],
@@ -168,7 +172,16 @@ export const useVaultSiteStore = create<VaultSiteStore>((set, get) => ({
   setCountry: (country) => set({ country }),
   setOffset: (offset) => set({ offset }),
   setLimit: (limit) => set({ limit }),
+  setFilters: (filters) =>
+    set((state) => ({
+      filters: { ...state.filters, ...filters },
+      offset: 1,
+    })),
 
-  // optional helpers
+  resetFilters: () =>
+    set({
+      filters: {},
+      offset: 1,
+    }),
   resetVaultSiteDetails: () => set({ vaultSiteDetails: null }),
 }));

@@ -18,14 +18,22 @@ import { Button } from "@/components/ui/button";
 import { Grid3x3, List, Plus } from "lucide-react";
 
 export default function GoldAccountsPage() {
-  const { accounts, totalCount, page, limit, loading, filters, setPage, fetchAccounts } =
-    useGoldAccount();
+  const {
+    accounts,
+    totalCount,
+    page,
+    limit,
+    loading,
+    filters,
+    setPage,
+    fetchAccounts,
+  } = useGoldAccount();
 
   const [view, setView] = React.useState<"grid" | "table">("grid");
 
   const onViewChange = (newView: "grid" | "table") => setView(newView);
 
-    useEffect(() => {
+  useEffect(() => {
     fetchAccounts();
   }, [page, limit, filters]);
 

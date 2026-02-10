@@ -131,7 +131,6 @@ export interface InventorySummary {
   };
 }
 
-
 export interface VaultSiteStore {
   vaultSites: VaultSite[];
   vaultSiteDetails: vaultSiteDetails | null;
@@ -146,6 +145,7 @@ export interface VaultSiteStore {
   country?: string;
   loading: boolean;
   error: string | null;
+  filters: VaultSiteFilters;
 
   fetchVaultSites: (
     limit?: number,
@@ -155,20 +155,34 @@ export interface VaultSiteStore {
 
   fetchVaultSiteById: (id: string) => Promise<void>;
 
-  createVaultSite: (
-    payload: CreateVaultSitePayload
-  ) => Promise<VaultSite>;
+  createVaultSite: (payload: CreateVaultSitePayload) => Promise<VaultSite>;
 
   fetchVaultsByVaultSiteId: (vaultSiteId: string) => Promise<void>;
 
   fetchVaultSiteInventory: (
     vaultSiteId: string,
-    groupBy?: "owner" | "product_type" | "asset_status" | "vault_id"
+    groupBy?: "owner" | "product_type" | "asset_status" | "vault_id",
   ) => Promise<void>;
 
   setVaultSiteSummary: (summary: InventorySummary | null) => void;
   setCountry: (country?: string) => void;
+  setFilters: (filters: VaultSiteFilters) => void;
+  resetFilters: () => void;
   setOffset: (offset: number) => void;
   setLimit: (limit: number) => void;
   resetVaultSiteDetails: () => void;
+}
+
+export interface VaultSiteFilters {
+  search?: string;
+  from_date?: string;
+  to_date?: string;
+  country?: string;
+}
+
+export interface GetVaultSitesParams {
+  limit: number;
+  offset: number;
+  country?: string;
+  filters: VaultSiteFilters;
 }

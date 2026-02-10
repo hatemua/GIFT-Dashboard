@@ -15,6 +15,7 @@ export const useVaultSite = () => {
     country,
     loading,
     error,
+    filters,
     fetchVaultSites,
     fetchVaultSiteById,
     createVaultSite,
@@ -23,6 +24,8 @@ export const useVaultSite = () => {
     setCountry,
     setOffset,
     setLimit,
+    setFilters,
+    resetFilters,
     resetVaultSiteDetails,
   } = useVaultSiteStore();
 
@@ -40,6 +43,7 @@ export const useVaultSite = () => {
     country,
     loading,
     error,
+    filters,
     fetchVaultSites,
     fetchVaultSiteById,
     createVaultSite,
@@ -48,6 +52,8 @@ export const useVaultSite = () => {
     setCountry,
     setOffset,
     setLimit,
+    setFilters,
+    resetFilters,
     resetVaultSiteDetails,
   };
 };
