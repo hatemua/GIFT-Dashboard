@@ -16,16 +16,19 @@ import {
 import { useToast } from "@/providers/toast-provider";
 import { MintAssetForm } from "@/types/asset";
 import { Building, Shield, Upload } from "lucide-react";
-import { useMemo } from "react";
 import { SingleDocumentUpload } from "@/components/features/common/SingleDocumentUpload";
+import { useAsset } from "@/hooks/useAsset";
+import { Select, SelectItem } from "@/components/ui/select";
 
 export default function MintAssetPage() {
+  const { mintAsset } = useAsset();
   const { showToast } = useToast();
 
   const {
+    control,
     register,
     handleSubmit,
-    control,
+    setValue,
     reset,
     formState: { errors, isSubmitting },
   } = useForm<MintAssetForm>({
@@ -42,27 +45,22 @@ export default function MintAssetPage() {
       certification_framework: "",
       auto_verify_hash: true,
       certificate_base64: "",
-      certificate_path: undefined
+      certificate_path: undefined,
     },
   });
 
-  const docId = useMemo(() => crypto.randomUUID(), []);
-  const sodId = useMemo(() => crypto.randomUUID(), []);
-
   const onSubmit = async (data: MintAssetForm) => {
     try {
-      // Exclude certificate file; handled separately by SingleDocumentUpload
       const payload = { ...data };
 
-      console.log("Mint payload:", payload);
-
+      await mintAsset(payload);
       showToast({
         title: "Success",
         message: "Asset minted successfully",
         variant: "success",
       });
 
-      reset();
+      // reset();
     } catch (err: any) {
       showToast({
         title: "Error",
@@ -110,7 +108,9 @@ export default function MintAssetPage() {
               label="Serial Number"
               placeholder="REF-2026-001"
               error={errors.serial_number?.message}
-              {...register("serial_number", { required: "Required" })}
+              {...register("serial_number", {
+                required: "Serial number is required",
+              })}
               className="bg-gray-50/50"
             />
 
@@ -119,7 +119,9 @@ export default function MintAssetPage() {
               label="Refiner Name"
               placeholder="Swiss Refinery AG"
               error={errors.refiner_name?.message}
-              {...register("refiner_name", { required: "Required" })}
+              {...register("refiner_name", {
+                required: "Refiner name is required",
+              })}
               className="bg-gray-50/50"
             />
 
@@ -128,7 +130,9 @@ export default function MintAssetPage() {
               label="Product Type"
               placeholder="Gold Bar / Coin / Ingot"
               error={errors.gold_product_type_id?.message}
-              {...register("gold_product_type_id", { required: "Required" })}
+              {...register("gold_product_type_id", {
+                required: "Product type is required",
+              })}
               className="bg-gray-50/50"
             />
 
@@ -138,7 +142,11 @@ export default function MintAssetPage() {
               label="Weight (grams)"
               placeholder="e.g. 1000"
               error={errors.weight_grams?.message}
-              {...register("weight_grams", { required: "Required", min: 1 })}
+              {...register("weight_grams", {
+                required: "Weight is required",
+                min: { value: 1, message: "Weight must be at least 1 gram" },
+                valueAsNumber: true,
+              })}
               className="bg-gray-50/50"
             />
 
@@ -149,7 +157,10 @@ export default function MintAssetPage() {
               label="Fineness"
               placeholder="e.g. 0.9999"
               error={errors.fineness?.message}
-              {...register("fineness", { required: "Required" })}
+              {...register("fineness", {
+                required: "Fineness is required",
+                valueAsNumber: true,
+              })}
               className="bg-gray-50/50"
             />
 
@@ -172,7 +183,9 @@ export default function MintAssetPage() {
               label="Traceability GIC"
               placeholder="GIC-2025-0001"
               error={errors.traceability_gic?.message}
-              {...register("traceability_gic", { required: "Required" })}
+              {...register("traceability_gic", {
+                required: "Traceability GIC is required",
+              })}
               className="bg-gray-50/50"
             />
 
@@ -181,15 +194,28 @@ export default function MintAssetPage() {
               label="Initial Owner IGAN"
               placeholder="IGAN-2025-12345"
               error={errors.initial_owner_igan?.message}
-              {...register("initial_owner_igan", { required: "Required" })}
+              {...register("initial_owner_igan", {
+                required: "Initial owner IGAN is required",
+              })}
               className="bg-gray-50/50"
             />
 
-            <Input
-              label="Certification Framework"
-              placeholder="LBMA / ISO 17025"
-              {...register("certification_framework")}
-              className="bg-gray-50/50"
+            <Controller
+              control={control}
+              name="certification_framework"
+              rules={{ required: "Certification framework is required" }}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  label="Certification Framework"
+                  placeholder="Select framework"
+                  error={errors.certification_framework?.message}
+                  className="bg-gray-50/50"
+                >
+                  <SelectItem value="UAE">UAE</SelectItem>
+                  <SelectItem value="LBMA">LBMA</SelectItem>
+                </Select>
+              )}
             />
           </CardContent>
         </Card>
@@ -202,7 +228,9 @@ export default function MintAssetPage() {
                 <Shield className="h-5 w-5 text-purple-600" />
               </div>
               <div>
-                <CardTitle className="text-lg">Certification & Compliance</CardTitle>
+                <CardTitle className="text-lg">
+                  Certification & Compliance
+                </CardTitle>
                 <CardDescription>
                   Certification status and supporting documentation
                 </CardDescription>
@@ -211,53 +239,36 @@ export default function MintAssetPage() {
           </CardHeader>
 
           <CardContent className="space-y-6">
-            {/* Certified Asset */}
-            <label className="flex items-center justify-between rounded-lg border p-4 bg-gray-50/40">
-              <div>
-                <p className="text-sm font-medium text-gray-900">Certified Asset</p>
-                <p className="text-xs text-muted-foreground">
-                  Confirms this asset meets certification standards
-                </p>
-              </div>
-              <input
-                type="checkbox"
-                className="h-4 w-4 accent-gold-500"
-                {...register("certified")}
-              />
-            </label>
-
-            {/* Auto Verify Hash */}
-            <label className="flex items-center justify-between rounded-lg border p-4 bg-gray-50/40">
-              <div>
-                <p className="text-sm font-medium text-gray-900">Auto Verify Hash</p>
-                <p className="text-xs text-muted-foreground">
-                  Automatically verify certificate hash against blockchain record
-                </p>
-              </div>
-              <input
-                type="checkbox"
-                className="h-4 w-4 accent-gold-500"
-                {...register("auto_verify_hash")}
-              />
-            </label>
-
             {/* Single Document Upload */}
             <div className="space-y-3">
               <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
                 <Upload className="h-4 w-4" />
                 Certification Document (PDF)
               </label>
-
+              <Controller
+                control={control}
+                name="certificate_base64"
+                rules={{ required: "Certificate document is required" }}
+                render={({ field }) => <input type="hidden" {...field} />}
+              />
               <SingleDocumentUpload
-                sod_id={""}
-                document_id={docId}
                 document_type="certificate"
                 auto_verify_hash
+                onVerified={(base64) =>
+                  setValue("certificate_base64", base64, {
+                    shouldValidate: true,
+                  })
+                }
               />
 
               <p className="text-xs text-muted-foreground">
                 Upload and verify the official certification document
               </p>
+              {errors.certificate_base64 && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.certificate_base64.message}
+                </p>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -266,8 +277,12 @@ export default function MintAssetPage() {
         <div className="sticky bottom-6 bg-white/90 backdrop-blur-sm border border-gray-200 rounded-xl p-4 shadow-lg">
           <div className="flex items-center justify-between">
             <div className="text-sm text-gray-600">
-              <p className="font-medium">Review all information before submission</p>
-              <p className="text-xs mt-1">All fields marked with * are required</p>
+              <p className="font-medium">
+                Review all information before submission
+              </p>
+              <p className="text-xs mt-1">
+                All fields marked with * are required
+              </p>
             </div>
 
             <div className="flex items-center gap-3">

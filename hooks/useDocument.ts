@@ -4,6 +4,7 @@ import {
   DocumentUploadInput,
   DocumentUploadSetInput,
   DocumentUploadResponse,
+  DocumentVerification,
 } from "@/types/document";
 
 export const useDocument = () => {
@@ -13,14 +14,20 @@ export const useDocument = () => {
     selectedDocument,
     documentHash,
     verificationResult,
+
     loading,
     error,
+
+    verifyLoading,
+    verifyError,
+
     uploadDocument,
     uploadDocumentSet,
     fetchDocumentHash,
     verifyDocument,
     setSelectedDocument,
     clearError,
+    clearVerifyError,
   } = useDocumentStore();
 
   const handleUploadDocument = useCallback(
@@ -40,7 +47,7 @@ export const useDocument = () => {
   );
 
   const handleVerifyDocument = useCallback(
-    (document_id: string, document_base64: string): Promise<void> =>
+    (document_id: string, document_base64: string): Promise<DocumentVerification | undefined> =>
       verifyDocument(document_id, document_base64),
     [verifyDocument]
   );
@@ -52,19 +59,31 @@ export const useDocument = () => {
 
   const handleClearError = useCallback(() => clearError(), [clearError]);
 
+  const handleClearVerifyError = useCallback(
+    () => clearVerifyError(),
+    [clearVerifyError]
+  );
+
   return {
     documentSet,
     documents,
     selectedDocument,
     documentHash,
     verificationResult,
+
     loading,
     error,
+
+    verifyLoading,
+    verifyError,
+
     uploadDocument: handleUploadDocument,
     uploadDocumentSet: handleUploadDocumentSet,
     fetchDocumentHash: handleFetchDocumentHash,
     verifyDocument: handleVerifyDocument,
+
     selectDocument: handleSelectDocument,
     clearError: handleClearError,
+    clearVerifyError: handleClearVerifyError,
   };
 };

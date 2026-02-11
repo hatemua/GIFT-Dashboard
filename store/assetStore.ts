@@ -135,13 +135,15 @@ export const useAssetStore = create<AssetState>((set, get) => ({
       set({ assets: [...get().assets, data], loading: false });
       return data;
     } catch (err: any) {
+      console.log(err, "errrrrr")
       const message =
-        err?.response?.data?.error_description ||
+        err?.response?.data?.message ||
         err?.message ||
-        "Failed to mint asset";
-
-      set({ error: message, loading: false });
+        "Failed to create member";
+      set({ error: message });
       throw new Error(message);
+    } finally {
+      set({ loading: false });
     }
   },
 
