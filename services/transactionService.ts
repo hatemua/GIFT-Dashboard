@@ -1,5 +1,6 @@
 import { api } from "@/lib/axios";
 import {
+  CreateTransactionInput,
   GetTransactionsParams,
   Transaction,
   TransactionDetails,
@@ -8,7 +9,7 @@ import {
 } from "@/types/transaction";
 
 export const transactionService = {
-  createTransaction: async (data: Transaction) => {
+  createTransaction: async (data: CreateTransactionInput) => {
     const response = await api.post("/transactions/create", data);
     return response.data;
   },

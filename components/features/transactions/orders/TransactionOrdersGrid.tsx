@@ -33,6 +33,10 @@ const statusStyles: Record<
     label: "Pending counterparty",
     className: "bg-sky-50 text-sky-700 ring-sky-200",
   },
+  PENDING_SIGNATURE: {
+    label: "Pending signature",
+    className: "bg-sky-50 text-sky-700 ring-1 ring-sky-200",
+  },
 };
 
 const transactionTypeStyles: Record<
@@ -91,10 +95,10 @@ const TransactionOrdersGrid = ({ transactions }: Props) => {
                 <span
                   className={cn(
                     "rounded-full px-2 py-0.5 text-[11px] font-medium ring-1 whitespace-nowrap",
-                    status.className,
+                    status?.className,
                   )}
                 >
-                  {status.label}
+                  {status?.label}
                 </span>
               </div>
 

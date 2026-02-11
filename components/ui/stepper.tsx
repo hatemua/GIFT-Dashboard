@@ -81,15 +81,9 @@ export function StepperWizard({
                       : isActive
                         ? "#fff"
                         : "#f3f4f6",
-                    color: isCompleted
-                      ? "#fff"
-                      : isActive
-                        ? GOLD
-                        : "#9ca3af",
+                    color: isCompleted ? "#fff" : isActive ? GOLD : "#9ca3af",
                     border: isActive ? `1px solid ${GOLD}` : "none",
-                    boxShadow: isActive
-                      ? `0 0 0 4px ${GOLD_SOFT}`
-                      : "none",
+                    boxShadow: isActive ? `0 0 0 4px ${GOLD_SOFT}` : "none",
                   }}
                 >
                   {isCompleted ? (
@@ -189,7 +183,7 @@ export function StepperWizard({
   return (
     <div className={cn("space-y-8", className)}>
       {/* Header */}
-      <div className="relative">
+      <div className="relative max-w-md mx-auto">
         <div
           className="absolute top-4 left-0 right-0 h-1.5 rounded-full"
           style={{ backgroundColor: GOLD_SOFT }}
@@ -208,11 +202,7 @@ export function StepperWizard({
                   style={{
                     borderColor: isCompleted || isActive ? GOLD : "#e5e7eb",
                     backgroundColor: isCompleted ? GOLD : "#fff",
-                    color: isCompleted
-                      ? "#fff"
-                      : isActive
-                        ? GOLD
-                        : "#9ca3af",
+                    color: isCompleted ? "#fff" : isActive ? GOLD : "#9ca3af",
                   }}
                 >
                   {isCompleted ? (
@@ -285,8 +275,10 @@ export function StepperWizard({
             className="min-w-24 text-white"
             style={{ backgroundColor: GOLD }}
           >
-            Next
-            <ChevronRight className="ml-2 h-4 w-4" />
+            <div className="flex gap-2 items-center">
+              <span>Next</span>
+              <ChevronRight className="h-4 w-4" />
+            </div>
           </Button>
         ) : (
           <Button

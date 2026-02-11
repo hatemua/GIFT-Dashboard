@@ -17,6 +17,14 @@ export const TRANSACTION_TYPE_OPTIONS = [
   { label: "Collateral", value: "COLLATERAL", icon: ShieldCheck },
 ] as const;
 
+export const TRANSACTION_TYPE_OPTIONS2 = [
+  { label: "All", value: "", icon: Archive },
+  { label: "Transfer", value: "transfer", icon: ArrowRightLeft },
+  { label: "Sale", value: "sale", icon: ShoppingCart },
+  { label: "Purchase", value: "purchase", icon: CreditCard },
+  { label: "Collateral", value: "collateral", icon: ShieldCheck },
+] as const;
+
 export const TRANSACTION_STATUS_OPTIONS = [
   { label: "All", value: "", icon: Archive },
   { label: "Executed", value: "EXECUTED", icon: CheckCircle2 },

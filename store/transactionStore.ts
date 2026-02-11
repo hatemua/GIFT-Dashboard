@@ -7,6 +7,7 @@ import {
   TransactionOrdersResponse,
   TransactionDetails,
   TransactionEventsResponse,
+  CreateTransactionInput,
 } from "@/types/transaction";
 
 interface TransactionState {
@@ -22,7 +23,7 @@ interface TransactionState {
   filters: TransactionOrdersFilters;
 
   fetchTransactions: () => Promise<void>;
-  createTransaction: (transaction: Transaction) => Promise<Transaction | undefined>;
+  createTransaction: (transaction: CreateTransactionInput) => Promise<Transaction | undefined>;
   fetchTransactionByReference: (reference: string) => Promise<void>;
   fetchTransactionEvents: (reference: string) => Promise<void>;
   setFilters: (filters: TransactionOrdersFilters) => void;
@@ -62,11 +63,10 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
     }
   },
 
-  createTransaction: async (transaction: Transaction) => {
+  createTransaction: async (transaction: CreateTransactionInput) => {
     set({ loading: true, error: undefined });
     try {
       const data = await transactionService.createTransaction(transaction);
-      set({ transactions: [data, ...get().transactions] });
       return data;
     } catch (err: any) {
       const message =

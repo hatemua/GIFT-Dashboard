@@ -27,18 +27,19 @@ const statusStyles: Record<
 > = {
   EXECUTED: {
     label: "Executed",
-    className:
-      "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200",
+    className: "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200",
   },
   PENDING_EXECUTION: {
     label: "Pending execution",
-    className:
-      "bg-amber-50 text-amber-700 ring-1 ring-amber-200",
+    className: "bg-amber-50 text-amber-700 ring-1 ring-amber-200",
   },
   PENDING_COUNTERPARTY: {
     label: "Pending counterparty",
-    className:
-      "bg-sky-50 text-sky-700 ring-1 ring-sky-200",
+    className: "bg-sky-50 text-sky-700 ring-1 ring-sky-200",
+  },
+  PENDING_SIGNATURE: {
+    label: "Pending signature",
+    className: "bg-sky-50 text-sky-700 ring-1 ring-sky-200",
   },
 };
 
@@ -79,17 +80,16 @@ interface TransactionHeaderProps {
 export const TransactionHeader: React.FC<TransactionHeaderProps> = ({
   transaction,
 }) => {
-  const typeStyle =
-    transactionTypeStyles[transaction.type as TransactionType];
-  const statusStyle =
-    statusStyles[transaction.status as TransactionStatus];
+  if (!transaction) return null;
+  const typeStyle = transactionTypeStyles[transaction.type as TransactionType];
+  const statusStyle = statusStyles[transaction.status as TransactionStatus];
 
   return (
     <div
       className={cn(
         "group relative flex flex-col lg:flex-row lg:items-center justify-between gap-6",
         "rounded-2xl border border-slate-200 bg-white/80 backdrop-blur",
-        "p-6"
+        "p-6",
       )}
     >
       {/* Left */}
@@ -100,7 +100,7 @@ export const TransactionHeader: React.FC<TransactionHeaderProps> = ({
             className={cn(
               "flex items-center justify-center rounded-xl p-3",
               "transition-transform group-hover:scale-105",
-              typeStyle.className
+              typeStyle.className,
             )}
           >
             {typeStyle.icon}
@@ -123,7 +123,7 @@ export const TransactionHeader: React.FC<TransactionHeaderProps> = ({
                 <span className="text-sm font-semibold text-slate-900">
                   {formatCurrency(
                     transaction.valuation.amount,
-                    transaction.valuation.currency
+                    transaction.valuation.currency,
                   )}
                 </span>
               )}

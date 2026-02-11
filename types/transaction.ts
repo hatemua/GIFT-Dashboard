@@ -8,7 +8,16 @@ export interface Transaction {
   valuation_currency: string;
   transaction_value: number | null;
 }
-
+export interface CreateTransactionInput {
+  transaction_reference: string;
+  transaction_type: TransactionType;
+  counterparty_gic: string;
+  initiator_gic: string;
+  requested_assets: string[];
+  valuation_date: string;
+  valuation_currency: string;
+  transaction_value: number;
+}
 export interface TransactionState {
   transactions: Transaction[];
   loading: boolean;
@@ -39,17 +48,17 @@ export interface TransactionOrdersResponse {
 export interface TransactionItem {
   transaction_reference: string;
   transaction_id: string;
-  transaction_type:  TransactionType;
+  transaction_type: TransactionType;
   valuation_date: string;
   valuation_currency: string;
   status: TransactionStatus;
   transaction_value: number;
   counterparty_gic: string;
   initiator_gic: string;
-  createdAt: string; 
-  updatedAt: string;   
-  created_at: string;  
-  updated_at: string;  
+  createdAt: string;
+  updatedAt: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface TransactionDetails {
@@ -104,6 +113,9 @@ export interface TransactionEventsResponse {
   total_events: number;
 }
 
-
-export type TransactionType = 'TRANSFER'| 'SALE'| 'PURCHASE'| 'COLLATERAL';
-export type TransactionStatus = "EXECUTED" | "PENDING_EXECUTION" | "PENDING_COUNTERPARTY";
+export type TransactionType = "TRANSFER" | "SALE" | "PURCHASE" | "COLLATERAL";
+export type TransactionStatus =
+  | "EXECUTED"
+  | "PENDING_EXECUTION"
+  | "PENDING_COUNTERPARTY"
+  | "PENDING_SIGNATURE";

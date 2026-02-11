@@ -88,10 +88,14 @@ export default function NewGoldAccountPage() {
               {/* IGAN */}
               <div className="space-y-1.5">
                 <Input
+                  required
                   label="IGAN"
                   placeholder="IGAN-2025-12345"
+                  error={errors.igan?.message}
                   className="h-11 rounded-md border-gray-200 focus:border-amber-500 focus:ring-amber-100"
-                  {...register("igan")}
+                  {...register("igan", {
+                    required: "IGAN is required",
+                  })}
                 />
               </div>
 
@@ -136,9 +140,10 @@ export default function NewGoldAccountPage() {
                       error={errors.gold_account_purpose?.message}
                       className="h-11 rounded-md border-gray-200 focus:border-amber-500 focus:ring-amber-100"
                       {...field}
-                                    displayLabel={(val) =>
-                                      GOLD_ACCOUNT_PURPOSES.find((t) => t.value === val)?.label || val
-                                    }
+                      displayLabel={(val) =>
+                        GOLD_ACCOUNT_PURPOSES.find((t) => t.value === val)
+                          ?.label || val
+                      }
                     >
                       {GOLD_ACCOUNT_PURPOSES.map((purpose) => (
                         <SelectItem key={purpose.value} value={purpose.value}>
