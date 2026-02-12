@@ -28,8 +28,8 @@ export const useVaultSiteStore = create<VaultSiteStore>((set, get) => ({
   error: null,
   vaultsLoading: false,
   vaultsError: null,
-      inventoryLoading: false,
-    inventoryError: null,
+  inventoryLoading: false,
+  inventoryError: null,
   filters: {},
 
   // actions
@@ -83,7 +83,6 @@ export const useVaultSiteStore = create<VaultSiteStore>((set, get) => ({
       const data = await createVaultSiteApi(payload);
 
       set({
-        vaultSites: [data, ...get().vaultSites],
         loading: false,
       });
 
@@ -149,7 +148,10 @@ export const useVaultSiteStore = create<VaultSiteStore>((set, get) => ({
           set({ inventoryByOwner: data.by_owner, inventoryLoading: false });
           break;
         case "product_type":
-          set({ inventoryByProductType: data.product_type, inventoryLoading: false });
+          set({
+            inventoryByProductType: data.product_type,
+            inventoryLoading: false,
+          });
           break;
         case "vault_id":
           set({ inventoryByVault: data.vault_id, inventoryLoading: false });

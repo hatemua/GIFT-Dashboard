@@ -1,7 +1,7 @@
 export interface DocumentUploadInput {
   document_id: string;
   document_base64: string;
-  document_type: string; // e.g., 'certificate'
+  document_type: DOC_TYPE; // e.g., 'certificate'
   document_url: string;
   sod_id?: string;
 }
@@ -11,7 +11,7 @@ export interface DocumentUploadResponse {
   document_id: string;
   sod_id: string;
   document_hash: string;
-  document_type: string;
+  document_type: DOC_TYPE;
   file_size_bytes: number;
   stored_at: string; // ISO date string
   blockchain_tx: string;
@@ -28,8 +28,8 @@ export interface DocumentHash {
   sod_id: string;
   document_hash: string;
   set_hash: string;
-  document_type: string;
-  certification_date: string; // ISO date string
+  document_type: DOC_TYPE;
+  certification_date: string;
   blockchain_reference: string;
   block_number: number;
 }
@@ -48,7 +48,7 @@ export interface DocumentVerification {
 export interface DocumentSetItem {
   document_id: string;
   document_hash: string;
-  document_type: string;
+  document_type: DOC_TYPE;
 }
 
 export interface DocumentSetUploadResponse {
@@ -61,3 +61,5 @@ export interface DocumentSetUploadResponse {
   stored_at: string; // ISO date string
   blockchain_tx: string;
 }
+
+export type DOC_TYPE = 'audit_report' | 'agreement' | 'certificate';

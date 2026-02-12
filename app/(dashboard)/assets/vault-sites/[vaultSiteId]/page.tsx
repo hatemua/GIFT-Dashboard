@@ -20,7 +20,9 @@ interface VaultDetailsPageProps {
   params: Promise<{ vaultSiteId: string }>;
 }
 
-export default function VaultSiteDetailsPage({ params }: VaultDetailsPageProps) {
+export default function VaultSiteDetailsPage({
+  params,
+}: VaultDetailsPageProps) {
   const { vaultSiteId } = React.use(params);
   const { vaultSiteDetails, loading, fetchVaultSiteById } = useVaultSite();
   const [hasFetched, setHasFetched] = useState(false);
@@ -40,6 +42,7 @@ export default function VaultSiteDetailsPage({ params }: VaultDetailsPageProps) 
         breadcrumbs={[
           { label: "Dashboard", href: "/dashboard" },
           { label: "Vault Sites", href: "/assets/vault-sites" },
+          { label: vaultSiteId },
         ]}
       />
       {loading || !hasFetched ? (

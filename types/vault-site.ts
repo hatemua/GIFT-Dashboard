@@ -71,10 +71,10 @@ export interface CreateVaultSitePayload {
   operational_address: string;
   city: string;
   state_or_province: string;
-  postal_code: string;
+  postal_code?: string | undefined;
   country: string;
   timezone: string;
-  gps_coordinates: string;
+  gps_coordinates?: string;
   number_of_vaults: number;
   maximum_weight_in_gold_kg: number;
   opening_hours: string;

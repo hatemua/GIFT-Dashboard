@@ -16,18 +16,27 @@ import { Building, MapPin, Shield, FileText, Upload } from "lucide-react";
 import { useVaultSite } from "@/hooks/useVaultSite";
 import { CreateVaultSitePayload } from "@/types/vault-site";
 import { useToast } from "@/providers/toast-provider";
-import { DocumentSetUpload } from "@/components/features/common/DocumentSetUpload";
 import { OpeningHours } from "@/components/features/assets/vault-sites/new/OpeningHours";
+import { FileUpload } from "@/components/ui/file-upload";
+import { useState } from "react";
+import { useDocument } from "@/hooks/useDocument";
+import { DOC_TYPE } from "@/types/document";
+import { fileToBase64 } from "@/lib/utils";
 
 export default function NewVaultSitePage() {
   const { showToast } = useToast();
 
   const { createVaultSite } = useVaultSite();
-  const sod_id = `SOD_${crypto.randomUUID()}`;
+  const [insuranceFiles, setInsuranceFiles] = useState<File[]>([]);
+  const [auditFiles, setAuditFiles] = useState<File[]>([]);
+  const { uploadDocumentSet, loading, error, documentSet } = useDocument();
+
+  const sod_insurance_id = `SOD_INSURANCE_${crypto.randomUUID()}`;
+  const sod_audit_id = `SOD_AUDIT_${crypto.randomUUID()}`;
+
   const {
     register,
     handleSubmit,
-    setValue,
     control,
     formState: { errors, isSubmitting },
   } = useForm<CreateVaultSitePayload>({
@@ -40,7 +49,7 @@ export default function NewVaultSitePage() {
       operational_address: "",
       city: "",
       state_or_province: "",
-      postal_code: "",
+      postal_code: undefined,
       country: "",
       timezone: "",
       gps_coordinates: "",
@@ -54,23 +63,90 @@ export default function NewVaultSitePage() {
       last_audit_date: "",
     },
   });
+  const addInsuranceFiles = (newFiles: File | File[] | null) => {
+    if (!newFiles) {
+      setInsuranceFiles([]);
+      return;
+    }
+    const filesArray = Array.isArray(newFiles) ? newFiles : [newFiles];
+    setInsuranceFiles(filesArray);
+  };
+  const addAuditFiles = (newFiles: File | File[] | null) => {
+    if (!newFiles) {
+      setAuditFiles([]);
+      return;
+    }
+    const filesArray = Array.isArray(newFiles) ? newFiles : [newFiles];
+    setAuditFiles(filesArray);
+  };
 
   const onSubmit = async (data: CreateVaultSitePayload) => {
     try {
-      const payload = { ...data };
+      const payload: CreateVaultSitePayload = { ...data };
+    // Remove postal_code if empty or undefined
+    if (!payload.postal_code) {
+      delete payload.postal_code;
+    }
+        if (!payload.gps_coordinates) {
+      delete payload.gps_coordinates;
+    }
+      // Upload insurance files if any
+      if (insuranceFiles.length > 0) {
+        const insuranceDocuments = await Promise.all(
+          insuranceFiles.map(async (file) => ({
+            document_id: `DOC_${crypto.randomUUID()}`,
+            document_type: "agreement" as DOC_TYPE,
+            document_url: "https://url_of_the_document", // Replace with real URL if needed
+            document_base64: await fileToBase64(file),
+          })),
+        );
 
+        await uploadDocumentSet({
+          sod_id: sod_insurance_id,
+          documents: insuranceDocuments,
+        });
+
+        // Add SOD ID to payload
+        payload.insurance_coverage_documentation = sod_insurance_id;
+      }
+
+      // Upload audit files if any
+      if (auditFiles.length > 0) {
+        const auditDocuments = await Promise.all(
+          auditFiles.map(async (file) => ({
+            document_id: `DOC_${crypto.randomUUID()}`,
+            document_type: "audit_report" as DOC_TYPE,
+            document_url: "https://url_of_the_document",
+            document_base64: await fileToBase64(file),
+          })),
+        );
+
+        await uploadDocumentSet({
+          sod_id: sod_audit_id,
+          documents: auditDocuments,
+        });
+
+        // Add SOD ID to payload
+        payload.audit_documentation = sod_audit_id;
+      }
+
+      // Now create the vault site with document SOD IDs included
       await createVaultSite(payload);
+
       showToast({
         title: "Success",
-        message: "Asset minted successfully",
+        message: "Vault site created successfully",
         variant: "success",
       });
 
+      // Optionally reset the form and file states
       // reset();
+      // setInsuranceFiles([]);
+      // setAuditFiles([]);
     } catch (err: any) {
       showToast({
         title: "Error",
-        message: err?.message || "Failed to mint asset",
+        message: err?.message || "Failed to create vault site",
         variant: "error",
       });
     }
@@ -296,6 +372,7 @@ export default function NewVaultSitePage() {
                       value: 1,
                       message: "Minimum 1 vault required",
                     },
+                    valueAsNumber: true,
                   })}
                   className="bg-gray-50/50"
                 />
@@ -310,6 +387,7 @@ export default function NewVaultSitePage() {
                       value: 100,
                       message: "Minimum 100 kg capacity required",
                     },
+                    valueAsNumber: true
                   })}
                   className="bg-gray-50/50"
                 />
@@ -412,26 +490,15 @@ export default function NewVaultSitePage() {
                     <Upload className="h-4 w-4" />
                     Insurance Documentation
                   </label>
-                  <Controller
-                    control={control}
-                    name="insurance_coverage_documentation"
-                    rules={{
-                      required: "Insurance coverage document is required",
-                    }}
-                    render={({ field }) => <input type="hidden" {...field} />}
-                  />
-                  <DocumentSetUpload
-                    sodId={sod_id}
-                    documentType={"agreement"}
-                    onUpload={(sodId) =>
-                      setValue("insurance_coverage_documentation", sodId, {
-                        shouldValidate: true,
-                      })
-                    }
+                  <FileUpload
+                    multiple
+                    value={insuranceFiles}
+                    onChange={addInsuranceFiles}
+                    disabled={loading}
                   />
 
                   <p className="text-xs text-muted-foreground">
-                    Upload and verify the official insurance coverage documents
+                    Upload the official insurance coverage documents
                   </p>
                   {errors.insurance_coverage_documentation && (
                     <p className="text-sm text-red-500 mt-1">
@@ -450,24 +517,16 @@ export default function NewVaultSitePage() {
                     <Upload className="h-4 w-4" />
                     Audit Documentation
                   </label>
-                  <Controller
-                    control={control}
-                    name="audit_documentation"
-                    rules={{ required: "Audit document is required" }}
-                    render={({ field }) => <input type="hidden" {...field} />}
-                  />
-                  <DocumentSetUpload
-                    sodId={sod_id}
-                    documentType={"audit_report"}
-                    onUpload={(sodId) =>
-                      setValue("audit_documentation", sodId, {
-                        shouldValidate: true,
-                      })
-                    }
+
+                  <FileUpload
+                    multiple
+                    value={auditFiles}
+                    onChange={addAuditFiles}
+                    disabled={loading}
                   />
 
                   <p className="text-xs text-muted-foreground">
-                    Upload and verify the official audit documents
+                    Upload the official audit documents
                   </p>
                   {errors.audit_documentation && (
                     <p className="text-sm text-red-500 mt-1">

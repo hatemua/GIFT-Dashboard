@@ -30,9 +30,9 @@ export function Header() {
 
       {/* Right actions */}
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="icon">
+        {/* <Button variant="ghost" size="icon">
           <Bell className="h-5 w-5" />
-        </Button>
+        </Button> */}
         {/* <Button variant="ghost" size="icon">
           <Settings className="h-5 w-5" />
         </Button> */}

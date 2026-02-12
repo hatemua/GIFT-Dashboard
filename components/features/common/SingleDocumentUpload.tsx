@@ -4,9 +4,10 @@ import { useState } from "react";
 import { FileUpload } from "@/components/ui/file-upload";
 import { useDocument } from "@/hooks/useDocument";
 import { fileToBase64 } from "@/lib/utils";
+import { DOC_TYPE } from "@/types/document";
 
 interface Props {
-  document_type?: string;
+  document_type?: DOC_TYPE;
   auto_verify_hash?: boolean;
   onVerified?: (base64: string) => void;
 }
