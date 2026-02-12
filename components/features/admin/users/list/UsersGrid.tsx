@@ -21,6 +21,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useUser } from "@/hooks/useUser";
+import { useAuthStore } from "@/store/authStore";
 
 interface UsersGridProps {
   users: UserItem[];
@@ -28,6 +29,8 @@ interface UsersGridProps {
 
 export default function UsersGrid({ users }: UsersGridProps) {
   const { updateUserStatus } = useUser();
+  const { isAdmin } = useAuthStore();
+
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {users.map((user) => (
@@ -62,56 +65,48 @@ export default function UsersGrid({ users }: UsersGridProps) {
                 </div>
               </div>
 
-              <DropdownMenu>
-                <DropdownMenuTrigger>
-                  <div className="cursor-pointer h-8 w-8 p-0 rounded-full flex items-center justify-center hover:bg-slate-100">
-                    <MoreVertical className="h-4 w-4" />
-                  </div>
-                </DropdownMenuTrigger>
+              {isAdmin && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
+                    <div className="cursor-pointer h-8 w-8 p-0 rounded-full flex items-center justify-center hover:bg-slate-100">
+                      <MoreVertical className="h-4 w-4" />
+                    </div>
+                  </DropdownMenuTrigger>
 
-                <DropdownMenuContent
-                  align="end"
-                  className="z-50 min-w-[180px] rounded-lg border border-slate-200 bg-white/95 backdrop-blur-md shadow-lg py-1 animate-slide-down-fade"
-                >
-                  {/* View Details */}
-                  <DropdownMenuItem
-                    onClick={() => console.log("View Details", user.user_id)}
-                    className="flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 rounded-md transition-colors"
+                  <DropdownMenuContent
+                    align="end"
+                    className="z-50 min-w-[180px] rounded-lg border border-slate-200 bg-white/95 backdrop-blur-md shadow-lg py-1 animate-slide-down-fade"
                   >
-                    <ExternalLink className="h-4 w-4 text-slate-500" />
-                    View Details
-                  </DropdownMenuItem>
-
-                  {/* Conditional Activate / Deactivate */}
-                  {user.status === "active" ? (
-                    <DropdownMenuItem
-                      onClick={() =>
-                        updateUserStatus({
-                          user_id: user.user_id,
-                          action: "deactivate",
-                        })
-                      }
-                      className="flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
-                    >
-                      <UserMinus className="h-4 w-4 text-red-500" />
-                      Deactivate
-                    </DropdownMenuItem>
-                  ) : (
-                    <DropdownMenuItem
-                      onClick={() =>
-                        updateUserStatus({
-                          user_id: user.user_id,
-                          action: "activate",
-                        })
-                      }
-                      className="flex items-center gap-2 px-3 py-2 text-sm text-green-600 hover:bg-green-50 rounded-md transition-colors"
-                    >
-                      <UserPlus className="h-4 w-4 text-green-500" />
-                      Activate
-                    </DropdownMenuItem>
-                  )}
-                </DropdownMenuContent>
-              </DropdownMenu>
+                    {user.status === "active" ? (
+                      <DropdownMenuItem
+                        onClick={() =>
+                          updateUserStatus({
+                            user_id: user.user_id,
+                            action: "deactivate",
+                          })
+                        }
+                        className="flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                      >
+                        <UserMinus className="h-4 w-4 text-red-500" />
+                        Deactivate
+                      </DropdownMenuItem>
+                    ) : (
+                      <DropdownMenuItem
+                        onClick={() =>
+                          updateUserStatus({
+                            user_id: user.user_id,
+                            action: "activate",
+                          })
+                        }
+                        className="flex items-center gap-2 px-3 py-2 text-sm text-green-600 hover:bg-green-50 rounded-md transition-colors"
+                      >
+                        <UserPlus className="h-4 w-4 text-green-500" />
+                        Activate
+                      </DropdownMenuItem>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
             </div>
           </CardHeader>
 

@@ -16,8 +16,11 @@ import EmptyState from "@/components/features/common/EmptyState";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Grid3x3, List, Plus } from "lucide-react";
+import { useAuthStore } from "@/store/authStore";
 
 export default function GoldAccountsPage() {
+  const { isAdmin } = useAuthStore();
+
   const {
     accounts,
     totalCount,
@@ -27,7 +30,7 @@ export default function GoldAccountsPage() {
     filters,
     setPage,
     fetchAccounts,
-    resetFilters
+    resetFilters,
   } = useGoldAccount();
 
   const [view, setView] = React.useState<"grid" | "table">("grid");
@@ -53,12 +56,14 @@ export default function GoldAccountsPage() {
         ]}
         action={
           <div className="flex gap-2">
-            <Link href="/assets/accounts/new">
-              <Button variant="gold">
-                <Plus className="h-4 w-4" />
-                New Account
-              </Button>
-            </Link>
+            {isAdmin && (
+              <Link href="/assets/accounts/new">
+                <Button variant="gold">
+                  <Plus className="h-4 w-4" />
+                  New Account
+                </Button>
+              </Link>
+            )}
             <div className="flex rounded-lg border border-border bg-muted/50 p-1 gap-1">
               <Button
                 size="icon"

@@ -15,10 +15,21 @@ import { useUser } from "@/hooks/useUser";
 import EmptyState from "@/components/features/common/EmptyState";
 import { ViewMode } from "@/types";
 import CreateUserModal from "@/components/features/admin/users/new/NewUserModal";
+import { useAuthStore } from "@/store/authStore";
 
 export default function UsersPage() {
-  const { users, count, filters, page, limit, loading, resetFilters, fetchUsers, setPage } =
-    useUser();
+  const { isAdmin } = useAuthStore();
+  const {
+    users,
+    count,
+    filters,
+    page,
+    limit,
+    loading,
+    resetFilters,
+    fetchUsers,
+    setPage,
+  } = useUser();
 
   const [view, setView] = useState<ViewMode>("grid");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -26,7 +37,7 @@ export default function UsersPage() {
   const onViewChange = (newView: "grid" | "table") => setView(newView);
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
-  
+
   useEffect(() => {
     fetchUsers();
   }, [page, limit, filters]);
@@ -46,10 +57,12 @@ export default function UsersPage() {
         ]}
         action={
           <div className="flex gap-2">
-            <Button variant="gold" onClick={handleOpenModal}>
-              <Plus className="h-4 w-4" />
-              Add User
-            </Button>
+            {isAdmin && (
+              <Button variant="gold" onClick={handleOpenModal}>
+                <Plus className="h-4 w-4" />
+                Add User
+              </Button>
+            )}
             <div className="flex rounded-lg border border-border bg-muted/50 p-1 gap-1">
               <Button
                 size="icon"
@@ -88,7 +101,7 @@ export default function UsersPage() {
       )}
       {/* Pagination */}
       <Pagination page={page} limit={limit} total={count} setPage={setPage} />
-      <CreateUserModal isOpen={isModalOpen} onClose={handleCloseModal}/>
+      <CreateUserModal isOpen={isModalOpen} onClose={handleCloseModal} />
     </DashboardShell>
   );
 }

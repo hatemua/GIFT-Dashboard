@@ -33,6 +33,7 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
+import { useAuthStore } from "@/store/authStore";
 
 interface MembersTableProps {
   members: Member[];
@@ -45,6 +46,7 @@ export default function MembersTable({
   onAdd,
   onRemove,
 }: MembersTableProps) {
+  const { isAdmin } = useAuthStore();
   return (
     <Card className="overflow-hidden">
       <CardContent className="p-0">
@@ -147,7 +149,7 @@ export default function MembersTable({
                         </Link>
 
                         {/* Add to Blacklist */}
-                        {onAdd && (
+                        {onAdd && isAdmin && (
                           <DropdownMenuItem
                             onClick={() => onAdd(member.member_gic)}
                             className="flex items-center gap-2 text-red-600 focus:text-red-600"
@@ -158,7 +160,7 @@ export default function MembersTable({
                         )}
 
                         {/* Remove */}
-                        {onRemove && (
+                        {onRemove && isAdmin && (
                           <DropdownMenuItem
                             onClick={() => onRemove(member.member_gic)}
                             className="flex items-center gap-2 text-red-600 focus:text-red-600"

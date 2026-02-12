@@ -9,7 +9,7 @@ export const login = async (data: {
   scope?: string;
 }) => {
   const response = await axios.post(`${API_URL}/auth/token/dashboard`, data);
-  return response.data; // { access_token, refresh_token, expires_in }
+  return response.data;
 };
 
 export const refreshToken = async (token: string) => {

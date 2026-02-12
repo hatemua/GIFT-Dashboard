@@ -14,8 +14,11 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Grid3x3, List, Plus } from "lucide-react";
 import EmptyState from "@/components/features/common/EmptyState";
+import { useAuthStore } from "@/store/authStore";
 
 export default function GoldAssetsPage() {
+  const { isAdmin } = useAuthStore();
+
   const {
     assets,
     loading,
@@ -52,12 +55,14 @@ export default function GoldAssetsPage() {
         ]}
         action={
           <div className="flex gap-2">
-            <Link href="/assets/mint">
-              <Button variant="outline">
-                <Plus className="h-4 w-4" />
-                Mint Asset
-              </Button>
-            </Link>
+            {isAdmin && (
+              <Link href="/assets/mint">
+                <Button variant="outline">
+                  <Plus className="h-4 w-4" />
+                  Mint Asset
+                </Button>
+              </Link>
+            )}
             <div className="flex rounded-lg border border-border bg-muted/50 p-1 gap-1">
               <Button
                 size="icon"

@@ -7,8 +7,10 @@ import Link from "next/link";
 import MetricsGrid from "@/components/features/dashboard/MetricsGrid";
 import RecentTransactions from "@/components/features/dashboard/RecentTransactions";
 import ActivityFeed from "@/components/features/dashboard/ActivityFeed";
+import { useAuthStore } from "@/store/authStore";
 
 export default function DashboardPage() {
+  const { isAdmin } = useAuthStore();
   return (
     <DashboardShell>
       <PageHeader
@@ -16,18 +18,22 @@ export default function DashboardPage() {
         description="Gold International Fast Transfer Platform"
         action={
           <div className="flex gap-2">
-            <Link href="/transactions/new">
-              <Button variant="gold">
-                <Plus className="h-4 w-4" />
-                New Transaction
-              </Button>
-            </Link>
-            <Link href="/assets/mint">
-              <Button variant="outline">
-                <Plus className="h-4 w-4" />
-                Mint Asset
-              </Button>
-            </Link>
+            {isAdmin && (
+              <Link href="/transactions/new">
+                <Button variant="gold">
+                  <Plus className="h-4 w-4" />
+                  New Transaction
+                </Button>
+              </Link>
+            )}
+            {isAdmin && (
+              <Link href="/assets/mint">
+                <Button variant="outline">
+                  <Plus className="h-4 w-4" />
+                  Mint Asset
+                </Button>
+              </Link>
+            )}
           </div>
         }
       />

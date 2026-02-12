@@ -25,6 +25,7 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
+import { useAuthStore } from "@/store/authStore";
 
 interface MembersGridProps {
   members: Member[];
@@ -42,6 +43,7 @@ export default function MembersGrid({
   onAdd,
   onRemove,
 }: MembersGridProps) {
+  const { isAdmin } = useAuthStore();
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {members.map((member) => (
@@ -86,7 +88,7 @@ export default function MembersGrid({
                   </Link>
 
                   {/* Add to Blacklist */}
-                  {onAdd && (
+                  {onAdd && isAdmin && (
                     <DropdownMenuItem
                       onClick={() =>
                         onAdd(member.member_gic)
@@ -99,7 +101,7 @@ export default function MembersGrid({
                   )}
 
                   {/* Remove */}
-                  {onRemove && (
+                  {onRemove && isAdmin && (
                     <DropdownMenuItem
                       onClick={() =>
                         onRemove(member.member_gic)

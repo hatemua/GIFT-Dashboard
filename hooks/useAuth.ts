@@ -3,29 +3,40 @@ import { useRouter } from "next/navigation";
 import { login, refreshToken, revokeToken } from "@/services/authService";
 import { useAuthStore } from "@/store/authStore";
 
-// -------------------- LOGIN --------------------
+/* -------------------- LOGIN -------------------- */
 export const useLogin = () => {
-  const setTokens = useAuthStore((state) => state.setTokens);
+  const setAuth = useAuthStore((state) => state.setAuth);
   const router = useRouter();
 
   return useMutation({
     mutationFn: login,
     onSuccess: (data) => {
-      // Save tokens
-      setTokens(data.access_token, data.refresh_token);
+      setAuth(
+        data.access_token,
+        data.refresh_token,
+        data.client_type
+      );
+
+      // Persist tokens
       localStorage.setItem("accessToken", data.access_token);
       document.cookie = `accessToken=${data.access_token}; path=/`;
-      if (data.refresh_token) localStorage.setItem("refreshToken", data.refresh_token);
+
+      localStorage.setItem("clientType", data.client_type);
+      document.cookie = `clientType=${data.client_type}; path=/`;
+
+      if (data.refresh_token) {
+        localStorage.setItem("refreshToken", data.refresh_token);
+      }
 
       router.push("/dashboard");
     },
   });
 };
 
-// -------------------- REFRESH TOKEN --------------------
+/* -------------------- REFRESH TOKEN -------------------- */
 export const useRefreshToken = () => {
   const refresh = useAuthStore((state) => state.refreshToken);
-  const setTokens = useAuthStore((state) => state.setTokens);
+  const setAuth = useAuthStore((state) => state.setAuth);
 
   return useMutation({
     mutationFn: () => {
@@ -33,11 +44,18 @@ export const useRefreshToken = () => {
       return refreshToken(refresh);
     },
     onSuccess: (data) => {
-      // Update tokens in Zustand
-      setTokens(data.access_token, data.refresh_token);
+      // Preserve existing role
+      const currentRole = useAuthStore.getState().clientType;
 
-      // Update tokens in localStorage
+      setAuth(
+        data.access_token,
+        data.refresh_token,
+        currentRole
+      );
+
       localStorage.setItem("accessToken", data.access_token);
+      localStorage.setItem("clientType", data.client_type);
+
       if (data.refresh_token) {
         localStorage.setItem("refreshToken", data.refresh_token);
       }
@@ -45,7 +63,7 @@ export const useRefreshToken = () => {
   });
 };
 
-// -------------------- LOGOUT / REVOKE --------------------
+/* -------------------- LOGOUT -------------------- */
 export const useLogout = () => {
   const logout = useAuthStore((state) => state.logout);
   const refresh = useAuthStore((state) => state.refreshToken);
@@ -58,18 +76,16 @@ export const useLogout = () => {
       return revokeToken(refresh);
     },
     onSuccess: () => {
-      // Clear auth state
       logout();
 
-      // Clear localStorage
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
+      localStorage.removeItem("clientType");
       document.cookie = "accessToken=; Max-Age=0; path=/";
+      document.cookie = "clientType=; Max-Age=0; path=/";
 
-      // Optional: clear React Query cache
       queryClient.clear();
 
-      // Redirect to login page
       router.push("/login");
     },
   });

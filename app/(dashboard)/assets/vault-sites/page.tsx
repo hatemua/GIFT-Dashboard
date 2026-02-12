@@ -14,8 +14,11 @@ import VaultSitesFilters from "@/components/features/assets/vault-sites/list/Vau
 import VaultSitesSkeleton from "@/components/features/assets/vault-sites/list/VaultSitesSkeleton";
 import { VaultSitesTable } from "@/components/features/assets/vault-sites/list/VaultSitesTable";
 import EmptyState from "@/components/features/common/EmptyState";
+import { useAuthStore } from "@/store/authStore";
 
 export default function VaultSitesPage() {
+  const { isAdmin } = useAuthStore();
+
   const {
     vaultSites,
     totalCount,
@@ -70,15 +73,17 @@ export default function VaultSitesPage() {
         ]}
         action={
           <div className="flex gap-2">
-            <Link href="/assets/vault-sites/new">
-              <Button
-                variant="gold"
-                className="flex items-center gap-2 transition-transform hover:scale-105"
-              >
-                <Plus className="h-4 w-4" />
-                Add Vault Site
-              </Button>
-            </Link>
+            {isAdmin && (
+              <Link href="/assets/vault-sites/new">
+                <Button
+                  variant="gold"
+                  className="flex items-center gap-2 transition-transform hover:scale-105"
+                >
+                  <Plus className="h-4 w-4" />
+                  Add Vault Site
+                </Button>
+              </Link>
+            )}
             <div className="flex rounded-lg border border-border bg-muted/50 p-1 gap-1">
               <Button
                 size="icon"

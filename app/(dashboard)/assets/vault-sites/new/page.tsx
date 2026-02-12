@@ -1,14 +1,10 @@
 "use client";
-import React from "react";
-import { Clock } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { useForm, Controller } from "react-hook-form";
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { PageHeader } from "@/components/layout/page-header";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/ui/date-picker";
-import { FileUpload } from "@/components/ui/file-upload";
 import {
   Card,
   CardContent,
@@ -17,37 +13,24 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Building, MapPin, Shield, FileText, Upload } from "lucide-react";
-
-interface VaultSiteFormValues {
-  vault_site_id: string;
-  vault_site_name: string;
-  member_gic: string;
-  location_name: string;
-  registered_address: string;
-  operational_address: string;
-  city: string;
-  state_or_province: string;
-  postal_code: string;
-  country: string;
-  timezone: string;
-  gps_coordinates: string;
-  number_of_vaults: number;
-  maximum_weight_in_gold_kg: number;
-  opening_hours: string;
-  insurance_coverage_name_of_insurer: string;
-  insurance_coverage_expiration_date: string;
-  insurance_coverage_documentation: File | null;
-  audit_documentation: File | null;
-  last_audit_date: string;
-}
+import { useVaultSite } from "@/hooks/useVaultSite";
+import { CreateVaultSitePayload } from "@/types/vault-site";
+import { useToast } from "@/providers/toast-provider";
+import { DocumentSetUpload } from "@/components/features/common/DocumentSetUpload";
+import { OpeningHours } from "@/components/features/assets/vault-sites/new/OpeningHours";
 
 export default function NewVaultSitePage() {
+  const { showToast } = useToast();
+
+  const { createVaultSite } = useVaultSite();
+  const sod_id = `SOD_${crypto.randomUUID()}`;
   const {
     register,
     handleSubmit,
+    setValue,
     control,
     formState: { errors, isSubmitting },
-  } = useForm<VaultSiteFormValues>({
+  } = useForm<CreateVaultSitePayload>({
     defaultValues: {
       vault_site_id: "",
       vault_site_name: "",
@@ -66,15 +49,31 @@ export default function NewVaultSitePage() {
       opening_hours: "",
       insurance_coverage_name_of_insurer: "",
       insurance_coverage_expiration_date: "",
-      insurance_coverage_documentation: null,
-      audit_documentation: null,
+      insurance_coverage_documentation: undefined,
+      audit_documentation: undefined,
       last_audit_date: "",
     },
   });
 
-  const onSubmit = async (data: VaultSiteFormValues) => {
-    console.log("Vault Site Data:", data);
-    // TODO: handle API submission
+  const onSubmit = async (data: CreateVaultSitePayload) => {
+    try {
+      const payload = { ...data };
+
+      await createVaultSite(payload);
+      showToast({
+        title: "Success",
+        message: "Asset minted successfully",
+        variant: "success",
+      });
+
+      // reset();
+    } catch (err: any) {
+      showToast({
+        title: "Error",
+        message: err?.message || "Failed to mint asset",
+        variant: "error",
+      });
+    }
   };
 
   return (
@@ -120,16 +119,11 @@ export default function NewVaultSitePage() {
                     label="Vault Site ID"
                     placeholder="VS001"
                     error={errors.vault_site_id?.message}
-                    {...register("vault_site_id", {
-                      required: "Vault Site ID is required",
-                      pattern: {
-                        value: /^VS\d{3}$/,
-                        message: "Must be in format VS001",
-                      },
-                    })}
+                    {...register("vault_site_id")}
                     className="bg-gray-50/50"
                   />
                   <Input
+                    required
                     label="Vault Site Name"
                     placeholder="Zurich Main Vault"
                     error={errors.vault_site_name?.message}
@@ -143,6 +137,7 @@ export default function NewVaultSitePage() {
                     className="bg-gray-50/50"
                   />
                   <Input
+                    required
                     label="Member GIC"
                     placeholder="MEMBER001"
                     error={errors.member_gic?.message}
@@ -152,6 +147,7 @@ export default function NewVaultSitePage() {
                     className="bg-gray-50/50"
                   />
                   <Input
+                    required
                     label="Location Name"
                     placeholder="Zurich City Center Branch"
                     error={errors.location_name?.message}
@@ -183,6 +179,7 @@ export default function NewVaultSitePage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="md:col-span-2">
                     <Input
+                      required
                       label="Registered Address"
                       placeholder="Bahnhofstrasse 45"
                       error={errors.registered_address?.message}
@@ -196,12 +193,11 @@ export default function NewVaultSitePage() {
                     label="Operational Address"
                     placeholder="Limmatstrasse 12"
                     error={errors.operational_address?.message}
-                    {...register("operational_address", {
-                      required: "Operational Address is required",
-                    })}
+                    {...register("operational_address")}
                     className="bg-gray-50/50"
                   />
                   <Input
+                    required
                     label="City"
                     placeholder="Zurich"
                     error={errors.city?.message}
@@ -212,9 +208,7 @@ export default function NewVaultSitePage() {
                     label="State/Province"
                     placeholder="Canton of Zurich"
                     error={errors.state_or_province?.message}
-                    {...register("state_or_province", {
-                      required: "State/Province is required",
-                    })}
+                    {...register("state_or_province")}
                     className="bg-gray-50/50"
                   />
                   <Input
@@ -222,7 +216,6 @@ export default function NewVaultSitePage() {
                     placeholder="8001"
                     error={errors.postal_code?.message}
                     {...register("postal_code", {
-                      required: "Postal Code is required",
                       pattern: {
                         value: /^\d{4,6}$/,
                         message: "Invalid postal code format",
@@ -231,6 +224,7 @@ export default function NewVaultSitePage() {
                     className="bg-gray-50/50"
                   />
                   <Input
+                    required
                     label="Country"
                     placeholder="CH"
                     error={errors.country?.message}
@@ -252,7 +246,6 @@ export default function NewVaultSitePage() {
                     placeholder="47.3769,8.5417"
                     error={errors.gps_coordinates?.message}
                     {...register("gps_coordinates", {
-                      required: "GPS Coordinates are required",
                       pattern: {
                         value: /^-?\d+\.\d+,\s*-?\d+\.\d+$/,
                         message: "Format: latitude,longitude",
@@ -264,9 +257,7 @@ export default function NewVaultSitePage() {
                     label="Timezone"
                     placeholder="Europe/Zurich"
                     error={errors.timezone?.message}
-                    {...register("timezone", {
-                      required: "Timezone is required",
-                    })}
+                    {...register("timezone")}
                     className="bg-gray-50/50"
                   />
                 </div>
@@ -295,6 +286,7 @@ export default function NewVaultSitePage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <Input
+                  required
                   type="number"
                   label="Number of Vaults"
                   error={errors.number_of_vaults?.message}
@@ -308,6 +300,7 @@ export default function NewVaultSitePage() {
                   className="bg-gray-50/50"
                 />
                 <Input
+                  required
                   type="number"
                   label="Maximum Gold Capacity (kg)"
                   error={errors.maximum_weight_in_gold_kg?.message}
@@ -355,16 +348,21 @@ export default function NewVaultSitePage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <Input
+                  required
                   label="Insurance Company"
                   error={errors.insurance_coverage_name_of_insurer?.message}
-                  {...register("insurance_coverage_name_of_insurer")}
+                  {...register("insurance_coverage_name_of_insurer", {
+                    required: "Insurance Company is required",
+                  })}
                   className="bg-gray-50/50"
                 />
                 <Controller
                   control={control}
                   name="insurance_coverage_expiration_date"
+                  rules={{ required: "Insurance expiration date is required" }}
                   render={({ field }) => (
                     <DatePicker
+                      required
                       label="Insurance Expiration"
                       value={field.value}
                       onChange={field.onChange}
@@ -375,8 +373,10 @@ export default function NewVaultSitePage() {
                 <Controller
                   control={control}
                   name="last_audit_date"
+                  rules={{ required: "Last audit date is required" }}
                   render={({ field }) => (
                     <DatePicker
+                      required
                       label="Last Audit Date"
                       value={field.value}
                       onChange={field.onChange}
@@ -412,12 +412,32 @@ export default function NewVaultSitePage() {
                     <Upload className="h-4 w-4" />
                     Insurance Documentation
                   </label>
-                  <FileUpload
-                    value={field.value}
-                    onChange={field.onChange}
-                    accept="application/pdf,image/*"
-                    className="border-2 border-dashed border-gray-300 hover:border-gold-500 transition-colors rounded-lg"
+                  <Controller
+                    control={control}
+                    name="insurance_coverage_documentation"
+                    rules={{
+                      required: "Insurance coverage document is required",
+                    }}
+                    render={({ field }) => <input type="hidden" {...field} />}
                   />
+                  <DocumentSetUpload
+                    sodId={sod_id}
+                    documentType={"agreement"}
+                    onUpload={(sodId) =>
+                      setValue("insurance_coverage_documentation", sodId, {
+                        shouldValidate: true,
+                      })
+                    }
+                  />
+
+                  <p className="text-xs text-muted-foreground">
+                    Upload and verify the official insurance coverage documents
+                  </p>
+                  {errors.insurance_coverage_documentation && (
+                    <p className="text-sm text-red-500 mt-1">
+                      {errors.insurance_coverage_documentation.message}
+                    </p>
+                  )}
                 </div>
               )}
             />
@@ -430,12 +450,30 @@ export default function NewVaultSitePage() {
                     <Upload className="h-4 w-4" />
                     Audit Documentation
                   </label>
-                  <FileUpload
-                    value={field.value}
-                    onChange={field.onChange}
-                    accept="application/pdf,image/*"
-                    className="border-2 border-dashed border-gray-300 hover:border-gold-500 transition-colors rounded-lg"
+                  <Controller
+                    control={control}
+                    name="audit_documentation"
+                    rules={{ required: "Audit document is required" }}
+                    render={({ field }) => <input type="hidden" {...field} />}
                   />
+                  <DocumentSetUpload
+                    sodId={sod_id}
+                    documentType={"audit_report"}
+                    onUpload={(sodId) =>
+                      setValue("audit_documentation", sodId, {
+                        shouldValidate: true,
+                      })
+                    }
+                  />
+
+                  <p className="text-xs text-muted-foreground">
+                    Upload and verify the official audit documents
+                  </p>
+                  {errors.audit_documentation && (
+                    <p className="text-sm text-red-500 mt-1">
+                      {errors.audit_documentation.message}
+                    </p>
+                  )}
                 </div>
               )}
             />
@@ -485,143 +523,3 @@ export default function NewVaultSitePage() {
     </DashboardShell>
   );
 }
-
-interface OpeningHoursProps {
-  value: string;
-  onChange: (value: string) => void;
-  className?: string;
-  label?: string;
-  error?: string;
-}
-
-export const OpeningHours: React.FC<OpeningHoursProps> = ({
-  value,
-  onChange,
-  className,
-  label = "Opening Hours",
-  error,
-}) => {
-  // Parse the value into from/to times
-  const parseTimes = React.useMemo(() => {
-    if (!value) return { from: "", to: "" };
-
-    // Try to parse different formats
-    const match = value.match(/(\d{1,2}:\d{2})\s*[-–]\s*(\d{1,2}:\d{2})/);
-    if (match) {
-      return { from: match[1], to: match[2] };
-    }
-
-    // Try 24-hour format without separator
-    const split = value.split(/[-–]/);
-    if (split.length === 2) {
-      return { from: split[0].trim(), to: split[1].trim() };
-    }
-
-    return { from: "", to: "" };
-  }, [value]);
-
-  const handleFromChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newFrom = e.target.value;
-    const newValue =
-      newFrom && parseTimes.to ? `${newFrom} - ${parseTimes.to}` : "";
-    onChange(newValue);
-  };
-
-  const handleToChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newTo = e.target.value;
-    const newValue =
-      parseTimes.from && newTo ? `${parseTimes.from} - ${newTo}` : "";
-    onChange(newValue);
-  };
-
-  return (
-    <div className={cn("space-y-3", className)}>
-      <div className="flex items-center justify-between">
-        <label className="flex items-center gap-2 text-sm font-medium text-gray-900">
-          <Clock className="h-4 w-4 text-gold-600" />
-          {label}
-        </label>
-        <span className="text-xs text-gray-500">24-hour format</span>
-      </div>
-
-      <div className="grid grid-cols-2 gap-3">
-        <div className="space-y-2">
-          <label htmlFor="opening-from" className="text-xs text-gray-600">
-            From
-          </label>
-          <div className="relative">
-            <Input
-              id="opening-from"
-              type="time"
-              value={parseTimes.from}
-              onChange={handleFromChange}
-              className={cn(
-                "w-full pl-10",
-                error &&
-                  "border-red-300 focus:ring-red-200 focus:border-red-400",
-              )}
-              placeholder="09:00"
-              step="900" // 15-minute intervals
-            />
-            <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-              <div className="h-2 w-2 rounded-full bg-green-500"></div>
-            </div>
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <label htmlFor="opening-to" className="text-xs text-gray-600">
-            To
-          </label>
-          <div className="relative">
-            <Input
-              id="opening-to"
-              type="time"
-              value={parseTimes.to}
-              onChange={handleToChange}
-              className={cn(
-                "w-full pl-10",
-                error &&
-                  "border-red-300 focus:ring-red-200 focus:border-red-400",
-              )}
-              placeholder="17:00"
-              step="900"
-            />
-            <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-              <div className="h-2 w-2 rounded-full bg-red-500"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Display formatted value */}
-      {value && (
-        <div className="mt-2 rounded-lg bg-gray-50 border border-gray-200 p-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="h-6 w-6 rounded-full bg-gold-100 flex items-center justify-center">
-                <Clock className="h-3 w-3 text-gold-600" />
-              </div>
-              <span className="text-sm font-medium text-gray-900">
-                {parseTimes.from} - {parseTimes.to}
-              </span>
-            </div>
-            <button
-              type="button"
-              onClick={() => onChange("")}
-              className="text-xs text-gray-500 hover:text-red-600 transition-colors"
-            >
-              Clear
-            </button>
-          </div>
-        </div>
-      )}
-
-      {error && <p className="text-sm text-red-600 mt-1">{error}</p>}
-
-      <div className="text-xs text-gray-500 space-y-1">
-        <p>• Use 24-hour format (e.g., 13:30 for 1:30 PM)</p>
-      </div>
-    </div>
-  );
-};

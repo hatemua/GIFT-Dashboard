@@ -1,4 +1,3 @@
-// proxy.ts
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
@@ -17,18 +16,33 @@ export function proxy(request: NextRequest) {
     "/admin",
   ];
 
-  const isProtectedPage = protectedRoutes.some((route) =>
-    pathname === route || pathname.startsWith(`${route}/`)
+  const isProtectedPage = protectedRoutes.some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`),
   );
 
-  // ❌ Not logged in & trying to access protected pages
+  // ❌ Not logged in
   if (!token && isProtectedPage) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  // ✅ Logged in & trying to access login page
-  if (token && isAuthPage) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+  if (token) {
+    const clientType = request.cookies.get("clientType")?.value;
+    console.log(clientType, " clientType");
+    // ❌ Auditor trying to access restricted create pages
+    const auditorRestrictedRoutes = ["/assets/new", "/transactions/new"];
+
+    const isRestrictedForAuditor = auditorRestrictedRoutes.some(
+      (route) => pathname === route || pathname.startsWith(`${route}/`),
+    );
+
+    if (clientType === "AUDITOR" && isRestrictedForAuditor) {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
+
+    // ✅ Logged in & trying to access login page
+    if (isAuthPage) {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
   }
 
   return NextResponse.next();
@@ -42,6 +56,6 @@ export const config = {
     "/explorer/:path*",
     "/assets/:path*",
     "/transactions/:path*",
-    "/admin/:path*"
+    "/admin/:path*",
   ],
 };

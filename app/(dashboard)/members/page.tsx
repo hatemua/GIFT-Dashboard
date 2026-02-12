@@ -13,10 +13,11 @@ import MembersGrid from "@/components/features/members/list/MembersGrid";
 import MembersTable from "@/components/features/members/list/MembersTable";
 import { Pagination } from "@/components/ui/pagination";
 import { useToast } from "@/providers/toast-provider";
+import { useAuthStore } from "@/store/authStore";
 
 export default function MembersPage() {
   const { showToast } = useToast();
-
+  const { isAdmin } = useAuthStore();
   const [view, setView] = useState<"grid" | "table">("grid");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -61,12 +62,11 @@ export default function MembersPage() {
 
   useEffect(() => {
     fetchMembers();
-    
   }, [page, limit, JSON.stringify(filters)]);
 
   useEffect(() => {
     return () => resetFilters();
-  }, [])
+  }, []);
 
   return (
     <DashboardShell>
@@ -79,10 +79,12 @@ export default function MembersPage() {
         ]}
         action={
           <div className="flex gap-2">
-            <Button variant="gold" onClick={handleOpenModal}>
-              <Plus className="h-4 w-4" />
-              Add Member
-            </Button>
+            {isAdmin && (
+              <Button variant="gold" onClick={handleOpenModal}>
+                <Plus className="h-4 w-4" />
+                Add Member
+              </Button>
+            )}
             <div className="flex rounded-lg border border-border bg-muted/50 p-1 gap-1">
               <Button
                 size="icon"

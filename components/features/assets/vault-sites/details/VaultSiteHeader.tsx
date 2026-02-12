@@ -4,12 +4,14 @@ import { AlertCircle, Building, CheckCircle, Plus } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useAuthStore } from "@/store/authStore";
 
 interface Props {
   vault: any;
 }
 
 export function VaultSiteHeader({ vault }: Props) {
+  const { isAdmin } = useAuthStore();
   const getStatusConfig = (status: string) => {
     const configs = {
       active: {
@@ -71,12 +73,18 @@ export function VaultSiteHeader({ vault }: Props) {
             {vault.member_gic}
           </p>
         </div>
-        <Link href="/vault-sites/new">
-          <Button variant="gold" size="sm" className="flex items-center gap-2">
-            <Plus className="h-3.5 w-3.5" />
-            New Vault
-          </Button>
-        </Link>
+        {isAdmin && (
+          <Link href="/vault-sites/new">
+            <Button
+              variant="gold"
+              size="sm"
+              className="flex items-center gap-2"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              New Vault
+            </Button>
+          </Link>
+        )}
       </div>
     </div>
   );

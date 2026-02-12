@@ -12,12 +12,14 @@ import { ValuationCard } from "@/components/features/assets/gold-assets/details/
 import { ComplianceCard } from "@/components/features/assets/gold-assets/details/ComplianceCard";
 import { AssetActions } from "@/components/features/assets/gold-assets/details/AssetActions";
 import EmptyState from "@/components/features/common/EmptyState";
+import { useAuthStore } from "@/store/authStore";
 
 interface AssetDetailsPageProps {
   params: Promise<{ tokenId: string }>;
 }
 
 export default function AssetDetailsPage({ params }: AssetDetailsPageProps) {
+  const { isAdmin } = useAuthStore();
   const { tokenId } = React.use(params);
   const { assetDetails, fetchAssetByTokenId, loading } = useAsset();
   const [hasFetched, setHasFetched] = useState(false);
@@ -62,7 +64,7 @@ export default function AssetDetailsPage({ params }: AssetDetailsPageProps) {
               </div>
             </div>
 
-            <AssetActions tokenId={assetDetails.token_id} />
+            {isAdmin && <AssetActions tokenId={assetDetails.token_id} />}
           </>
         ) : (
           <EmptyState type="asset" />

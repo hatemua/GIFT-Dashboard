@@ -7,73 +7,61 @@ import { useDocument } from "@/hooks/useDocument";
 import { fileToBase64 } from "@/lib/utils";
 
 interface Props {
-  sod_id: string;
+  sodId: string;
+  documentType: "audit_report" | "agreement" | "certificate";
+  onUpload?: (sod_id: string) => void;
 }
 
-export function DocumentSetUpload({ sod_id }: Props) {
+export function DocumentSetUpload({ sodId, documentType, onUpload }: Props) {
   const [files, setFiles] = useState<File[]>([]);
 
-  const { uploadDocumentSet, loading, error, documentSet } =
-    useDocument();
+  const { uploadDocumentSet, loading, error, documentSet } = useDocument();
 
-  const addFile = (file: File | null) => {
-    if (!file) return;
-    setFiles((prev) => [...prev, file]);
+  /* ---------------- Add files ---------------- */
+  const addFiles = async (newFiles: File | File[] | null) => {
+    if (!newFiles) {
+      setFiles([]);
+      if (onUpload) onUpload("");
+      return;
+    }
+
+    const filesArray = Array.isArray(newFiles) ? newFiles : [newFiles];
+    setFiles((prev) => [...prev, ...filesArray]);
+    // Upload & verify
+    await handleUploadSet(filesArray);
   };
 
-  const removeFile = (index: number) => {
-    setFiles((prev) => prev.filter((_, i) => i !== index));
-  };
+  /* ---------------- Upload the set ---------------- */
+  const handleUploadSet = async (files: File[], ) => {
+    if (!files.length) return;
 
-  const handleUploadSet = async () => {
     const documents = await Promise.all(
       files.map(async (file, index) => ({
-        sod_id,
-        document_id: `DOC_${index + 1}`,
-        document_type: "certificate",
-        document_url: "",
+        document_id: `DOC_${crypto.randomUUID()}`,
+        document_type: documentType,
+        document_url: "https://url_of_the_document",
         document_base64: await fileToBase64(file),
-      }))
+      })),
     );
 
     await uploadDocumentSet({
-      sod_id,
+      sod_id: sodId,
       documents,
     });
   };
 
   return (
     <div className="space-y-4">
-      <FileUpload onChange={addFile} />
+      {/* Multiple file upload */}
+      <FileUpload multiple value={files} onChange={addFiles} />
 
-      {files.map((file, index) => (
-        <div key={index} className="flex items-center gap-2">
-          <span className="text-sm">{file.name}</span>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => removeFile(index)}
-          >
-            Remove
-          </Button>
-        </div>
-      ))}
-
-      <Button
-        onClick={handleUploadSet}
-        disabled={!files.length || loading}
-        className="w-full"
-      >
-        Upload document set ({files.length})
-      </Button>
-
+      {/* Error */}
       {error && <p className="text-sm text-red-600">{error}</p>}
 
+      {/* Success */}
       {documentSet && (
         <div className="text-sm text-green-600">
           ✅ {documentSet.document_count} documents stored
-          <br />
-          Set hash: {documentSet.set_hash}
         </div>
       )}
     </div>

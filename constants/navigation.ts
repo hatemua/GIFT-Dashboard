@@ -16,6 +16,7 @@ export interface NavItem {
   href: string;
   icon: any;
   children?: NavItem[];
+  hideIfNotAdmin?: boolean;
 }
 
 export const navigation: NavItem[] = [
@@ -60,6 +61,7 @@ export const navigation: NavItem[] = [
         title: "Create New",
         href: "/transactions/new",
         icon: FileText,
+        hideIfNotAdmin: true
       },
     ],
   },
@@ -87,26 +89,27 @@ export const navigation: NavItem[] = [
         title: "Mint New Asset",
         href: "/assets/mint",
         icon: FileText,
+        hideIfNotAdmin: true
       },
     ],
   },
-  {
-    title: "Traceability",
-    href: "/traceability",
-    icon: FileCheck,
-    children: [
-      {
-        title: "Asset Provenance",
-        href: "/traceability/provenance",
-        icon: FileCheck,
-      },
-      {
-        title: "Audit Trail",
-        href: "/traceability/audit",
-        icon: FileText,
-      },
-    ],
-  },
+  // {
+  //   title: "Traceability",
+  //   href: "/traceability",
+  //   icon: FileCheck,
+  //   children: [
+  //     {
+  //       title: "Asset Provenance",
+  //       href: "/traceability/provenance",
+  //       icon: FileCheck,
+  //     },
+  //     {
+  //       title: "Audit Trail",
+  //       href: "/traceability/audit",
+  //       icon: FileText,
+  //     },
+  //   ],
+  // },
   {
     title: "Members",
     href: "/members",

@@ -9,10 +9,7 @@ import {
 import { StatusBadge } from "@/components/data-display/status-badge";
 import { Badge } from "@/components/ui/badge";
 import { UserItem } from "@/types/user";
-import {
-  capitalizeFirstLetter,
-  formatDate,
-} from "@/lib/utils";
+import { capitalizeFirstLetter, formatDate } from "@/lib/utils";
 import { AddressDisplay } from "@/components/blockchain/address-display";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,8 +20,14 @@ import {
   UserMinus,
   UserPlus,
 } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useUser } from "@/hooks/useUser";
+import { useAuthStore } from "@/store/authStore";
 
 interface UsersTableProps {
   users: UserItem[];
@@ -32,6 +35,8 @@ interface UsersTableProps {
 
 export default function UsersTable({ users }: UsersTableProps) {
   const { updateUserStatus } = useUser();
+  const { isAdmin } = useAuthStore();
+
   return (
     <Table>
       <TableHeader>
@@ -87,9 +92,7 @@ export default function UsersTable({ users }: UsersTableProps) {
             <TableCell className="text-muted-foreground">
               <div className="flex items-center gap-1.5 text-xs">
                 <ShieldCheck className="h-4 w-4" />
-                {user.can_sign_transactions
-                  ? "Can sign"
-                  : "Read-only"}
+                {user.can_sign_transactions ? "Can sign" : "Read-only"}
               </div>
             </TableCell>
 
@@ -121,32 +124,37 @@ export default function UsersTable({ users }: UsersTableProps) {
                   </DropdownMenuItem>
 
                   {/* Conditional Activate / Deactivate */}
-                  {user.status === "active" ? (
-                    <DropdownMenuItem
-                      onClick={() =>
-                        updateUserStatus({
-                          user_id: user.user_id,
-                          action: "deactivate",
-                        })
-                      }
-                      className="flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
-                    >
-                      <UserMinus className="h-4 w-4 text-red-500" />
-                      Deactivate
-                    </DropdownMenuItem>
-                  ) : (
-                    <DropdownMenuItem
-                      onClick={() =>
-                        updateUserStatus({
-                          user_id: user.user_id,
-                          action: "activate",
-                        })
-                      }
-                      className="flex items-center gap-2 px-3 py-2 text-sm text-green-600 hover:bg-green-50 rounded-md transition-colors"
-                    >
-                      <UserPlus className="h-4 w-4 text-green-500" />
-                      Activate
-                    </DropdownMenuItem>
+                  {isAdmin && (
+                    <>
+                      {" "}
+                      {user.status === "active" ? (
+                        <DropdownMenuItem
+                          onClick={() =>
+                            updateUserStatus({
+                              user_id: user.user_id,
+                              action: "deactivate",
+                            })
+                          }
+                          className="flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                        >
+                          <UserMinus className="h-4 w-4 text-red-500" />
+                          Deactivate
+                        </DropdownMenuItem>
+                      ) : (
+                        <DropdownMenuItem
+                          onClick={() =>
+                            updateUserStatus({
+                              user_id: user.user_id,
+                              action: "activate",
+                            })
+                          }
+                          className="flex items-center gap-2 px-3 py-2 text-sm text-green-600 hover:bg-green-50 rounded-md transition-colors"
+                        >
+                          <UserPlus className="h-4 w-4 text-green-500" />
+                          Activate
+                        </DropdownMenuItem>
+                      )}
+                    </>
                   )}
                 </DropdownMenuContent>
               </DropdownMenu>

@@ -23,28 +23,28 @@ import Link from "next/link";
 const activityConfig = {
   new_member_added: {
     icon: Users,
-    title: "New member joined",
+    title: "New Member Joined",
     color: "text-purple-600",
     bg: "bg-purple-100",
     path: (id: string) => `/members/${id}`,
   },
   new_user_added: {
     icon: Wallet,
-    title: "New user created",
+    title: "New User Created",
     color: "text-amber-600",
     bg: "bg-amber-100",
     path: (id: string) => `/users/${id}`,
   },
   new_asset_minted: {
     icon: Gem,
-    title: "New asset minted",
+    title: "New Asset Minted",
     color: "text-green-600",
     bg: "bg-green-100",
     path: (id: string) => `/assets/${id}`,
   },
   new_gold_account_added: {
     icon: CreditCard,
-    title: "New gold account added",
+    title: "New Gold Account Added",
     color: "text-blue-600",
     bg: "bg-blue-100",
     path: (id: string) => `/gold-accounts/${id}`,
