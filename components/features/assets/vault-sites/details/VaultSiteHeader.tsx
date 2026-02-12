@@ -5,6 +5,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAuthStore } from "@/store/authStore";
+import { useState } from "react";
+import CreateVaultModal from "../../vaults/new/CreateVaultModal";
 
 interface Props {
   vault: any;
@@ -12,6 +14,9 @@ interface Props {
 
 export function VaultSiteHeader({ vault }: Props) {
   const { isAdmin } = useAuthStore();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
   const getStatusConfig = (status: string) => {
     const configs = {
       active: {
@@ -74,17 +79,17 @@ export function VaultSiteHeader({ vault }: Props) {
           </p>
         </div>
         {isAdmin && (
-          <Link href="/vault-sites/new">
-            <Button
-              variant="gold"
-              size="sm"
-              className="flex items-center gap-2"
-            >
-              <Plus className="h-3.5 w-3.5" />
-              New Vault
-            </Button>
-          </Link>
+          <Button
+            variant="gold"
+            size="sm"
+            className="flex items-center gap-2"
+            onClick={handleOpenModal}
+          >
+            <Plus className="h-3.5 w-3.5" />
+            New Vault
+          </Button>
         )}
+        <CreateVaultModal isOpen={isModalOpen} onClose={handleCloseModal} />
       </div>
     </div>
   );

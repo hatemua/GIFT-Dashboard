@@ -36,8 +36,8 @@ export default function MembersPage() {
 
   const hasMembers = members.length > 0;
 
-  const handleOpenModal = () => setIsModalOpen(true);
-  const handleCloseModal = () => setIsModalOpen(false);
+ const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false); 
   const onViewChange = (view: "table" | "grid") => {
     setView(view);
   };

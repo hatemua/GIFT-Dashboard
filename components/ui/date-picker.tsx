@@ -105,28 +105,30 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
 
         <div className="relative w-full" ref={containerRef}>
           {/* Input */}
-          <input
-            ref={ref}
-            type="text"
-            readOnly
-            aria-required={required}
-            value={
-              selectedDate
-                ? dayjs(selectedDate).format("DD/MM/YYYY")
-                : ""
-            }
-            placeholder={placeholder}
-            onClick={() => setIsOpen((prev) => !prev)}
-            className={`w-full rounded-lg border px-3 py-2 pr-10 text-sm
-              cursor-pointer bg-white transition
-              placeholder:text-slate-400
-              focus:outline-none focus:ring-2
-              ${
-                error
-                  ? "border-red-500 focus:ring-red-500"
-                  : "border-slate-300 focus:ring-gold-500 hover:border-slate-400"
-              }`}
-          />
+<input
+  ref={ref}
+  type="text"
+  readOnly
+  aria-required={required}
+  value={
+    selectedDate
+      ? dayjs(selectedDate).format("DD/MM/YYYY")
+      : ""
+  }
+  placeholder={placeholder}
+  onClick={() => setIsOpen((prev) => !prev)}
+  className={`w-full min-h-[42px] rounded-lg border px-3 py-2 text-sm
+    cursor-pointer bg-white transition
+    placeholder:text-slate-400
+    flex items-center
+    focus:outline-none focus:ring-2
+    ${
+      error
+        ? "border-red-500 focus:ring-red-500"
+        : "border-slate-300 focus:ring-gold-500 hover:border-slate-400"
+    }`}
+/>
+
 
           {/* Calendar icon */}
           <Calendar
