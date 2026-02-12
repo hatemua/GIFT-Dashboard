@@ -27,9 +27,13 @@ export function proxy(request: NextRequest) {
 
   if (token) {
     const clientType = request.cookies.get("clientType")?.value;
-    console.log(clientType, " clientType");
     // ❌ Auditor trying to access restricted create pages
-    const auditorRestrictedRoutes = ["/assets/new", "/transactions/new"];
+    const auditorRestrictedRoutes = [
+      "/assets/mint",
+      "/assets/accounts/new",
+      "/transactions/new",
+      "/assets/vault-sites/new",
+    ];
 
     const isRestrictedForAuditor = auditorRestrictedRoutes.some(
       (route) => pathname === route || pathname.startsWith(`${route}/`),
