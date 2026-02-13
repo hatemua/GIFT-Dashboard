@@ -14,7 +14,11 @@ import { DATE_OPTIONS } from "@/constants/filters";
 import { ASSET_STATUS_OPTIONS, AssetStatus } from "@/constants/assets";
 import { useAsset } from "@/hooks/useAsset";
 
-const AssetsFilters = () => {
+interface AssetsFiltersProps {
+  filterByStatus?: boolean;
+}
+
+const AssetsFilters: React.FC<AssetsFiltersProps> = ({ filterByStatus }) => {
   const { setFilters } = useAsset();
 
   const [search, setSearch] = useState("");
@@ -61,44 +65,46 @@ const AssetsFilters = () => {
         </div>
 
         {/* Status dropdown */}
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <div
-              role="button"
-              tabIndex={0}
-              className="h-10 px-3 inline-flex items-center gap-2 rounded-md border border-border bg-background hover:bg-muted cursor-pointer"
-            >
-              {selectedStatus?.icon && (
-                <selectedStatus.icon
-                  className={cn("h-4 w-4", selectedStatus.color)}
-                />
-              )}
-              <span className="text-sm font-medium">
-                {selectedStatus?.label}
-              </span>
-              <ChevronDown className="h-4 w-4 opacity-60" />
-            </div>
-          </DropdownMenuTrigger>
+        {filterByStatus && (
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <div
+                role="button"
+                tabIndex={0}
+                className="h-10 px-3 inline-flex items-center gap-2 rounded-md border border-border bg-background hover:bg-muted cursor-pointer"
+              >
+                {selectedStatus?.icon && (
+                  <selectedStatus.icon
+                    className={cn("h-4 w-4", selectedStatus.color)}
+                  />
+                )}
+                <span className="text-sm font-medium">
+                  {selectedStatus?.label}
+                </span>
+                <ChevronDown className="h-4 w-4 opacity-60" />
+              </div>
+            </DropdownMenuTrigger>
 
-          <DropdownMenuContent align="end" className="w-44">
-            {ASSET_STATUS_OPTIONS.map((option) => {
-              const Icon = option.icon;
-              return (
-                <DropdownMenuItem
-                  key={option.value}
-                  onClick={() => handleStatusChange(option.value)}
-                  className={cn(
-                    "flex items-center gap-2",
-                    status === option.value && "font-medium",
-                  )}
-                >
-                  {Icon && <Icon className={cn("h-4 w-4", option.color)} />}
-                  {option.label}
-                </DropdownMenuItem>
-              );
-            })}
-          </DropdownMenuContent>
-        </DropdownMenu>
+            <DropdownMenuContent align="end" className="w-44">
+              {ASSET_STATUS_OPTIONS.map((option) => {
+                const Icon = option.icon;
+                return (
+                  <DropdownMenuItem
+                    key={option.value}
+                    onClick={() => handleStatusChange(option.value)}
+                    className={cn(
+                      "flex items-center gap-2",
+                      status === option.value && "font-medium",
+                    )}
+                  >
+                    {Icon && <Icon className={cn("h-4 w-4", option.color)} />}
+                    {option.label}
+                  </DropdownMenuItem>
+                );
+              })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
 
         {/* Date dropdown */}
         <DropdownMenu>

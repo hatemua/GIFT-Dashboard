@@ -58,33 +58,32 @@ export const TransactionDetailsForm: React.FC = () => {
             )}
           />
 
-<Controller
-  name="transaction_type"
-  control={control}
-  rules={{ required: "Transaction Type is required" }}
-  render={({ field }) => (
-    <Select
-      required
-      {...field}
-      label="Transaction Type"
-      placeholder="Select type"
-      error={errors.transaction_type?.message}
-      className="bg-gray-50/50"
-    >
-      {TRANSACTION_TYPE_OPTIONS2
-        .filter((option) => option.value !== "")
-        .map((option) => (
-          <SelectItem key={option.value} value={option.value}>
-            <div className="flex items-center gap-2">
-              <option.icon className="w-4 h-4 text-gray-500" />
-              {option.label}
-            </div>
-          </SelectItem>
-        ))}
-    </Select>
-  )}
-/>
-
+          <Controller
+            name="transaction_type"
+            control={control}
+            rules={{ required: "Transaction Type is required" }}
+            render={({ field }) => (
+              <Select
+                required
+                {...field}
+                label="Transaction Type"
+                placeholder="Select type"
+                error={errors.transaction_type?.message}
+                className="bg-gray-50/50"
+              >
+                {TRANSACTION_TYPE_OPTIONS2.filter(
+                  (option) => option.value !== "",
+                ).map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    <div className="flex items-center gap-2">
+                      <option.icon className="w-4 h-4 text-gray-500" />
+                      {option.label}
+                    </div>
+                  </SelectItem>
+                ))}
+              </Select>
+            )}
+          />
 
           <Controller
             name="counterparty_gic"

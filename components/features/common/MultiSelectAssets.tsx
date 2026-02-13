@@ -30,7 +30,7 @@ const MultiSelectAssets: React.FC<MultiSelectAssetsProps> = ({
     <div>
       {/* Filters */}
       <div className="mb-4">
-        <AssetsFilters />
+        <AssetsFilters filterByStatus={false} />
       </div>
 
       {/* Assets List */}

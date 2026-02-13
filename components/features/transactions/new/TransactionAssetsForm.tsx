@@ -15,7 +15,10 @@ import { Transaction } from "@/types/transaction";
 import { Badge } from "@/components/ui/badge";
 
 export const TransactionAssetsForm: React.FC = () => {
-  const { control, formState: { errors } } = useFormContext<Transaction>();
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext<Transaction>();
 
   // Watch the requested_assets field
   const selectedAssets = useWatch({
@@ -55,11 +58,11 @@ export const TransactionAssetsForm: React.FC = () => {
           name="requested_assets"
           rules={{
             validate: (value) =>
-              value && value.length > 0 ? true : "Please select at least one asset",
+              value && value.length > 0
+                ? true
+                : "Please select at least one asset",
           }}
-          render={({ field }) => (
-            <MultiSelectAssets {...field} />
-          )}
+          render={({ field }) => <MultiSelectAssets {...field} />}
         />
         {/* Show error message */}
         {errors.requested_assets && (
