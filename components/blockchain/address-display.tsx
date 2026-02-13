@@ -26,7 +26,8 @@ export function AddressDisplay({
     ? truncateAddress(address, startChars, endChars)
     : address;
 
-  const copyToClipboard = async () => {
+  const copyToClipboard = async (event: React.MouseEvent) => {
+    event.stopPropagation(); 
     await navigator.clipboard.writeText(address);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -34,6 +35,7 @@ export function AddressDisplay({
 
   return (
     <button
+      type="button"
       onClick={copyToClipboard}
       className={cn(
         "inline-flex items-center gap-1.5 font-mono text-sm",

@@ -54,6 +54,7 @@ export function Pagination({
       >
         {/* Previous */}
         <Button
+          type="button"
           size="icon"
           variant="ghost"
           onClick={handlePrevPage}
@@ -86,6 +87,7 @@ export function Pagination({
 
         {/* Next */}
         <Button
+          type="button"
           size="icon"
           variant="ghost"
           onClick={handleNextPage}

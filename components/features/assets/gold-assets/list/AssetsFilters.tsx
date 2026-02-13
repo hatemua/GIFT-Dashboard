@@ -18,7 +18,7 @@ interface AssetsFiltersProps {
   filterByStatus?: boolean;
 }
 
-const AssetsFilters: React.FC<AssetsFiltersProps> = ({ filterByStatus }) => {
+const AssetsFilters: React.FC<AssetsFiltersProps> = ({ filterByStatus = true }) => {
   const { setFilters } = useAsset();
 
   const [search, setSearch] = useState("");

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useAsset } from "@/hooks/useAsset";
 import { Asset } from "@/types/asset";
 import AssetsFilters from "../assets/gold-assets/list/AssetsFilters";
@@ -18,13 +18,32 @@ const MultiSelectAssets: React.FC<MultiSelectAssetsProps> = ({
   name = "requested_assets",
   onSelectionChange,
 }) => {
-  const { assets, loading, count, filters, page, limit, fetchAssets, setPage } =
-    useAsset();
+  const {
+    assets,
+    loading,
+    count,
+    filters,
+    page,
+    limit,
+    setFilters,
+    fetchAssets,
+    setPage,
+  } = useAsset();
   const { control } = useFormContext<Transaction>();
 
+  const [isFiltersInitailized, setIsFiltersInitailized] =
+    useState<boolean>(false);
+
   useEffect(() => {
-    fetchAssets();
-  }, [page, limit, filters]);
+    setFilters({ status: "stationary" });
+    setIsFiltersInitailized(true);
+  }, []);
+  
+  useEffect(() => {
+    if (isFiltersInitailized) {
+      fetchAssets();
+    }
+  }, [page, limit, filters, isFiltersInitailized]);
 
   return (
     <div>
