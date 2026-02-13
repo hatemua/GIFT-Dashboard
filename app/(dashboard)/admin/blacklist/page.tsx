@@ -95,7 +95,7 @@ export default function BlacklistPage() {
       {loading && <MembersSkeleton view={view} />}
 
       {!loading && blacklistedMembers.length === 0 && (
-        <EmptyState type="blacklist" />
+        <EmptyState type={filters ? "noResults" : "blacklist"} />
       )}
 
       {view === "table" && !loading && (

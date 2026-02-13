@@ -51,7 +51,7 @@ export default function VaultSitesPage() {
   } else if (error) {
     content = <ErrorCard error={error} />;
   } else if (vaultSites.length === 0) {
-    content = <EmptyState type="vaultSites" />;
+    content = <EmptyState type={filters ? "noResults" : "vaultSites"} />;
   } else {
     content =
       view === "grid" ? (

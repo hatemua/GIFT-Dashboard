@@ -80,7 +80,7 @@ export default function BlockchainTransactionsPage() {
       {loading && <TransactionsSkeleton view={view} />}
 
       {!loading && !hasTransactions && (
-        <EmptyState type="blockchainTransactions" />
+        <EmptyState type={filters ? "noResults" : "blockchainTransactions"} />
       )}
 
       {!loading && hasTransactions && (

@@ -91,7 +91,9 @@ export default function UsersPage() {
       {/* Content */}
       {loading && <UsersSkeleton />}
 
-      {!loading && users.length === 0 && <EmptyState type="users" />}
+      {!loading && users.length === 0 && (
+        <EmptyState type={filters ? "noResults" : "users"} />
+      )}
 
       {!loading && users.length > 0 && (
         <>

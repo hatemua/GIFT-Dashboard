@@ -1,11 +1,11 @@
 import { create } from "zustand";
-import { SearchResult } from "@/types/search";
-import { searchService, SearchResponse } from "@/services/searchService";
+import { searchService } from "@/services/searchService";
+import { SearchResponse, SearchResultItem } from "@/types/search";
 
 interface SearchState {
   open: boolean;
   query: string;
-  results: SearchResult[];
+  results: SearchResultItem[];
   loading: boolean;
   page: number;
   limit: number;
@@ -62,7 +62,7 @@ export const useSearchStore = create<SearchState>((set, get) => ({
 
     try {
       const data: SearchResponse = await searchService.searchAll(query, page, limit);
-      set({ results: data.results, total: data.total });
+      set({ results: data.data, total: data.count });
     } catch (err) {
       console.error(err);
       set({ results: [], total: 0 });

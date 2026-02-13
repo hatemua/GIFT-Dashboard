@@ -90,7 +90,7 @@ export default function TransactionOrdersPage() {
       {loading ? (
         <TransactionOrdersSkeleton view={view} />
       ) : transactions.length === 0 ? (
-        <EmptyState type="transactions" />
+        <EmptyState type={filters ? "noResults" : "transactions"} />
       ) : view === "grid" ? (
         <TransactionOrdersGrid transactions={transactions} />
       ) : (

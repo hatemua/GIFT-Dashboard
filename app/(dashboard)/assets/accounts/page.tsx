@@ -93,7 +93,7 @@ export default function GoldAccountsPage() {
       {loading ? (
         <AccountsSkeleton count={6} />
       ) : accounts.length === 0 ? (
-        <EmptyState type="goldAccounts" />
+        <EmptyState type={filters ? "noResults" : "goldAccounts"} />
       ) : view === "grid" ? (
         <AccountsGrid accounts={accounts} />
       ) : (

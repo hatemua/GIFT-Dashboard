@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useKPIs } from "@/hooks/useKpi";
 import { useEffect } from "react";
 import { useSearchStore } from "@/store/searchStore";
-import { GlobalSearchModal } from "../features/common/GlobalSearchModal";
+import { GlobalSearchModal } from "../features/search/GlobalSearchModal";
 
 export function Header() {
   const { goldPrice, goldPriceLoading, fetchGoldPrice } = useKPIs();

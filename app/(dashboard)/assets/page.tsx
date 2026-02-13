@@ -92,7 +92,7 @@ export default function GoldAssetsPage() {
       {loading ? (
         <AssetsSkeleton view={view} />
       ) : assets.length === 0 ? (
-        <EmptyState type="assets" />
+        <EmptyState type={filters ? "noResults" : "assets"} />
       ) : view === "grid" ? (
         <AssetsGrid assets={assets} />
       ) : (

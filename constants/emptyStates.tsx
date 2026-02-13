@@ -7,6 +7,7 @@ import {
   Users,
   User,
   CreditCard,
+  FileSearch,
 } from "lucide-react";
 
 export type EmptyStateType =
@@ -24,7 +25,8 @@ export type EmptyStateType =
   | "transaction"
   | "member"
   | "vaultsite"
-  | "vault";
+  | "vault"
+  | "noResults";
 
 interface EmptyStateConfig {
   title: string;
@@ -114,5 +116,10 @@ export const EMPTY_STATES: Record<EmptyStateType, EmptyStateConfig> = {
     description:
       "The details of this vault could not be loaded or do not exist.",
     icon: <Box className="h-6 w-6" />,
+  },
+  noResults: {
+    title: "No results found",
+    description: "Try adjusting your filters or search term.",
+    icon: <FileSearch size={24} />,
   },
 };

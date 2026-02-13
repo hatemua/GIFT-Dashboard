@@ -82,7 +82,11 @@ export default function BlocksPage() {
       {loading && <BlocksSkeleton view={view} />}
 
       {/* Empty */}
-      {!loading && !hasBlocks && <EmptyState type="blocks" />}
+      {!loading && !hasBlocks && (
+        <EmptyState
+          type={filters ? "noResults" : "blocks"}
+        />
+      )}
 
       {/* Content */}
       {!loading && hasBlocks && (

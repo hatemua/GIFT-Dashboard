@@ -36,8 +36,8 @@ export default function MembersPage() {
 
   const hasMembers = members.length > 0;
 
- const handleOpenModal = () => setIsModalOpen(true);
-  const handleCloseModal = () => setIsModalOpen(false); 
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
   const onViewChange = (view: "table" | "grid") => {
     setView(view);
   };
@@ -109,7 +109,9 @@ export default function MembersPage() {
 
       <MembersFilters />
       {loading && <MembersSkeleton view={view} />}
-      {!loading && !hasMembers && <EmptyState type="members" />}
+      {!loading && !hasMembers && (
+        <EmptyState type={filters ? "noResults" : "members"} />
+      )}
       {!loading && hasMembers && (
         <>
           {view === "grid" && (
