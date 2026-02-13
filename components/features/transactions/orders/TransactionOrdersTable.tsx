@@ -30,6 +30,7 @@ const statusStyles: Record<TransactionItem["status"], { label: string; className
   EXECUTED: { label: "Executed", className: "bg-emerald-50 text-emerald-700 ring-emerald-200" },
   PENDING_EXECUTION: { label: "Pending execution", className: "bg-amber-50 text-amber-700 ring-amber-200" },
   PENDING_COUNTERPARTY: { label: "Pending counterparty", className: "bg-sky-50 text-sky-700 ring-sky-200" },
+  PENDING_SIGNATURE: { label: "Pending signature", className: "bg-sky-50 text-sky-700 ring-sky-200" },
 };
 
 // Transaction type styles

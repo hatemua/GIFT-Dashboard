@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import dayjs from "dayjs";
-import { ArrowRight, CalendarDays, Layers } from "lucide-react";
+import { ArrowLeftRight, ArrowRight, CalendarDays, Layers } from "lucide-react";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -149,7 +149,7 @@ const getIconConfig = (type: SourceType) => {
       border: "border-amber-200",
     },
     transaction_order: {
-      icon: Receipt,
+      icon: ArrowLeftRight,
       color: "text-purple-600",
       bg: "bg-purple-50",
       border: "border-purple-200",

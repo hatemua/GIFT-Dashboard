@@ -5,6 +5,7 @@ import {
   TransactionOrdersFilters,
   TransactionDetails,
   TransactionEventsResponse,
+  CreateTransactionInput,
 } from "@/types/transaction";
 
 interface UseTransactionReturn {
@@ -21,7 +22,7 @@ interface UseTransactionReturn {
   filters: TransactionOrdersFilters;
 
   fetchTransactions: () => Promise<void>;
-  createTransaction: (transaction: Transaction) => Promise<Transaction | undefined>;
+  createTransaction: (transaction: CreateTransactionInput) => Promise<Transaction | undefined>;
   fetchTransactionByReference: (reference: string) => Promise<void>;
   fetchTransactionEvents: (reference: string) => Promise<void>;
   setFilters: (filters: TransactionOrdersFilters) => void;
