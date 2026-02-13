@@ -6,12 +6,12 @@ export interface VaultItem {
   current_weight_kg: number;
   available_capacity_kg: number;
   utilization_percent: number;
-  vault_status: "Used" | "Active" | "Inactive" | "Under Audit" | string;
+  vault_status: VaultStatus;
   last_audit_date: string;
   asset_count: number;
 }
 
-export type VaultStatus = "UNUSED" | "USED" | "OUT_OF_SERVICE";
+export type VaultStatus = 'UNUSED'|  'USED' | 'OUT_OF_SERVICE';
 
 export interface VaultValuation {
   currency: string;

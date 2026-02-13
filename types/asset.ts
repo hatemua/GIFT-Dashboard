@@ -131,15 +131,22 @@ export interface ValuationSnapshot {
 }
 
 export interface TrackingEvent {
-  event_id: string;
-  event_type: string;
+  event_id?: string;
+  event_type?: string;
   timestamp: string;
-  description: string;
-  details: Record<string, any>;
+  description?: string;
+  details?: Record<string, any>;
   valuation_snapshot?: ValuationSnapshot;
-  block_number: number;
+
+  // Blockchain info
+  block_number: number | string;
   transaction_hash: string;
+
+  // Optional transaction metadata
+  transaction_reference?: string;
+  transaction_type?: string;
 }
+
 
 export interface OwnershipChainItem {
   owner_igan: string;

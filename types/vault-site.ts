@@ -151,11 +151,7 @@ export interface VaultSiteStore {
   inventoryError: string | null;
   filters: VaultSiteFilters;
 
-  fetchVaultSites: (
-    limit?: number,
-    offset?: number,
-    country?: string,
-  ) => Promise<void>;
+  fetchVaultSites: () => Promise<void>;
 
   fetchVaultSiteById: (id: string) => Promise<void>;
 

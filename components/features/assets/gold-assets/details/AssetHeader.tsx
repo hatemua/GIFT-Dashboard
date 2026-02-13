@@ -21,7 +21,7 @@ export function AssetHeader({ asset }: Props) {
     <div
       className="
         flex flex-col lg:flex-row lg:items-center justify-between gap-4
-        mb-4 p-4 bg-white rounded-xl
+        mb-2 p-4 bg-white rounded-xl
         border border-gray-200
         transition-all duration-200
         hover:border-gray-300 hover:shadow-md

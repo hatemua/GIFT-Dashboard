@@ -1,22 +1,22 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { PageHeader } from "@/components/layout/page-header";
-import { StepperWizard } from "@/components/ui/stepper";
 import { CreateTransactionInput } from "@/types/transaction";
 import { useTransaction } from "@/hooks/useTransaction";
 import { useToast } from "@/providers/toast-provider";
 import { TransactionDetailsForm } from "@/components/features/transactions/new/TransactionDetailsForm";
 import { TransactionAssetsForm } from "@/components/features/transactions/new/TransactionAssetsForm";
 import { useAsset } from "@/hooks/useAsset";
+import { Button } from "@/components/ui/button";
+import { CreditCard } from "lucide-react";
 
 export default function NewTransactionPage() {
   const { createTransaction, loading } = useTransaction();
   const { showToast } = useToast();
   const { setFilters, resetFilters } = useAsset();
-  const [step, setStep] = useState(1);
 
   const methods = useForm<CreateTransactionInput>({
     mode: "onChange",
@@ -34,41 +34,9 @@ export default function NewTransactionPage() {
 
   const { handleSubmit, reset } = methods;
 
-  /* ---------------- Step navigation ---------------- */
-
-  const handleNextStep = async () => {
-    if (step === 1) {
-      // Only validate step 1 fields
-      const valid = await methods.trigger([
-        "transaction_reference",
-        "transaction_type",
-        "counterparty_gic",
-        "initiator_gic",
-        "valuation_date",
-        "transaction_value",
-        "valuation_currency",
-      ]);
-
-      if (!valid) return;
-
-      setStep(2);
-    }
-  };
-
-  const handlePreviousStep = () => setStep(1);
-
   /* ---------------- Final Submit ---------------- */
 
   const onSubmit = async (data: CreateTransactionInput) => {
-    if (!data.requested_assets || data.requested_assets.length === 0) {
-      showToast({
-        title: "No Assets Selected",
-        message: "Please select at least one asset",
-        variant: "error",
-      });
-      return;
-    }
-
     try {
       await createTransaction(data);
 
@@ -79,7 +47,6 @@ export default function NewTransactionPage() {
       });
 
       reset();
-      setStep(1);
     } catch (err: any) {
       showToast({
         title: "Creation Failed",
@@ -92,10 +59,7 @@ export default function NewTransactionPage() {
 
   useEffect(() => {
     setFilters({ status: "stationary" });
-
-    return () => {
-      resetFilters();
-    };
+    return () => resetFilters();
   }, []);
 
   /* ---------------- Render ---------------- */
@@ -113,26 +77,71 @@ export default function NewTransactionPage() {
       />
 
       <FormProvider {...methods}>
-        <StepperWizard
-          currentStep={step}
-          onNext={handleNextStep}
-          onBack={handlePreviousStep}
-          onSubmit={handleSubmit(onSubmit)}
-          isSubmitting={loading}
-          variant="compact"
-          steps={[
-            {
-              title: "Details",
-              subtitle: "Transaction info",
-              content: <TransactionDetailsForm />,
-            },
-            {
-              title: "Assets",
-              subtitle: "Select instruments",
-              content: <TransactionAssetsForm />,
-            },
-          ]}
-        />
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+          {/* Step 1 */}
+          <div>
+            <div className="mb-2">
+              <h2 className="text-lg font-semibold">
+                Step 1: Transaction Details
+              </h2>
+              <p className="text-sm text-gray-500 mt-1">
+                Provide the main details of your transaction
+              </p>
+            </div>
+            <TransactionDetailsForm />
+          </div>
+
+          {/* Step 2 */}
+          <div>
+            <div className="mb-2">
+              <h2 className="text-lg font-semibold">Step 2: Select Assets</h2>
+              <p className="text-sm text-gray-500 mt-1">
+                Choose the assets you want to include in this transaction
+              </p>
+            </div>
+            <TransactionAssetsForm />
+          </div>
+
+          <div className="sticky bottom-6 bg-white/90 backdrop-blur-sm border border-gray-200 rounded-xl p-4 shadow-lg">
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-gray-600">
+                <p className="font-medium">
+                  Review all information before submission
+                </p>
+                <p className="text-xs mt-1">
+                  All fields marked with * are required
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="border-gray-300 hover:bg-gray-50 px-6"
+                  onClick={() => reset()}
+                >
+                  Reset
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-white px-8 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2"
+                >
+                  {loading ? (
+                    <>
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                      Creating...
+                    </>
+                  ) : (
+                    <>
+                      <CreditCard className="h-4 w-4" />
+                      Submit Transaction
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </form>
       </FormProvider>
     </DashboardShell>
   );

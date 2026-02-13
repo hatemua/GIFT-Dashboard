@@ -7,6 +7,8 @@ interface UseAssetReturn {
   assetTracking?: AssetTrackingResponse;
   loading: boolean;
   error?: string;
+  loadingTracking: boolean;
+  errorTracking?: string;
   page: number;
   limit: number;
   count: number;
@@ -35,6 +37,8 @@ export const useAsset = (): UseAssetReturn => {
     limit,
     count,
     filters,
+    loadingTracking,
+    errorTracking,
     fetchAssets,
     mintAsset,
     fetchAssetByTokenId,
@@ -57,6 +61,8 @@ export const useAsset = (): UseAssetReturn => {
     limit,
     count,
     filters,
+    loadingTracking,
+    errorTracking,
     fetchAssets,
     mintAsset,
     fetchAssetByTokenId,

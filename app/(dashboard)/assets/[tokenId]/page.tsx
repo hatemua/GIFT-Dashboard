@@ -13,6 +13,7 @@ import { ComplianceCard } from "@/components/features/assets/gold-assets/details
 import { AssetActions } from "@/components/features/assets/gold-assets/details/AssetActions";
 import EmptyState from "@/components/features/common/EmptyState";
 import { useAuthStore } from "@/store/authStore";
+import { AssetTabs } from "@/components/features/assets/gold-assets/details/AssetTabs";
 
 interface AssetDetailsPageProps {
   params: Promise<{ tokenId: string }>;
@@ -21,13 +22,15 @@ interface AssetDetailsPageProps {
 export default function AssetDetailsPage({ params }: AssetDetailsPageProps) {
   const { isAdmin } = useAuthStore();
   const { tokenId } = React.use(params);
-  const { assetDetails, fetchAssetByTokenId, loading } = useAsset();
+  const { assetDetails, assetTracking, fetchAssetByTokenId, fetchAssetTracking, loadingTracking, loading } = useAsset();
   const [hasFetched, setHasFetched] = useState(false);
 
   useEffect(() => {
     if (tokenId) {
       setHasFetched(true);
       fetchAssetByTokenId(tokenId);
+      fetchAssetTracking(tokenId)
+      
     }
   }, [tokenId, fetchAssetByTokenId]);
 
@@ -44,27 +47,15 @@ export default function AssetDetailsPage({ params }: AssetDetailsPageProps) {
       />
 
       <div className="space-y-6">
-        {loading || !hasFetched ? (
+        {loading || loadingTracking || !hasFetched ? (
           <LoadingSkeleton />
         ) : assetDetails ? (
           <>
+
             <AssetHeader asset={assetDetails} />
+                      {assetTracking && assetDetails && <AssetTabs data={assetTracking}/>}
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-              {/* Left Column */}
-              <div className="lg:col-span-2 space-y-4">
-                <AssetOverviewCard asset={assetDetails} />
-                <OwnershipLocationCard asset={assetDetails} />
-              </div>
-
-              {/* Right Column */}
-              <div className="space-y-4">
-                <ValuationCard asset={assetDetails} />
-                <ComplianceCard asset={assetDetails} />
-              </div>
-            </div>
-
-            {isAdmin && <AssetActions tokenId={assetDetails.token_id} />}
+            
           </>
         ) : (
           <EmptyState type="asset" />

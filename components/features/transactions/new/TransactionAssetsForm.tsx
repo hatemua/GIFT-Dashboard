@@ -10,12 +10,12 @@ import {
 } from "@/components/ui/card";
 import MultiSelectAssets from "@/components/features/common/MultiSelectAssets";
 import { Layers } from "lucide-react";
-import { useFormContext, useWatch } from "react-hook-form";
+import { useFormContext, useWatch, Controller } from "react-hook-form";
 import { Transaction } from "@/types/transaction";
 import { Badge } from "@/components/ui/badge";
 
 export const TransactionAssetsForm: React.FC = () => {
-  const { control } = useFormContext<Transaction>();
+  const { control, formState: { errors } } = useFormContext<Transaction>();
 
   // Watch the requested_assets field
   const selectedAssets = useWatch({
@@ -50,7 +50,23 @@ export const TransactionAssetsForm: React.FC = () => {
       </CardHeader>
 
       <CardContent>
-        <MultiSelectAssets name="requested_assets" />
+        <Controller
+          control={control}
+          name="requested_assets"
+          rules={{
+            validate: (value) =>
+              value && value.length > 0 ? true : "Please select at least one asset",
+          }}
+          render={({ field }) => (
+            <MultiSelectAssets {...field} />
+          )}
+        />
+        {/* Show error message */}
+        {errors.requested_assets && (
+          <p className="mt-2 text-sm text-red-600">
+            {errors.requested_assets.message as string}
+          </p>
+        )}
       </CardContent>
     </Card>
   );

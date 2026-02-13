@@ -73,7 +73,7 @@ const TransactionOrdersFilters = () => {
             icon={
               <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             }
-            placeholder="Search by reference, GIC, currency…"
+            placeholder="Search by Reference"
             value={search}
             onChange={(e) => handleSearchChange(e.target.value)}
             className="h-9 pl-9 text-sm"
