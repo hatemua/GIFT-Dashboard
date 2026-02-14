@@ -2,7 +2,7 @@
 
 import { Input } from "@/components/ui/input";
 import { Search, Calendar, ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { cn, getDateRange } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -13,19 +13,21 @@ import {
 import { DATE_OPTIONS } from "@/constants/filters";
 import { ASSET_STATUS_OPTIONS, AssetStatus } from "@/constants/assets";
 import { useAsset } from "@/hooks/useAsset";
+import { DateRange } from "@/types";
+import { ClearFiltersButton } from "@/components/features/common/ClearFiltersButton";
 
 interface AssetsFiltersProps {
   filterByStatus?: boolean;
 }
 
-const AssetsFilters: React.FC<AssetsFiltersProps> = ({ filterByStatus = true }) => {
+const AssetsFilters: React.FC<AssetsFiltersProps> = ({
+  filterByStatus = true,
+}) => {
   const { setFilters } = useAsset();
 
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<AssetStatus>("all");
-  const [dateRange, setDateRange] = useState<
-    "24h" | "7d" | "30d" | "today" | "yesterday" | "this_month" | "this_year"
-  >("24h");
+  const [dateRange, setDateRange] = useState<DateRange>("all");
 
   const selectedStatus = ASSET_STATUS_OPTIONS.find((s) => s.value === status);
 
@@ -43,10 +45,24 @@ const AssetsFilters: React.FC<AssetsFiltersProps> = ({ filterByStatus = true }) 
     });
   };
 
-  const handleDateChange = (value: "24h" | "7d" | "30d") => {
+  const handleDateChange = (value: DateRange) => {
     setDateRange(value);
     setFilters(getDateRange(value));
   };
+  const handleClearFilters = () => {
+    setSearch("");
+    setStatus("all");
+    setDateRange("all");
+
+    setFilters({
+      search: undefined,
+      status: undefined,
+      ...getDateRange("all"),
+    });
+  };
+  const hasActiveFilters = useMemo(() => {
+    return search !== "" || status !== "all" || dateRange !== "all";
+  }, [search, status, dateRange]);
 
   return (
     <div className="mb-3 rounded-xl border border-border/60 bg-card p-2 shadow-sm">
@@ -126,9 +142,7 @@ const AssetsFilters: React.FC<AssetsFiltersProps> = ({ filterByStatus = true }) 
             {DATE_OPTIONS.map((option) => (
               <DropdownMenuItem
                 key={option.value}
-                onClick={() =>
-                  handleDateChange(option.value as "24h" | "7d" | "30d")
-                }
+                onClick={() => handleDateChange(option.value as DateRange)}
                 className={cn(dateRange === option.value && "font-medium")}
               >
                 {option.label}
@@ -136,6 +150,10 @@ const AssetsFilters: React.FC<AssetsFiltersProps> = ({ filterByStatus = true }) 
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
+        {/* Clear Filters */}
+        {hasActiveFilters && (
+          <ClearFiltersButton onClick={handleClearFilters} />
+        )}
       </div>
     </div>
   );

@@ -7,7 +7,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { cn, getDateRange } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -18,31 +18,46 @@ import {
 import { useMember } from "@/hooks/useMember";
 import { ROLES } from "@/constants/member";
 import { DATE_OPTIONS } from "@/constants/filters";
+import { DateRange } from "@/types";
+import { ClearFiltersButton } from "../../common/ClearFiltersButton";
 
 const MembersFilters = () => {
   const { setFilters } = useMember();
 
   const [search, setSearch] = useState("");
   const [roles, setRoles] = useState<string>("");
-  const [dateRange, setDateRange] = useState<
-    "24h" | "7d" | "30d" | "today" | "yesterday" | "this_month" | "this_year"
-  >("24h");
+  const [dateRange, setDateRange] = useState<DateRange>("all");
 
-const handleSearchChange = (value: string) => {
-  setSearch(value);
-  setFilters({ search: value || undefined });
-};
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+    setFilters({ search: value || undefined });
+  };
 
-const handleRoleChange = (value: string) => {
-  setRoles(value);
-  setFilters({ roles: value === "" ? undefined : value });
-};
+  const handleRoleChange = (value: string) => {
+    setRoles(value);
+    setFilters({ roles: value === "" ? undefined : value });
+  };
 
-const handleDateChange = (value: "24h" | "7d" | "30d") => {
-  setDateRange(value);
-  setFilters(getDateRange(value));
-};
+  const handleDateChange = (value: DateRange) => {
+    setDateRange(value);
+    setFilters(getDateRange(value));
+  };
 
+  const hasActiveFilters = useMemo(() => {
+    return search !== "" || dateRange !== "all" || roles !== "";
+  }, [search, dateRange]);
+
+  const handleClearFilters = () => {
+    setSearch("");
+    setDateRange("all");
+    setRoles("");
+
+    setFilters({
+      search: undefined,
+      roles: undefined,
+      ...getDateRange("all"),
+    });
+  };
 
   return (
     <div className="mb-3 rounded-xl border border-border/60 bg-card p-2 shadow-sm">
@@ -111,9 +126,7 @@ const handleDateChange = (value: "24h" | "7d" | "30d") => {
             {DATE_OPTIONS.map((option) => (
               <DropdownMenuItem
                 key={option.value}
-                onClick={() =>
-                  handleDateChange(option.value as "24h" | "7d" | "30d")
-                }
+                onClick={() => handleDateChange(option.value as DateRange)}
                 className={cn(dateRange === option.value && "font-medium")}
               >
                 {option.label}
@@ -121,6 +134,10 @@ const handleDateChange = (value: "24h" | "7d" | "30d") => {
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
+        {/* Clear Filters */}
+        {hasActiveFilters && (
+          <ClearFiltersButton onClick={handleClearFilters} />
+        )}
       </div>
     </div>
   );

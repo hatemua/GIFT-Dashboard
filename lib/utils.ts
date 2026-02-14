@@ -89,6 +89,7 @@ export function generateId(prefix: string, length: number = 8): string {
 
 export const getDateRange = (
   range:
+    | "all"
     | "24h"
     | "7d"
     | "30d"
@@ -97,6 +98,13 @@ export const getDateRange = (
     | "this_month"
     | "this_year",
 ) => {
+  if (range === "all") {
+    return {
+      from_date: undefined,
+      to_date: undefined,
+    };
+  }
+
   const to = new Date();
   let from = new Date();
 
@@ -104,26 +112,32 @@ export const getDateRange = (
     case "24h":
       from.setHours(to.getHours() - 24);
       break;
+
     case "7d":
       from.setDate(to.getDate() - 7);
       break;
+
     case "30d":
       from.setDate(to.getDate() - 30);
       break;
+
     case "today":
-      from.setHours(0, 0, 0, 0); // start of today
+      from.setHours(0, 0, 0, 0);
       break;
+
     case "yesterday":
       from.setDate(to.getDate() - 1);
-      from.setHours(0, 0, 0, 0); // start of yesterday
+      from.setHours(0, 0, 0, 0);
       to.setDate(to.getDate() - 1);
-      to.setHours(23, 59, 59, 999); // end of yesterday
+      to.setHours(23, 59, 59, 999);
       break;
+
     case "this_month":
-      from = new Date(to.getFullYear(), to.getMonth(), 1); // start of month
+      from = new Date(to.getFullYear(), to.getMonth(), 1);
       break;
+
     case "this_year":
-      from = new Date(to.getFullYear(), 0, 1); // start of year
+      from = new Date(to.getFullYear(), 0, 1);
       break;
   }
 

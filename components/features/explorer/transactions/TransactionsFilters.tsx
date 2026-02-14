@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 
 import { useBlockchainTransactions } from "@/hooks/useBlockchainTransaction";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { cn, getDateRange } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -18,13 +18,19 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { DATE_OPTIONS } from "@/constants/filters";
 import { STATUS_OPTIONS } from "@/constants/transactions";
+import { ClearFiltersButton } from "../../common/ClearFiltersButton";
+import { DateRange } from "@/types";
 
 const TransactionsFilters = () => {
   const { setFilters } = useBlockchainTransactions();
 
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<"all" | "success" | "failed">("all");
-  const [dateRange, setDateRange] = useState<"24h" | "7d" | "30d">("24h");
+  const [dateRange, setDateRange] = useState<DateRange>("all");
+
+  /* ---------------------------------- */
+  /* Handlers                           */
+  /* ---------------------------------- */
 
   const handleSearchChange = (value: string) => {
     setSearch(value);
@@ -40,10 +46,30 @@ const TransactionsFilters = () => {
     });
   };
 
-  const handleDateChange = (value: "24h" | "7d" | "30d") => {
+  const handleDateChange = (value: DateRange) => {
     setDateRange(value);
     setFilters(getDateRange(value));
   };
+
+  const handleClearFilters = () => {
+    setSearch("");
+    setStatus("all");
+    setDateRange("all");
+
+    setFilters({
+      search: undefined,
+      status: undefined,
+      ...getDateRange("all"),
+    });
+  };
+
+  /* ---------------------------------- */
+  /* Active Filters Check               */
+  /* ---------------------------------- */
+
+  const hasActiveFilters = useMemo(() => {
+    return search !== "" || status !== "all" || dateRange !== "all";
+  }, [search, status, dateRange]);
 
   return (
     <div className="mb-3 rounded-xl border border-border/60 bg-card p-2 shadow-sm">
@@ -54,7 +80,6 @@ const TransactionsFilters = () => {
             icon={
               <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             }
-            // type="search"
             placeholder="Search by hash, from, to, block…"
             value={search}
             onChange={(e) => handleSearchChange(e.target.value)}
@@ -62,7 +87,7 @@ const TransactionsFilters = () => {
           />
         </div>
 
-        {/* Status dropdown */}
+        {/* Status Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger>
             <div
@@ -108,7 +133,7 @@ const TransactionsFilters = () => {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {/* Date dropdown */}
+        {/* Date Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger>
             <div
@@ -127,7 +152,7 @@ const TransactionsFilters = () => {
               <DropdownMenuItem
                 key={option.value}
                 onClick={() =>
-                  handleDateChange(option.value as "24h" | "7d" | "30d")
+                  handleDateChange(option.value as DateRange)
                 }
                 className={cn(dateRange === option.value && "font-medium")}
               >
@@ -136,6 +161,11 @@ const TransactionsFilters = () => {
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
+
+        {/* Clear Filters */}
+        {hasActiveFilters && (
+          <ClearFiltersButton onClick={handleClearFilters} />
+        )}
       </div>
     </div>
   );

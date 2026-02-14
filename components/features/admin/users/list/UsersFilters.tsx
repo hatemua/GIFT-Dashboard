@@ -19,6 +19,8 @@ import { DATE_OPTIONS } from "@/constants/filters";
 import { USER_STATUS_OPTIONS } from "@/constants/user";
 import { UserStatus } from "@/types/user";
 import { useUser } from "@/hooks/useUser";
+import { ClearFiltersButton } from "@/components/features/common/ClearFiltersButton";
+import { DateRange } from "@/types";
 
 /* ---------------------------------------
  * Status icons mapping
@@ -33,9 +35,10 @@ const UsersFilters = () => {
 
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<UserStatus | "">("");
-  const [dateRange, setDateRange] = useState<
-    "24h" | "7d" | "30d" | "today" | "yesterday" | "this_month" | "this_year"
-  >("24h");
+  const [dateRange, setDateRange] = useState<DateRange>("all");
+
+  const hasActiveFilters =
+    search !== "" || dateRange !== "all" || status !== "";
 
   const handleSearchChange = (value: string) => {
     setSearch(value);
@@ -51,9 +54,20 @@ const UsersFilters = () => {
     });
   };
 
-  const handleDateChange = (value: "24h" | "7d" | "30d") => {
+  const handleDateChange = (value: DateRange) => {
     setDateRange(value);
     setFilters(getDateRange(value));
+  };
+
+  const handleClearFilters = () => {
+    setSearch("");
+    setDateRange("all");
+    setStatus("");
+    setFilters({
+      search: undefined,
+      status: undefined,
+      ...getDateRange("all"),
+    });
   };
 
   return (
@@ -70,7 +84,7 @@ const UsersFilters = () => {
             onChange={(e) => handleSearchChange(e.target.value)}
             className="h-10 pl-9"
           />
-          </div>
+        </div>
 
         {/* Status filter */}
         <DropdownMenu>
@@ -130,9 +144,7 @@ const UsersFilters = () => {
             {DATE_OPTIONS.map((option) => (
               <DropdownMenuItem
                 key={option.value}
-                onClick={() =>
-                  handleDateChange(option.value as "24h" | "7d" | "30d")
-                }
+                onClick={() => handleDateChange(option.value as DateRange)}
                 className={cn(dateRange === option.value && "font-medium")}
               >
                 {option.label}
@@ -140,6 +152,10 @@ const UsersFilters = () => {
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
+        {/* Clear Filters */}
+        {hasActiveFilters && (
+          <ClearFiltersButton onClick={handleClearFilters} />
+        )}
       </div>
     </div>
   );

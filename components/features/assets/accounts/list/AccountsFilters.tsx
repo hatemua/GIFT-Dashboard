@@ -1,9 +1,5 @@
 import { Input } from "@/components/ui/input";
-import {
-  Search,
-  Calendar,
-  ChevronDown,
-} from "lucide-react";
+import { Search, Calendar, ChevronDown } from "lucide-react";
 
 import { useState } from "react";
 import { cn, getDateRange } from "@/lib/utils";
@@ -15,23 +11,34 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { DATE_OPTIONS } from "@/constants/filters";
 import { useGoldAccount } from "@/hooks/useGoldAccount";
+import { DateRange } from "@/types";
+import { ClearFiltersButton } from "@/components/features/common/ClearFiltersButton";
 
 const AccountsFilters = () => {
   const { setFilters } = useGoldAccount();
 
   const [search, setSearch] = useState("");
-  const [dateRange, setDateRange] = useState<
-    "24h" | "7d" | "30d" | "today" | "yesterday" | "this_month" | "this_year"
-  >("24h");
+  const [dateRange, setDateRange] = useState<DateRange>("all");
+
+  const hasActiveFilters = search !== "" || dateRange !== "all";
 
   const handleSearchChange = (value: string) => {
     setSearch(value);
     setFilters({ search: value || undefined });
   };
 
-  const handleDateChange = (value: "24h" | "7d" | "30d") => {
+  const handleDateChange = (value: DateRange) => {
     setDateRange(value);
     setFilters(getDateRange(value));
+  };
+
+  const handleClearFilters = () => {
+    setSearch("");
+    setDateRange("all");
+    setFilters({
+      search: undefined,
+      ...getDateRange("all"),
+    });
   };
 
   return (
@@ -69,9 +76,7 @@ const AccountsFilters = () => {
             {DATE_OPTIONS.map((option) => (
               <DropdownMenuItem
                 key={option.value}
-                onClick={() =>
-                  handleDateChange(option.value as "24h" | "7d" | "30d")
-                }
+                onClick={() => handleDateChange(option.value as DateRange)}
                 className={cn(dateRange === option.value && "font-medium")}
               >
                 {option.label}
@@ -79,6 +84,10 @@ const AccountsFilters = () => {
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
+        {/* Clear Filters */}
+        {hasActiveFilters && (
+          <ClearFiltersButton onClick={handleClearFilters} />
+        )}
       </div>
     </div>
   );

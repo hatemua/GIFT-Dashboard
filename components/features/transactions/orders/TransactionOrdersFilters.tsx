@@ -9,7 +9,7 @@ import {
   DollarSign,
   ShoppingCart,
 } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { cn, getDateRange } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -23,6 +23,8 @@ import {
   TRANSACTION_STATUS_OPTIONS,
   TRANSACTION_TYPE_OPTIONS,
 } from "@/constants/transactionOrders";
+import { DateRange } from "@/types";
+import { ClearFiltersButton } from "../../common/ClearFiltersButton";
 
 const TransactionOrdersFilters = () => {
   const { setFilters } = useTransaction();
@@ -30,7 +32,7 @@ const TransactionOrdersFilters = () => {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<string>("");
   const [type, setType] = useState<string>("");
-  const [dateRange, setDateRange] = useState<any>("24h");
+  const [dateRange, setDateRange] = useState<DateRange>("all");
 
   const handleSearchChange = (value: string) => {
     setSearch(value);
@@ -63,7 +65,25 @@ const TransactionOrdersFilters = () => {
   const selectedStatus = TRANSACTION_STATUS_OPTIONS.find(
     (s) => s.value === status,
   );
+  const hasActiveFilters = useMemo(() => {
+    return (
+      search !== "" || status !== "" || type !== "" || dateRange !== "all"
+    );
+  }, [search, status, dateRange, type]);
 
+  const handleClearFilters = () => {
+    setSearch("");
+    setType("");
+    setStatus("");
+    setDateRange("all");
+
+    setFilters({
+      search: undefined,
+      status: undefined,
+      type: undefined,
+      ...getDateRange("all"),
+    });
+  };
   return (
     <div className="mb-3 rounded-xl border border-border/60 bg-card p-2 shadow-sm">
       <div className="flex flex-wrap items-center gap-2">
@@ -172,6 +192,10 @@ const TransactionOrdersFilters = () => {
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
+        {/* Clear Filters */}
+        {hasActiveFilters && (
+          <ClearFiltersButton onClick={handleClearFilters} />
+        )}
       </div>
     </div>
   );
