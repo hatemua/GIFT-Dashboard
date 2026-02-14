@@ -71,7 +71,7 @@ export const mockSearchResults: SearchResponse = {
       source_type: "transaction_order" as SourceType,
       transaction_reference: "TXN-2026-0001",
       transaction_type: "purchase",
-      transation_status: "completed",
+      transation_status: "stationary",
       createdAt: "2026-02-05T14:20:00Z",
     },
     // {

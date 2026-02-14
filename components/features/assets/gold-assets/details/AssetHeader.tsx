@@ -1,15 +1,6 @@
 "use client";
 
-import * as React from "react";
-import { Badge } from "@/components/ui/badge";
-import {
-  Gem,
-  Barcode,
-  Package,
-  TrendingUp,
-  AlertTriangle,
-  Copy,
-} from "lucide-react";
+import { Gem, Barcode } from "lucide-react";
 import { StatusBadge } from "@/components/data-display/status-badge";
 import { getAssetStatusLabel } from "@/lib/assets";
 

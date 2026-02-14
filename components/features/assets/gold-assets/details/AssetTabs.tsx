@@ -1,7 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AssetTrackingResponse } from "@/types/asset"
 import { AssetSummaryTab } from "./AssetSummaryTab"
-import { LifecycleTab } from "./LifecycleTab"
 import { TrackingEventsTab } from "./TrackingEventsTab"
 import { OwnershipTab } from "./OwnershipTab"
 import { CustodyTab } from "./CustodyTab"

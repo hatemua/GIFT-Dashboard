@@ -11,7 +11,6 @@ import { SearchResultItem, SourceType } from "@/types/search";
 import {
   UserCircle,
   Package,
-  Receipt,
   Tag,
   BadgeCheck,
   Fingerprint,
@@ -34,7 +33,7 @@ export const SearchResultCard: React.FC<Props> = ({ item, onClick }) => {
 
   return (
     <Link
-      href={`/${item.source_type}s/${encodeURIComponent(primaryLabel)}`}
+      href={getLink(item)}
       className="block group focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 rounded-lg"
       onClick={onClick}
     >
@@ -161,10 +160,16 @@ const getIconConfig = (type: SourceType) => {
 
 const getStatusColor = (status: string = "") => {
   const statusMap: Record<string, string> = {
-    active: "bg-emerald-50 text-emerald-700 border-emerald-200",
-    pending: "bg-amber-50 text-amber-700 border-amber-200",
-    completed: "bg-blue-50 text-blue-700 border-blue-200",
-    cancelled: "bg-rose-50 text-rose-700 border-rose-200",
+    //transaction
+    EXECUTED: "bg-emerald-50 text-emerald-700 border-emerald-200",
+    PENDING_EXECUTION: "bg-amber-50 text-amber-700 border-amber-200",
+    PENDING_COUNTERPARTY: "bg-blue-50 text-blue-700 border-blue-200",
+    PENDING_SIGNATURE: "bg-violet-50 text-violet-700 border-violet-200",
+    //asset
+    stationary: "bg-slate-50 text-slate-700 border-slate-200",
+    in_transit: "bg-orange-50 text-orange-700 border-orange-200",
+    liquidated: "bg-emerald-50 text-emerald-700 border-emerald-200",
+    burned: "bg-rose-50 text-rose-700 border-rose-200",
     default: "bg-gray-50 text-gray-700 border-gray-200",
   };
 
@@ -264,3 +269,17 @@ const getMetadata = (item: SearchResultItem) => {
 
   return metadata;
 };
+
+const getLink = (item: SearchResultItem) => {
+  switch (item.source_type) {
+    case "member":
+      return `/members/${item.member_gic}`;
+    case "gold_asset":
+      return `/assets/${item.token_id}`;
+    case "transaction_order":
+      return `/transactions/${item.transaction_reference}`;
+    default:
+      return "/";
+  }
+};
+

@@ -132,7 +132,7 @@ export const useAssetStore = create<AssetState>((set, get) => ({
     set({ loading: true, error: undefined });
     try {
       const data = await assetService.mintAsset(asset);
-      set({ assets: [...get().assets, data], loading: false });
+      set({ loading: false });
       return data;
     } catch (err: any) {
       console.log(err, "errrrrr")

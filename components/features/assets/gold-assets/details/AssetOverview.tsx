@@ -10,8 +10,9 @@ import {
   Hash,
   Scale,
   ShieldCheck,
+  FileCheck,
 } from "lucide-react";
-import { formatDate } from "@/lib/utils";
+import { formatDate, isValidUrl } from "@/lib/utils";
 import { AddressDisplay } from "@/components/blockchain/address-display";
 
 export function AssetOverviewCard({ asset }: { asset: any }) {
@@ -86,6 +87,22 @@ export function AssetOverviewCard({ asset }: { asset: any }) {
               {meta.certificate_origin_hash}
             </span>
           </InfoItem>
+          {meta.certificate_url && isValidUrl(meta.certificate_url) && (
+            <InfoItem
+              label="Certificate URL"
+              icon={<FileCheck className="h-3 w-3" />}
+              mono
+            >
+              <a
+                href={meta.certificate_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="break-all text-xs text-primary hover:underline"
+              >
+                View Certificate
+              </a>
+            </InfoItem>
+          )}
         </div>
       </CardContent>
     </Card>

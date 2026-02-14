@@ -47,7 +47,7 @@ export function OwnershipLocationCard({ asset }: Props) {
             label="Vault Site"
             icon={<Home className="h-3 w-3 text-blue-500" />}
           >
-            {asset.ownership.vault_site_id}
+            {asset.ownership.vault_site_id ?? "N/A"} 
           </InfoItem>
         </div>
       </CardContent>

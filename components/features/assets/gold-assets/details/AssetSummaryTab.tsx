@@ -1,5 +1,4 @@
 import { AssetSummary } from "@/types/asset";
-import { Card, CardContent } from "@/components/ui/card";
 import { useAuthStore } from "@/store/authStore";
 import { useAsset } from "@/hooks/useAsset";
 import { AssetOverviewCard } from "./AssetOverview";
