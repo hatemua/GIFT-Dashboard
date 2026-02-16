@@ -11,7 +11,13 @@ interface ModalProps {
   size?: "sm" | "md" | "lg";
 }
 
-export const Modal = ({ isOpen, onClose, title, children, size = "md" }: ModalProps) => {
+export const Modal = ({
+  isOpen,
+  onClose,
+  title,
+  children,
+  size = "md",
+}: ModalProps) => {
   if (!isOpen) return null;
 
   const sizeClasses = {
@@ -22,14 +28,14 @@ export const Modal = ({ isOpen, onClose, title, children, size = "md" }: ModalPr
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity overflow-auto"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm overflow-auto"
       onClick={onClose}
     >
       <div
-        className={`relative w-full ${sizeClasses[size]} mx-auto p-4 transform transition-all duration-300 scale-100`}
+        className={`relative w-full ${sizeClasses[size]} mx-auto my-8 p-4 transform transition-all duration-300`}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="bg-white rounded-xl shadow-2xl">
+        <div className="bg-white rounded-xl shadow-2xl max-h-[90vh] flex flex-col">
           {/* Header */}
           <div className="flex justify-between items-center p-4 border-b border-slate-200">
             {title && <h2 className="text-lg font-bold text-slate-900">{title}</h2>}
@@ -42,7 +48,9 @@ export const Modal = ({ isOpen, onClose, title, children, size = "md" }: ModalPr
           </div>
 
           {/* Content */}
-          <div className="p-6">{children}</div>
+          <div className="p-6 overflow-auto">
+            {children}
+          </div>
         </div>
       </div>
     </div>

@@ -26,7 +26,7 @@ export default function AssetsSkeleton({ view }: AssetsSkeletonProps) {
 function AssetsGridSkeleton() {
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {Array.from({ length: 8 }).map((_, index) => (
+      {Array.from({ length: 6 }).map((_, index) => (
         <div
           key={index}
           className="rounded-xl border border-slate-200 dark:border-gray-700 overflow-hidden animate-pulse bg-white dark:bg-gray-800"

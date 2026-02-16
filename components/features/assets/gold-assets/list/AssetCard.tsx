@@ -6,7 +6,7 @@ import { formatDate, formatWeight, formatCurrency } from "@/lib/utils";
 import { StatusBadge } from "@/components/data-display/status-badge";
 import { AddressDisplay } from "@/components/blockchain/address-display";
 import { getAssetStatusLabel } from "@/lib/assets";
-import { Asset } from "@/types/asset";
+import { Asset, AssetStatus } from "@/types/asset";
 import { GoldAccountAsset } from "@/types/goldAccount";
 import { useEffect } from "react";
 import Link from "next/link";
@@ -124,7 +124,7 @@ interface NormalizedAsset {
   tokenId: string;
   serialNumber: string;
   productType: string;
-  status: "stationary" | "in_transit" | "liquidated";
+  status: AssetStatus;
   ownerIgan?: string;
   weightGrams: number;
   fineness: number;

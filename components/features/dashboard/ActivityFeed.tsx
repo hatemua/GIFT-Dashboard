@@ -139,13 +139,21 @@ export default function ActivityFeed() {
         )}
 
         {/* Error */}
-        {!loading && error && (
-          <p className="text-sm text-red-500">{error}</p>
-        )}
+        {!loading && error && <p className="text-sm text-red-500">{error}</p>}
 
         {/* Empty */}
         {!loading && !error && activities.length === 0 && (
-          <p className="text-sm text-slate-500">No recent activity</p>
+          <div className="flex flex-col items-center justify-center gap-4 p-12 border border-dashed border-slate-300 rounded-xl bg-slate-50">
+            <Users className="h-12 w-12 text-slate-400" />
+            <h3 className="text-lg font-semibold text-slate-900">
+              No Recent Activity
+            </h3>
+            <p className="text-sm text-slate-500 max-w-xs text-center">
+              There have been no actions or events recorded in the system yet.
+              Recent activity, such as new members, asset updates, and
+              transactions, will appear here once they occur.
+            </p>
+          </div>
         )}
 
         {/* Activity List */}
@@ -173,7 +181,9 @@ export default function ActivityFeed() {
 
                     {description && config.path && description.value && (
                       <div className="mt-0.5 flex flex-wrap items-center gap-1 text-xs">
-                        <span className="text-slate-400">{description.label}:</span>
+                        <span className="text-slate-400">
+                          {description.label}:
+                        </span>
                         <Link
                           href={config.path(description.value)}
                           className="font-mono text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded hover:bg-slate-200"

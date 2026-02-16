@@ -32,7 +32,10 @@ export const AssetSummaryTab = ({ data }: Props) => {
       </div>
 
       {isAdmin && assetDetails && (
-        <AssetActions tokenId={assetDetails.token_id} />
+        <AssetActions
+          tokenId={assetDetails.token_id}
+          currentStatus={assetDetails.ownership.asset_status}
+        />
       )}
     </>
   );

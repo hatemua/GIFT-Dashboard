@@ -1,7 +1,17 @@
-import { Asset, AssetDetails, AssetsFilters, AssetTrackingResponse, MintAssetForm } from "@/types/asset";
+import {
+  Asset,
+  AssetDetails,
+  AssetsFilters,
+  AssetTrackingResponse,
+  MintAssetForm,
+  BurnAssetRequest,
+  UpdateCustodyRequest,
+  UpdateStatusRequest,
+} from "@/types/asset";
 import { useAssetStore } from "@/store/assetStore";
 
 interface UseAssetReturn {
+  /* State */
   assets: Asset[];
   assetDetails?: AssetDetails;
   assetTracking?: AssetTrackingResponse;
@@ -14,12 +24,24 @@ interface UseAssetReturn {
   count: number;
   filters: AssetsFilters;
 
+  /* Actions */
   fetchAssets: () => Promise<void>;
   mintAsset: (asset: MintAssetForm) => Promise<Asset | undefined>;
-  fetchAssetByTokenId: (token_id: string) => Promise<void>;
-  fetchAssetTracking: (token_id: string) => Promise<void>;
+  burnAsset: (tokenId: string, data: BurnAssetRequest) => Promise<void>;
+  updateCustody: (
+    tokenId: string,
+    data: UpdateCustodyRequest,
+  ) => Promise<void>;
+  updateStatus: (
+    tokenId: string,
+    data: UpdateStatusRequest,
+  ) => Promise<void>;
+
+  fetchAssetByTokenId: (tokenId: string) => Promise<void>;
+  fetchAssetTracking: (tokenId: string) => Promise<void>;
   clearAssetDetails: () => void;
   clearAssetTracking: () => void;
+
   setFilters: (filters: Partial<AssetsFilters>) => void;
   resetFilters: () => void;
   setPage: (page: number) => void;
@@ -39,12 +61,18 @@ export const useAsset = (): UseAssetReturn => {
     filters,
     loadingTracking,
     errorTracking,
+
     fetchAssets,
     mintAsset,
+    burnAsset,
+    updateCustody,
+    updateStatus,
+
     fetchAssetByTokenId,
     fetchAssetTracking,
     clearAssetDetails,
     clearAssetTracking,
+
     setFilters,
     resetFilters,
     setPage,
@@ -52,6 +80,7 @@ export const useAsset = (): UseAssetReturn => {
   } = useAssetStore();
 
   return {
+    /* State */
     assets,
     assetDetails,
     assetTracking,
@@ -63,12 +92,19 @@ export const useAsset = (): UseAssetReturn => {
     filters,
     loadingTracking,
     errorTracking,
+
+    /* Actions */
     fetchAssets,
     mintAsset,
+    burnAsset,
+    updateCustody,
+    updateStatus,
+
     fetchAssetByTokenId,
     fetchAssetTracking,
     clearAssetDetails,
     clearAssetTracking,
+
     setFilters,
     resetFilters,
     setPage,

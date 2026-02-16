@@ -1,3 +1,5 @@
+export type AssetStatus = "stationary" | "in_transit" | "liquidated" | "burned";
+
 export interface MintAssetForm {
   serial_number: string;
   refiner_name: string;
@@ -39,7 +41,7 @@ export interface Asset {
   certificate_path: string;
   certificate_hash: string;
   manufacture_date: string; // ISO date string
-  status: "stationary" | "in_transit" | "liquidated"
+  status: AssetStatus;
 
   custody_party_type: string | null;
   custody_type: string | null;
@@ -84,7 +86,7 @@ export interface AssetMetadata {
 export interface AssetOwnership {
   current_owner_igan: string;
   vault_site_id: string;
-  asset_status: "stationary" | "in_transit" | "liquidated";
+  asset_status: AssetStatus;
 }
 
 export interface AssetCompliance {
@@ -201,5 +203,69 @@ export interface AssetTrackingResponse {
   custody_chain: CustodyChainItem[];
   location_history: LocationHistoryItem[];
   query_metadata: QueryMetadata;
+}
+
+export interface BurnAssetRequest {
+  token_id: string;
+  burn_reason: string;
+  justification_document: string; // base64 PDF
+  authorized_by: string;
+  irreversible: boolean;
+}
+
+export interface BurnAssetResponse {
+  status: string;
+  token_id: string;
+  burn_status: string;
+  burn_reason: string;
+  authorized_by: string;
+  justification_document_hash: string;
+  burned_at: string;
+  blockchain_tx: string;
+  irreversible: boolean;
+  final_owner_igan: string;
+}
+
+export interface UpdateCustodyRequest {
+  token_id: string;
+  custody_party_type: string;
+  custody_party_id: string;
+  vault_site_id: string;
+  vault_id: string;
+  custody_type: string;
+  custody_agreement_ref: string;
+}
+
+export interface UpdateCustodyResponse {
+  status: string;
+  token_id: string;
+  custody_party_type: string;
+  custody_party_id: string;
+  vault_site_id: string;
+  vault_id: string;
+  custody_type: string;
+  custody_agreement_ref: string;
+  previous_custody_party: string;
+  updated_at: string;
+  blockchain_tx: string;
+}
+
+export interface UpdateStatusRequest {
+  token_id: string;
+  new_status: AssetStatus;
+  reason: string;
+  effective_date: string;
+  supporting_document?: string;
+}
+
+export interface UpdateStatusResponse {
+  status: string;
+  token_id: string;
+  previous_status: AssetStatus;
+  new_status: AssetStatus;
+  reason: string;
+  effective_date: string;
+  changed_at: string;
+  blockchain_tx: string;
 }
 

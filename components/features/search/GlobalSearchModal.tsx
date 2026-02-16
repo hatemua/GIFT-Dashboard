@@ -72,19 +72,17 @@ export const GlobalSearchModal: React.FC<{
                     onClick={handleClose}
                   />
                 ))}
-              </div>
-
-              {/* Pagination */}
-              {total > limit && (
-                <div className="mt-4 pt-3 border-t border-muted/10">
+                              {total > limit && (
                   <Pagination
                     page={page}
                     limit={limit}
                     total={total}
                     setPage={setPage}
+                    size="sm"
                   />
-                </div>
               )}
+              </div>
+
             </>
           )}
         </div>

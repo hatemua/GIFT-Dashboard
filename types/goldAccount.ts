@@ -1,3 +1,5 @@
+import { AssetStatus } from "./asset";
+
 export interface GoldAccount {
   igan: string;
   gold_account_purpose: string;
@@ -115,7 +117,7 @@ export interface GoldAccountAsset {
   fine_weight_grams: number;
   gold_product_type_id: string;
   refiner_name: string;
-  asset_status: "stationary" | "in_transit" | "liquidated";
+  asset_status: AssetStatus;
   created_on_chain_at: string;
   certificate_hash: string;
 }

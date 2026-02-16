@@ -29,7 +29,7 @@ export default function NewVaultSitePage() {
   const { createVaultSite } = useVaultSite();
   const [insuranceFiles, setInsuranceFiles] = useState<File[]>([]);
   const [auditFiles, setAuditFiles] = useState<File[]>([]);
-  const { uploadDocumentSet, loading, error, documentSet } = useDocument();
+  const { uploadDocumentSet, loading } = useDocument();
 
   const sod_insurance_id = `SOD_INSURANCE_${crypto.randomUUID()}`;
   const sod_audit_id = `SOD_AUDIT_${crypto.randomUUID()}`;

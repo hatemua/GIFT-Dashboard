@@ -1,4 +1,5 @@
 "use client";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatusBadge } from "@/components/data-display/status-badge";
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,7 @@ import {
   ShoppingCart,
   CreditCard,
   ShieldCheck,
+  FileText,
 } from "lucide-react";
 import { formatDate, formatCurrency } from "@/lib/utils";
 import Link from "next/link";
@@ -59,66 +61,87 @@ export default function RecentTransactions() {
             </Button>
           </Link>
         </CardHeader>
+
         <CardContent>
           <div className="space-y-4">
-            {loading
-              ? skeletonRows.map((_, idx) => (
-                  <div
-                    key={idx}
-                    className="flex items-center justify-between p-4 rounded-lg border border-slate-200 animate-pulse"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="h-10 w-10 rounded-lg bg-slate-200" />
-                      <div className="flex flex-col gap-1">
-                        <div className="h-4 w-32 bg-slate-200 rounded" />
-                        <div className="h-3 w-24 bg-slate-200 rounded" />
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <div className="flex flex-col gap-1 text-right">
-                        <div className="h-3 w-16 bg-slate-200 rounded" />
-                      </div>
-                      <div className="h-6 w-12 bg-slate-200 rounded" />
+            {/* Loading skeleton */}
+            {loading &&
+              skeletonRows.map((_, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-center justify-between p-4 rounded-lg border border-slate-200 animate-pulse"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="h-10 w-10 rounded-lg bg-slate-200" />
+                    <div className="flex flex-col gap-1">
+                      <div className="h-4 w-32 bg-slate-200 rounded" />
+                      <div className="h-3 w-24 bg-slate-200 rounded" />
                     </div>
                   </div>
-                ))
-              : transactions.map((tx, index) => {
-                  const type =
-                    transactionTypeStyles[tx.transaction_type] ||
-                    transactionTypeStyles.TRANSFER;
+                  <div className="flex items-center gap-4">
+                    <div className="flex flex-col gap-1 text-right">
+                      <div className="h-3 w-16 bg-slate-200 rounded" />
+                    </div>
+                    <div className="h-6 w-12 bg-slate-200 rounded" />
+                  </div>
+                </div>
+              ))}
 
-                  return (
-                    <Link
-                      key={index}
-                      href={`/transactions/${tx.transaction_reference}`}
-                      className="flex items-center justify-between p-4 rounded-lg border border-slate-200 hover:border-gold-300 hover:bg-gold-50/30 transition-all cursor-pointer"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div
-                          className={`flex h-10 w-10 items-center justify-center rounded-lg ${type.className}`}
-                        >
-                          {type.icon}
-                        </div>
-                        <div>
-                          <p className="font-mono text-sm font-semibold text-slate-900">
-                            {tx.transaction_reference}
-                          </p>
-                          <p className="text-xs text-slate-500">
-                            {formatDate(tx.createdAt, "relative")}
-                          </p>
-                        </div>
+            {/* Transactions */}
+            {!loading &&
+              transactions.length > 0 &&
+              transactions.map((tx, index) => {
+                const type =
+                  transactionTypeStyles[tx.transaction_type] ||
+                  transactionTypeStyles.TRANSFER;
+
+                return (
+                  <Link
+                    key={index}
+                    href={`/transactions/${tx.transaction_reference}`}
+                    className="flex items-center justify-between p-4 rounded-lg border border-slate-200 hover:border-gold-300 hover:bg-gold-50/30 transition-all cursor-pointer"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div
+                        className={`flex h-10 w-10 items-center justify-center rounded-lg ${type.className}`}
+                      >
+                        {type.icon}
                       </div>
-                      <div className="flex items-center gap-4">
-                        <div className="text-right">
-                          <p className="text-xs text-slate-500">
-                            {formatCurrency(tx.transaction_value)}
-                          </p>
-                        </div>
-                        <StatusBadge status={tx.transaction_type} />
+                      <div>
+                        <p className="font-mono text-sm font-semibold text-slate-900">
+                          {tx.transaction_reference}
+                        </p>
+                        <p className="text-xs text-slate-500">
+                          {formatDate(tx.createdAt, "relative")}
+                        </p>
                       </div>
-                    </Link>
-                  );
-                })}
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <div className="text-right">
+                        <p className="text-xs text-slate-500">
+                          {formatCurrency(tx.transaction_value)}
+                        </p>
+                      </div>
+                      <StatusBadge status={tx.transaction_type} />
+                    </div>
+                  </Link>
+                );
+              })}
+
+            {/* Empty State */}
+            {!loading && transactions.length === 0 && (
+              <div className="flex flex-col items-center justify-center p-12 border border-dashed border-slate-300 rounded-xl bg-slate-50 text-center gap-4">
+                <FileText className="h-12 w-12 text-slate-400" />
+                <h3 className="text-lg font-semibold text-slate-900">
+                  No Transactions Yet
+                </h3>
+                <p className="text-sm text-slate-500 max-w-xs">
+                  There are currently no transactions in the system. Recent
+                  activity will appear here once assets are sold, transferred,
+                  or updated.{" "}
+                </p>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>

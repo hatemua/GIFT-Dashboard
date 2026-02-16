@@ -3,8 +3,14 @@ import {
   AssetDetails,
   AssetsResponse,
   AssetTrackingResponse,
+  BurnAssetRequest,
+  BurnAssetResponse,
   GetAssetsParams,
   MintAssetForm,
+  UpdateCustodyRequest,
+  UpdateCustodyResponse,
+  UpdateStatusRequest,
+  UpdateStatusResponse,
 } from "@/types/asset";
 
 export const assetService = {
@@ -38,7 +44,39 @@ export const assetService = {
   },
 
   getAssetTracking: async (tokenId: string): Promise<AssetTrackingResponse> => {
-    const response = await api.get<AssetTrackingResponse>(`/assets/${tokenId}/track`);
+    const response = await api.get<AssetTrackingResponse>(
+      `/assets/${tokenId}/track`,
+    );
+    return response.data;
+  },
+  burnAsset: async (
+    token_id: string,
+    data: BurnAssetRequest,
+  ): Promise<BurnAssetResponse> => {
+    const response = await api.post<BurnAssetResponse>(
+      `/assets/${token_id}/burn`,
+      data,
+    );
+    return response.data;
+  },
+  updateCustody: async (
+    token_id: string,
+    data: UpdateCustodyRequest,
+  ): Promise<UpdateCustodyResponse> => {
+    const response = await api.put<UpdateCustodyResponse>(
+      `/assets/${token_id}/custody`,
+      data,
+    );
+    return response.data;
+  },
+  updateStatus: async (
+    token_id: string,
+    data: UpdateStatusRequest,
+  ): Promise<UpdateStatusResponse> => {
+    const response = await api.put<UpdateStatusResponse>(
+      `/assets/${token_id}/status`,
+      data,
+    );
     return response.data;
   },
 };

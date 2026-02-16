@@ -7,7 +7,7 @@ export const NoResults = () => {
   const { query } = useSearchStore();
 
   return (
-    <div className="flex flex-col items-center justify-center h-[320px] gap-5 rounded-3xl bg-gradient-to-b from-muted/10 via-background/40 to-transparent backdrop-blur-sm border border-border/40 shadow-sm">
+    <div className="flex flex-col items-center justify-center h-[320px] gap-5 rounded-3xl border border-dashed border-slate-200 bg-slate-50">
       {/* Icon Section */}
       <div className="relative flex items-center justify-center">
         <div className="absolute h-20 w-20 rounded-full bg-primary/10 blur-2xl opacity-60" />

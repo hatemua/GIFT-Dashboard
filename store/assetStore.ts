@@ -7,6 +7,9 @@ import {
   AssetsResponse,
   AssetTrackingResponse,
   MintAssetForm,
+  BurnAssetRequest,
+  UpdateCustodyRequest,
+  UpdateStatusRequest,
 } from "@/types/asset";
 
 interface AssetState {
@@ -36,6 +39,16 @@ interface AssetState {
   clearAssetTracking: () => void;
 
   mintAsset: (asset: MintAssetForm) => Promise<Asset | undefined>;
+  burnAsset: (tokenId: string, data: BurnAssetRequest) => Promise<void>;
+  updateCustody: (
+    tokenId: string,
+    data: UpdateCustodyRequest,
+  ) => Promise<void>;
+  updateStatus: (
+    tokenId: string,
+    data: UpdateStatusRequest,
+  ) => Promise<void>;
+
   setFilters: (filters: Partial<AssetsFilters>) => void;
   resetFilters: () => void;
   setPage: (page: number) => void;
@@ -101,9 +114,7 @@ export const useAssetStore = create<AssetState>((set, get) => ({
     }
   },
 
-  clearAssetDetails: () => {
-    set({ assetDetails: undefined });
-  },
+  clearAssetDetails: () => set({ assetDetails: undefined }),
 
   /* ------------------------
      Fetch asset tracking
@@ -115,15 +126,15 @@ export const useAssetStore = create<AssetState>((set, get) => ({
       set({ assetTracking: data, loadingTracking: false });
     } catch (err: any) {
       set({
-        errorTracking: err?.response?.data?.message || "Failed to fetch tracking data",
+        errorTracking:
+          err?.response?.data?.message || "Failed to fetch tracking data",
         loadingTracking: false,
       });
     }
   },
 
-  clearAssetTracking: () => {
-    set({ assetTracking: undefined, errorTracking: undefined });
-  },
+  clearAssetTracking: () =>
+    set({ assetTracking: undefined, errorTracking: undefined }),
 
   /* ------------------------
      Mint asset
@@ -132,16 +143,77 @@ export const useAssetStore = create<AssetState>((set, get) => ({
     set({ loading: true, error: undefined });
     try {
       const data = await assetService.mintAsset(asset);
-      set({ loading: false });
       return data;
     } catch (err: any) {
-      console.log(err, "errrrrr")
       const message =
         err?.response?.data?.message ||
         err?.message ||
-        "Failed to create member";
+        "Failed to mint asset";
       set({ error: message });
       throw new Error(message);
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  /* ------------------------
+     Burn asset
+  -------------------------*/
+  burnAsset: async (tokenId: string, data: BurnAssetRequest) => {
+    set({ loading: true, error: undefined });
+    try {
+      await assetService.burnAsset(tokenId, data);
+      await get().fetchAssetByTokenId(tokenId);
+      await get().fetchAssetTracking(tokenId);
+    } catch (err: any) {
+      set({
+        error: err?.response?.data?.message || "Failed to burn asset",
+      });
+      throw err;
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  /* ------------------------
+     Update custody
+  -------------------------*/
+  updateCustody: async (
+    tokenId: string,
+    data: UpdateCustodyRequest,
+  ) => {
+    set({ loading: true, error: undefined });
+    try {
+      await assetService.updateCustody(tokenId, data);
+      await get().fetchAssetByTokenId(tokenId);
+      await get().fetchAssetTracking(tokenId);
+    } catch (err: any) {
+      set({
+        error: err?.response?.data?.message || "Failed to update custody",
+      });
+      throw err;
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  /* ------------------------
+     Update status
+  -------------------------*/
+  updateStatus: async (
+    tokenId: string,
+    data: UpdateStatusRequest,
+  ) => {
+    set({ loading: true, error: undefined });
+    try {
+      await assetService.updateStatus(tokenId, data);
+      await get().fetchAssetByTokenId(tokenId);
+      await get().fetchAssetTracking(tokenId);
+    } catch (err: any) {
+      set({
+        error: err?.response?.data?.message || "Failed to update status",
+      });
+      throw err;
     } finally {
       set({ loading: false });
     }
@@ -162,11 +234,6 @@ export const useAssetStore = create<AssetState>((set, get) => ({
       page: 1,
     }),
 
-  setPage: (page: number) => {
-    set({ page });
-  },
-
-  setLimit: (limit: number) => {
-    set({ limit });
-  },
+  setPage: (page: number) => set({ page }),
+  setLimit: (limit: number) => set({ limit }),
 }));

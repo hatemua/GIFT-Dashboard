@@ -24,7 +24,7 @@ export const useSearchStore = create<SearchState>((set, get) => ({
   results: [],
   loading: false,
   page: 1,
-  limit: 10,
+  limit: 3,
   total: 0,
 
   // open/close modal
@@ -72,5 +72,5 @@ export const useSearchStore = create<SearchState>((set, get) => ({
   },
 
   // reset modal state
-  reset: () => set({ query: "", results: [], loading: false, page: 1, limit: 10, total: 0 }),
+  reset: () => set({ query: "", results: [], loading: false, page: 1, limit: 3, total: 0 }),
 }));
