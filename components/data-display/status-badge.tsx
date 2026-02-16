@@ -28,9 +28,16 @@ const statusStyles = {
   MISSING: "bg-red-50 text-red-700 border-red-200",
   STOLEN: "bg-red-100 text-red-800 border-red-300",
 
-  // Member statuses
+  //VAULT statuses
+  UNUSED: "bg-slate-50 text-slate-700 border-slate-200",
+  USED: "bg-blue-50 text-blue-700 border-blue-200",
+  OUT_OF_SERVICE: "bg-red-50 text-red-700 border-red-200",
+
+  //User statuses
   Active: "bg-emerald-50 text-emerald-700 border-emerald-200",
   Inactive: "bg-red-100 text-red-600 border-red-200",
+
+  // Member statuses
   Revoked: "bg-red-50 text-red-700 border-red-200",
 
   // Blockchain statuses

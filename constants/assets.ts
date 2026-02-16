@@ -1,10 +1,13 @@
-import { Archive, Truck, Flame } from "lucide-react";
+import { Archive, Truck, Flame, HelpCircle, AlertTriangle, LockIcon } from "lucide-react";
 
 export const ASSET_STATUS_LABELS = {
   stationary: "IN_VAULT",
   in_transit: "IN_TRANSIT",
   liquidated: "LIQUIDATED",
   burned: "BURNED",
+  locked: "LOCKED",
+  missing: "MISSING",
+  stolen: "STOLEN",
 } as const;
 
 export const ASSET_CONDITION_LABELS = {
@@ -44,6 +47,24 @@ export const ASSET_STATUS_OPTIONS = [
     value: "burned",
     icon: Flame,
     color: "text-gray-600",
+  },
+  {
+    label: "Locked",
+    value: "locked",
+    icon: LockIcon,
+    color: "text-amber-600",
+  },
+  {
+    label: "Missing",
+    value: "missing",
+    icon: HelpCircle,
+    color: "text-orange-600",
+  },
+  {
+    label: "Stolen",
+    value: "stolen",
+    icon: AlertTriangle,
+    color: "text-red-700",
   },
 ] as const;
 
