@@ -171,6 +171,22 @@ export const fileToBase64 = (file: File): Promise<string> => {
   });
 };
 
+export const fileToDataURL = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.readAsDataURL(file); // This reads the file as Data URL (includes MIME type)
+    
+    reader.onload = () => {
+      const result = reader.result as string; // e.g., "data:application/pdf;base64,JVBERi0xLjQK..."
+      resolve(result); // Keep the full Data URL with MIME type
+    };
+
+    reader.onerror = reject;
+  });
+};
+
+
 export const isValidUrl = (url: string) => {
   try {
     new URL(url);

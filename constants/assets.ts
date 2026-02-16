@@ -7,6 +7,14 @@ export const ASSET_STATUS_LABELS = {
   burned: "BURNED",
 } as const;
 
+export const ASSET_CONDITION_LABELS = {
+  stationary: "STATIONARY",
+  locked: "LOCKED",
+  in_transit: "IN_TRANSIT",
+  missing: "MISSING",
+  stolen: "STOLEN",
+} as const;
+
 export const ASSET_STATUS_OPTIONS = [
   {
     label: "All",
@@ -39,5 +47,46 @@ export const ASSET_STATUS_OPTIONS = [
   },
 ] as const;
 
-export type AssetStatus =
-  (typeof ASSET_STATUS_OPTIONS)[number]["value"];
+export type AssetStatus = (typeof ASSET_STATUS_OPTIONS)[number]["value"];
+
+export const CUSTODY_PARTY_TYPES = [
+  {
+    value: "owner",
+    label: "Owner",
+    description: "Direct owner custody",
+  },
+  {
+    value: "custodian",
+    label: "Custodian",
+    description: "Third-party custodian",
+  },
+  {
+    value: "lsp",
+    label: "LSP",
+    description: "Logistics service provider",
+  },
+  {
+    value: "vault_operator",
+    label: "Vault Operator",
+    description: "Vault facility operator",
+  },
+] as const;
+
+export const CUSTODY_ARRANGEMENTS = [
+  {
+    value: "direct",
+    label: "Direct",
+    description: "Exclusive access",
+  },
+  {
+    value: "segregated",
+    label: "Segregated",
+    description: "Separated but shared facility",
+  },
+  {
+    value: "pooled",
+    label: "Pooled",
+    description: "Commingled storage",
+  },
+] as const;
+

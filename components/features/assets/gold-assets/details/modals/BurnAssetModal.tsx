@@ -80,6 +80,8 @@ export const BurnAssetModal = ({
         <Input
           label="Burn reason"
           required
+          multiline={true}
+          rows={6}
           placeholder="Explain why this asset must be burned"
           error={errors.burn_reason?.message}
           {...register("burn_reason", {

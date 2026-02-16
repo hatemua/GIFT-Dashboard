@@ -60,7 +60,7 @@ export default function MintAssetPage() {
         variant: "success",
       });
 
-      // reset();
+      reset();
     } catch (err: any) {
       showToast({
         title: "Error",

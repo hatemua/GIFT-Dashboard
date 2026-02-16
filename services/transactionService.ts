@@ -2,6 +2,7 @@ import { api } from "@/lib/axios";
 import {
   CreateTransactionInput,
   GetTransactionsParams,
+  SignTransactionResponse,
   Transaction,
   TransactionDetails,
   TransactionEventsResponse,
@@ -49,6 +50,19 @@ export const transactionService = {
   ): Promise<TransactionEventsResponse> => {
     const response = await api.get<TransactionEventsResponse>(
       `/transactions/${transaction_reference}/events`,
+    );
+    return response.data;
+  },
+  signTransaction: async (
+    transaction_reference: string,
+    data: {
+      signature: string;
+      signing_role: "counterparty" | "initiator";
+    },
+  ): Promise<SignTransactionResponse> => {
+    const response = await api.post<SignTransactionResponse>(
+      `/transactions/${transaction_reference}/sign`,
+      data,
     );
     return response.data;
   },

@@ -11,7 +11,6 @@ import { useVault } from "@/hooks/useVault";
 import { useVaultSite } from "@/hooks/useVaultSite";
 import { VAULT_STATUSES } from "@/constants/vault";
 import { DatePicker } from "@/components/ui/date-picker";
-import { useVaultSiteStore } from "@/store/vaultSiteStore";
 
 export default function CreateVaultModal({
   isOpen,
@@ -24,7 +23,6 @@ export default function CreateVaultModal({
 
   const { showToast } = useToast();
   const { createVault } = useVault();
-  const { fetchVaultsByVaultSiteId } = useVaultSiteStore();
 
   const {
     control,
@@ -49,9 +47,7 @@ export default function CreateVaultModal({
         ...data,
         vault_gold_capacity_kg: Number(data.vault_gold_capacity_kg),
       });
-      // if (vaultSiteDetails?.vault_site_id) {
-      //   await fetchVaultsByVaultSiteId(vaultSiteDetails?.vault_site_id);
-      // }
+
       showToast({
         title: "Success",
         message: "Vault created successfully!",
@@ -103,7 +99,7 @@ export default function CreateVaultModal({
             render={({ field, fieldState }) => (
               <Input
                 {...field}
-                label="Member GIC"
+                label="Member Internal Vault ID"
                 placeholder="INT-VAULT-001"
                 error={fieldState.error?.message}
                 required

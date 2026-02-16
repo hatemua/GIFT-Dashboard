@@ -23,6 +23,8 @@ interface UseAssetReturn {
   limit: number;
   count: number;
   filters: AssetsFilters;
+  loadingAction: boolean;
+  errorAction?: string;
 
   /* Actions */
   fetchAssets: () => Promise<void>;
@@ -61,6 +63,8 @@ export const useAsset = (): UseAssetReturn => {
     filters,
     loadingTracking,
     errorTracking,
+    loadingAction,
+    errorAction,
 
     fetchAssets,
     mintAsset,
@@ -92,6 +96,8 @@ export const useAsset = (): UseAssetReturn => {
     filters,
     loadingTracking,
     errorTracking,
+    loadingAction,
+    errorAction,
 
     /* Actions */
     fetchAssets,

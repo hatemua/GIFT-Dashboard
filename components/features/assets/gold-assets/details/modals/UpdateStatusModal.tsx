@@ -6,13 +6,12 @@ import { Input } from "@/components/ui/input";
 import { FileUpload } from "@/components/ui/file-upload";
 import { Button } from "@/components/ui/button";
 import { Select, SelectItem } from "@/components/ui/select";
-import {
-  UpdateStatusRequest,
-  AssetStatus,
-} from "@/types/asset";
+import { UpdateStatusRequest, AssetStatus } from "@/types/asset";
 import { useAsset } from "@/hooks/useAsset";
-import { ASSET_STATUS_LABELS } from "@/constants/assets";
-import { fileToBase64 } from "@/lib/utils";
+import { ASSET_CONDITION_LABELS } from "@/constants/assets";
+import { fileToDataURL } from "@/lib/utils";
+import { DatePicker } from "@/components/ui/date-picker";
+import { useToast } from "@/providers/toast-provider";
 
 interface UpdateStatusFormValues {
   new_status?: AssetStatus;
@@ -34,7 +33,8 @@ export const UpdateAssetStatusModal = ({
   isOpen,
   onClose,
 }: UpdateAssetStatusModalProps) => {
-  const { loading, updateStatus } = useAsset();
+  const { showToast } = useToast();
+  const { loadingAction: loading, updateStatus } = useAsset();
 
   const {
     control,
@@ -51,30 +51,45 @@ export const UpdateAssetStatusModal = ({
     },
   });
 
-  /* ---------------- Submit ---------------- */
   const submitHandler = async (values: UpdateStatusFormValues) => {
     if (!values.new_status) return;
 
-    let supportingDocumentBase64: string | undefined;
+    try {
+      let supportingDocumentBase64: string | undefined;
 
-    if (values.supporting_document) {
-      supportingDocumentBase64 = await fileToBase64(
-        values.supporting_document
-      );
+      if (values.supporting_document) {
+        supportingDocumentBase64 = await fileToDataURL(
+          values.supporting_document,
+        );
+      }
+
+      const payload: UpdateStatusRequest = {
+        token_id: tokenId,
+        new_status: values.new_status,
+        reason: values.reason,
+        effective_date: values.effective_date,
+        supporting_document: supportingDocumentBase64,
+      };
+
+      await updateStatus(tokenId, payload);
+
+      showToast({
+        title: "Success",
+        message: `Status updated to "${values.new_status}" successfully.`,
+        variant: "success",
+      });
+
+      reset();
+      onClose();
+    } catch (error: any) {
+      showToast({
+        title: "Error",
+        message:
+          error?.response?.data?.error_description ||
+          "Failed to update status. Please try again.",
+        variant: "error",
+      });
     }
-
-    const payload: UpdateStatusRequest = {
-      token_id: tokenId,
-      new_status: values.new_status,
-      reason: values.reason,
-      effective_date: values.effective_date,
-      supporting_document: supportingDocumentBase64,
-    };
-
-    await updateStatus(tokenId, payload);
-
-    reset();
-    onClose();
   };
 
   const isDisabled = loading || isSubmitting;
@@ -86,70 +101,83 @@ export const UpdateAssetStatusModal = ({
         reset();
         onClose();
       }}
-      size="md"
+      size="lg"
       title="Update Asset Status"
     >
       <form onSubmit={handleSubmit(submitHandler)} className="space-y-5">
-        {/* New status */}
-        <Controller
-          control={control}
-          name="new_status"
-          rules={{ required: "New status is required" }}
-          render={({ field }) => (
-            <Select
-              label="New asset status"
-              required
-              value={field.value}
-              onChange={field.onChange}
-              error={errors.new_status?.message}
-              placeholder="Select new status"
-              displayLabel={(value) =>
-                ASSET_STATUS_LABELS[value as AssetStatus]
-              }
-            >
-              {Object.entries(ASSET_STATUS_LABELS)
-                .filter(([status]) => status !== currentStatus)
-                .map(([status, label]) => (
-                  <SelectItem key={status} value={status}>
-                    {label}
-                  </SelectItem>
-                ))}
-            </Select>
-          )}
-        />
+        {/* Grid: 2 columns for status and date */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          {/* New status */}
+          <Controller
+            control={control}
+            name="new_status"
+            rules={{ required: "New status is required" }}
+            render={({ field }) => (
+              <Select
+                label="New asset status"
+                required
+                value={field.value}
+                onChange={field.onChange}
+                error={errors.new_status?.message}
+                placeholder="Select new status"
+                displayLabel={(value) =>
+                  ASSET_CONDITION_LABELS[
+                    value as keyof typeof ASSET_CONDITION_LABELS
+                  ]
+                }
+              >
+                {Object.entries(ASSET_CONDITION_LABELS)
+                  .filter(([status]) => status !== currentStatus)
+                  .map(([status, label]) => (
+                    <SelectItem key={status} value={status}>
+                      {label}
+                    </SelectItem>
+                  ))}
+              </Select>
+            )}
+          />
 
-        {/* Reason */}
-        <Input
-          label="Reason for status change"
-          required
-          placeholder="Explain why the asset status is changing"
-          error={errors.reason?.message}
-          {...register("reason", {
-            required: "Reason is required",
-            minLength: {
-              value: 10,
-              message: "Reason must be at least 10 characters",
-            },
-          })}
-        />
+          {/* Effective date */}
+          <Controller
+            control={control}
+            name="effective_date"
+            rules={{ required: "Effective date is required" }}
+            render={({ field }) => (
+              <DatePicker
+                required
+                label="Effective date"
+                value={field.value}
+                onChange={field.onChange}
+                error={errors.effective_date?.message}
+              />
+            )}
+          />
+        </div>
 
-        {/* Effective date */}
-        <Input
-          type="date"
-          label="Effective date"
-          required
-          error={errors.effective_date?.message}
-          {...register("effective_date", {
-            required: "Effective date is required",
-          })}
-        />
+        {/* Reason (full row) */}
+        <div className="sm:col-span-2">
+          <Input
+            label="Reason for status change"
+            required
+            multiline
+            rows={6}
+            placeholder="Explain why the asset status is changing"
+            error={errors.reason?.message}
+            {...register("reason", {
+              required: "Reason is required",
+              minLength: {
+                value: 10,
+                message: "Reason must be at least 10 characters",
+              },
+            })}
+          />
+        </div>
 
-        {/* Supporting document */}
-        <div className="space-y-1">
+        {/* Supporting document (full row) */}
+        <div className="space-y-1 sm:col-span-2">
           <label className="text-sm font-medium text-slate-700">
             Supporting document (optional)
           </label>
-
           <Controller
             control={control}
             name="supporting_document"

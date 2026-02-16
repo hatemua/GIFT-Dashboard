@@ -48,7 +48,7 @@ export interface Member {
   status: "active" | string;
   compliance_level: "enhanced" | string;
   member_role: number;
-  entity_type: "COMPANY" | "INSTITUTION" | string;
+  entity_type: "company" | "institution" | string;
   member_hash: string | null;
   createdAt: string; // ISO date string
   updatedAt: string; // ISO date string

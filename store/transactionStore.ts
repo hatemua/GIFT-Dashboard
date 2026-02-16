@@ -8,6 +8,7 @@ import {
   TransactionDetails,
   TransactionEventsResponse,
   CreateTransactionInput,
+  SignTransactionResponse,
 } from "@/types/transaction";
 
 interface TransactionState {
@@ -18,7 +19,9 @@ interface TransactionState {
   page: number;
   limit: number;
   loading: boolean;
-  loadingEvents: boolean; // separate loading for events
+  loadingEvents: boolean;
+  signing: boolean;
+  lastSignedTransaction?: SignTransactionResponse;
   error?: string;
   filters: TransactionOrdersFilters;
 
@@ -26,6 +29,11 @@ interface TransactionState {
   createTransaction: (transaction: CreateTransactionInput) => Promise<Transaction | undefined>;
   fetchTransactionByReference: (reference: string) => Promise<void>;
   fetchTransactionEvents: (reference: string) => Promise<void>;
+  signTransaction: (
+    reference: string,
+    signature: string,
+    role: "counterparty" | "initiator"
+  ) => Promise<SignTransactionResponse | undefined>;
   setFilters: (filters: TransactionOrdersFilters) => void;
   resetFilters: () => void;
   setPage: (page: number) => void;
@@ -40,7 +48,9 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
   page: 1,
   limit: 6,
   loading: false,
-  loadingEvents: false, // initialize
+  loadingEvents: false,
+  signing: false,
+  lastSignedTransaction: undefined,
   error: undefined,
   filters: {},
 
@@ -111,6 +121,32 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
       set({ error: message });
     } finally {
       set({ loadingEvents: false });
+    }
+  },
+
+  signTransaction: async (
+    reference: string,
+signature: string,
+    signing_role: "counterparty" | "initiator"
+    
+  ): Promise<SignTransactionResponse | undefined> => {
+    set({ signing: true, error: undefined });
+    try {
+      const data = await transactionService.signTransaction(reference, {
+        signature,
+        signing_role,
+      });
+      set({ lastSignedTransaction: data });
+      return data;
+    } catch (err: any) {
+      const message =
+        err?.response?.data?.error_description ||
+        err?.message ||
+        "Failed to sign transaction";
+      set({ error: message });
+      throw new Error(message);
+    } finally {
+      set({ signing: false });
     }
   },
 

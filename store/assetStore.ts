@@ -30,6 +30,9 @@ interface AssetState {
   loadingTracking: boolean;
   errorTracking?: string;
 
+  loadingAction: boolean;
+  errorAction?: string;
+
   /* Actions */
   fetchAssets: () => Promise<void>;
   fetchAssetByTokenId: (tokenId: string) => Promise<void>;
@@ -70,6 +73,8 @@ export const useAssetStore = create<AssetState>((set, get) => ({
   limit: 6,
   count: 0,
   filters: {},
+  loadingAction: false,
+  errorAction: undefined,
 
   /* ------------------------
      Fetch assets list
@@ -160,18 +165,18 @@ export const useAssetStore = create<AssetState>((set, get) => ({
      Burn asset
   -------------------------*/
   burnAsset: async (tokenId: string, data: BurnAssetRequest) => {
-    set({ loading: true, error: undefined });
+    set({ loadingAction: true, errorAction: undefined });
     try {
       await assetService.burnAsset(tokenId, data);
       await get().fetchAssetByTokenId(tokenId);
       await get().fetchAssetTracking(tokenId);
     } catch (err: any) {
       set({
-        error: err?.response?.data?.message || "Failed to burn asset",
+        errorAction: err?.response?.data?.message || "Failed to burn asset",
       });
       throw err;
     } finally {
-      set({ loading: false });
+      set({ loadingAction: false });
     }
   },
 
@@ -182,18 +187,18 @@ export const useAssetStore = create<AssetState>((set, get) => ({
     tokenId: string,
     data: UpdateCustodyRequest,
   ) => {
-    set({ loading: true, error: undefined });
+    set({ loadingAction: true, errorAction: undefined });
     try {
       await assetService.updateCustody(tokenId, data);
       await get().fetchAssetByTokenId(tokenId);
       await get().fetchAssetTracking(tokenId);
     } catch (err: any) {
       set({
-        error: err?.response?.data?.message || "Failed to update custody",
+        errorAction: err?.response?.data?.message || "Failed to update custody",
       });
       throw err;
     } finally {
-      set({ loading: false });
+      set({ loadingAction: false });
     }
   },
 
@@ -204,18 +209,20 @@ export const useAssetStore = create<AssetState>((set, get) => ({
     tokenId: string,
     data: UpdateStatusRequest,
   ) => {
-    set({ loading: true, error: undefined });
+    set({ loadingAction: true, errorAction: undefined });
     try {
       await assetService.updateStatus(tokenId, data);
       await get().fetchAssetByTokenId(tokenId);
       await get().fetchAssetTracking(tokenId);
+      return;
     } catch (err: any) {
+      const message = err?.response?.data?.error_description || "Failed to update status"
       set({
-        error: err?.response?.data?.message || "Failed to update status",
+        errorAction: message,
       });
       throw err;
     } finally {
-      set({ loading: false });
+      set({ loadingAction: false });
     }
   },
 

@@ -129,7 +129,7 @@ export function VaultsListCard() {
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
                         <p className="text-sm font-medium text-gray-900 truncate">
-                          {vault.vault_id} | <span className="text-xs text-gray-400">Member GIC:  {vault.member_internal_vault_id}</span>
+                          {vault.vault_id} | <span className="text-xs text-gray-400">Member Internal Vault ID:  {vault.member_internal_vault_id}</span>
                         </p>
                       </div>
                       <div className="flex items-center gap-4 mt-1 text-xs text-gray-500">

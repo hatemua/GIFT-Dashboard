@@ -31,7 +31,7 @@ export default function CreateMemberModal({
   } = useForm<CreateMemberInput>({
     defaultValues: {
       member_gic: "",
-      entity_type: "COMPANY",
+      entity_type: "company",
       compliance_level: "enhanced",
       roles: [],
     },

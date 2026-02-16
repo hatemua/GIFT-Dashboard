@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { PageHeader } from "@/components/layout/page-header";
-import { CreateTransactionInput } from "@/types/transaction";
+import { TransactionType } from "@/types/transaction";
 import { useTransaction } from "@/hooks/useTransaction";
 import { useToast } from "@/providers/toast-provider";
 import { TransactionDetailsForm } from "@/components/features/transactions/new/TransactionDetailsForm";
@@ -12,13 +12,30 @@ import { TransactionAssetsForm } from "@/components/features/transactions/new/Tr
 import { useAsset } from "@/hooks/useAsset";
 import { Button } from "@/components/ui/button";
 import { CreditCard } from "lucide-react";
+import { UpdateStatusRequest } from "@/types/asset";
+
+export interface CreateTransactionFormValues {
+  transaction_reference: string;
+  transaction_type: TransactionType;
+  counterparty_gic: string;
+  initiator_gic: string;
+  requested_assets: string[];
+  valuation_date: string;
+  valuation_currency: string;
+  transaction_value: number;
+  reciever_igan: string;
+  sender_igan: string;
+  initiator_signature: string;
+  counterparty_signature: string;
+}
 
 export default function NewTransactionPage() {
-  const { createTransaction, loading } = useTransaction();
+  const { createTransaction, signTransaction, signing, loading } =
+    useTransaction();
   const { showToast } = useToast();
-  const { setFilters, resetFilters } = useAsset();
+  const { updateStatus, setFilters, resetFilters } = useAsset();
 
-  const methods = useForm<CreateTransactionInput>({
+  const methods = useForm<CreateTransactionFormValues>({
     mode: "onChange",
     defaultValues: {
       transaction_reference: "",
@@ -29,6 +46,10 @@ export default function NewTransactionPage() {
       transaction_value: 0,
       valuation_currency: "",
       requested_assets: [],
+      reciever_igan: "",
+      sender_igan: "",
+      initiator_signature: "",
+      counterparty_signature: "",
     },
   });
 
@@ -36,10 +57,37 @@ export default function NewTransactionPage() {
 
   /* ---------------- Final Submit ---------------- */
 
-  const onSubmit = async (data: CreateTransactionInput) => {
+  const onSubmit = async (data: CreateTransactionFormValues) => {
     try {
-      await createTransaction(data);
+      const requestedAssets = data.requested_assets;
+      const { counterparty_signature, ...transactionData } = data;
 
+      const res = await createTransaction(transactionData);
+
+      const transactionRef = res?.transaction_reference;
+      if (!transactionRef) {
+        throw new Error("Transaction reference not returned from server");
+      }
+      if (requestedAssets && requestedAssets.length > 0) {
+        await Promise.all(
+          requestedAssets.map(async (tokenId) => {
+            const payload: UpdateStatusRequest = {
+              token_id: tokenId,
+              new_status: "in_transit",
+              reason: "some reason",
+              effective_date: new Date().toISOString(),
+              supporting_document: undefined,
+            };
+
+            await updateStatus(tokenId, payload);
+          }),
+        );
+      }
+      await signTransaction(
+        transactionRef,
+        counterparty_signature,
+        "counterparty",
+      );
       showToast({
         title: "Transaction Created",
         message: "Your transaction has been successfully submitted",

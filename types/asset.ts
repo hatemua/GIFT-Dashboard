@@ -1,5 +1,4 @@
-export type AssetStatus = "stationary" | "in_transit" | "liquidated" | "burned";
-
+export type AssetStatus = "stationary" | "in_transit" | "liquidated" | "burned" | 'locked' | 'missing' | 'stolen';
 export interface MintAssetForm {
   serial_number: string;
   refiner_name: string;

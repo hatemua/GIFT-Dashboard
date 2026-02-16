@@ -1,17 +1,17 @@
 export const ENTITY_TYPES = [
   {
     label: "Company",
-    value: "COMPANY",
+    value: "company",
     description: "Registered legal entity operating as a business",
   },
   {
     label: "Individual",
-    value: "INDIVIDUAL",
+    value: "individual",
     description: "Natural person acting in a personal capacity",
   },
   {
     label: "Institution",
-    value: "INSTITUTION",
+    value: "institution",
     description: "Bank, fund, or regulated financial institution",
   },
 ] as const;

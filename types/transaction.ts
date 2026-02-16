@@ -17,6 +17,9 @@ export interface CreateTransactionInput {
   valuation_date: string;
   valuation_currency: string;
   transaction_value: number;
+  reciever_igan: string;
+  sender_igan: string;
+  initiator_signature: string;
 }
 export interface TransactionState {
   transactions: Transaction[];
@@ -112,6 +115,20 @@ export interface TransactionEventsResponse {
   events: TransactionEvent[];
   total_events: number;
 }
+
+export interface SignTransactionResponse {
+  status: string;
+  transaction_reference: string;
+  signature_added: boolean;
+  signer: string;
+  signing_role: "initiator" | "counterparty";
+  signatures_collected: number;
+  signatures_required: number;
+  transaction_status: string;
+  signed_at: string;
+  blockchain_tx: string;
+}
+
 
 export type TransactionType = "TRANSFER" | "SALE" | "PURCHASE" | "COLLATERAL";
 export type TransactionStatus =
