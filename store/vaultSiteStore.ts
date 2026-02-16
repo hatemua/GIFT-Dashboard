@@ -3,7 +3,6 @@ import {
   fetchVaultSitesApi,
   fetchVaultSiteByIdApi,
   createVaultSiteApi,
-  fetchVaultsByVaultSiteApi,
   fetchVaultSiteInventoryApi,
 } from "@/services/vaultSiteService";
 import type {
@@ -15,14 +14,13 @@ export const useVaultSiteStore = create<VaultSiteStore>((set, get) => ({
   // state
   vaultSites: [],
   vaultSiteDetails: null,
-  vaults: [],
   inventorySummary: null,
   inventoryByOwner: [],
   inventoryByProductType: [],
   inventoryByVault: [],
   totalCount: 0,
   limit: 6,
-  offset: 0,
+  page: 1,
   country: undefined,
   loading: false,
   error: null,
@@ -37,15 +35,15 @@ export const useVaultSiteStore = create<VaultSiteStore>((set, get) => ({
     set({ loading: true, error: null });
 
     try {
-      const { offset, limit, filters } = get();
+      const { page, limit, filters } = get();
 
-      const data = await fetchVaultSitesApi({ offset, limit, filters });
+      const data = await fetchVaultSitesApi({ page, limit, filters });
 
       set({
         vaultSites: data.vault_sites ?? [],
         totalCount: data.total_count ?? 0,
-        limit: data.limit ?? limit,
-        offset: data.offset ?? offset,
+        limit: Number(data.limit) ?? limit,
+        page: Number(data.page) ?? page,
         loading: false,
       });
     } catch (err: any) {
@@ -96,23 +94,6 @@ export const useVaultSiteStore = create<VaultSiteStore>((set, get) => ({
         loading: false,
       });
       throw err;
-    }
-  },
-
-  fetchVaultsByVaultSiteId: async (vaultSiteId: string) => {
-    set({ vaultsLoading: true, vaultsError: null });
-
-    try {
-      const data = await fetchVaultsByVaultSiteApi(vaultSiteId);
-      set({ vaults: data?.vaults ?? [], vaultsLoading: false });
-    } catch (err: any) {
-      set({
-        vaultsError:
-          err?.response?.data?.message ||
-          err?.message ||
-          "Failed to fetch vaults for this site",
-        vaultsLoading: false,
-      });
     }
   },
 
@@ -171,18 +152,18 @@ export const useVaultSiteStore = create<VaultSiteStore>((set, get) => ({
   // setters
   setVaultSiteSummary: (summary) => set({ inventorySummary: summary }),
   setCountry: (country) => set({ country }),
-  setOffset: (offset) => set({ offset }),
+  setPage: (page: number) => set({ page }),
   setLimit: (limit) => set({ limit }),
   setFilters: (filters) =>
     set((state) => ({
       filters: { ...state.filters, ...filters },
-      offset: 1,
+      page: 1,
     })),
 
   resetFilters: () =>
     set({
       filters: {},
-      offset: 1,
+      page: 1,
     }),
   resetVaultSiteDetails: () => set({ vaultSiteDetails: null }),
 }));

@@ -8,13 +8,13 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // Get list of vault sites
 export const fetchVaultSitesApi = async ({
-  offset,
+  page,
   limit,
   filters = {},
 }: GetVaultSitesParams) => {
-  const response = await api.get(`${API_URL}/vault-sites`, {
+  const response = await api.get(`${API_URL}/dashboard/vault-sites`, {
     params: {
-      offset,
+      page,
       limit,
       country: filters.country,
       search: filters.search,
@@ -35,14 +35,6 @@ export const fetchVaultSiteByIdApi = async (id: string) => {
 // Create vault site
 export const createVaultSiteApi = async (payload: CreateVaultSitePayload) => {
   const response = await api.post(`${API_URL}/vault-sites/create`, payload);
-  return response.data;
-};
-
-// Get vaults for a specific vault site
-export const fetchVaultsByVaultSiteApi = async (vaultSiteId: string) => {
-  const response = await api.get(
-    `${API_URL}/vault-sites/${vaultSiteId}/vaults`,
-  );
   return response.data;
 };
 

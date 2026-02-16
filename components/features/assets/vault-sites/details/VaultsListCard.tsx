@@ -4,99 +4,135 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Select, SelectItem } from "@/components/ui/select";
 import {
   Package,
   Search,
   Eye,
   AlertCircle,
-  Unlock,
   Lock,
   Filter,
+  RotateCcw,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useVaultSiteStore } from "@/store/vaultSiteStore";
-import { useVaultSite } from "@/hooks/useVaultSite";
+import { useVault } from "@/hooks/useVault";
 import { Tooltip } from "@/components/ui/tooltip";
 import Link from "next/link";
+import { Pagination } from "@/components/ui/pagination";
+import { VaultStatus } from "@/types/vault";
+import { useVaultSite } from "@/hooks/useVaultSite";
 
 export function VaultsListCard() {
+  const {
+    vaults = [],
+    page,
+    limit,
+    count,
+    filters,
+    loading,
+    fetchVaultsByVaultSiteId,
+    setPage,
+    setFilters,
+    resetFilters,
+  } = useVault();
+
   const vaultSiteId = useVaultSite().vaultSiteDetails?.vault_site_id;
   const [searchTerm, setSearchTerm] = useState("");
 
-  const {
-    vaults = [],
-    vaultsLoading,
-    fetchVaultsByVaultSiteId,
-  } = useVaultSiteStore();
-
+  // Refetch vaults when page, limit, or filters change
   useEffect(() => {
     if (vaultSiteId) fetchVaultsByVaultSiteId(vaultSiteId);
-  }, [vaultSiteId, fetchVaultsByVaultSiteId]);
+  }, [vaultSiteId, page, limit, filters, fetchVaultsByVaultSiteId]);
+
+  // Vault status options for dropdown
+  const vaultStatusOptions: { label: string; value: VaultStatus }[] = [
+    { label: "All", value: "" as VaultStatus },
+    { label: "Unused", value: "UNUSED" },
+    { label: "Used", value: "USED" },
+    { label: "Out of Service", value: "OUT_OF_SERVICE" },
+  ];
 
   const getVaultStatusConfig = (status: string) => {
     const configs = {
-      active: {
-        color: "text-emerald-600",
-        bg: "bg-emerald-50",
-        text: "Active",
-        icon: Unlock,
-      },
-      inactive: {
+      UNUSED: {
         color: "text-gray-600",
         bg: "bg-gray-50",
-        text: "Inactive",
+        text: "Unused",
         icon: Lock,
       },
-      under_audit: {
-        color: "text-amber-600",
-        bg: "bg-amber-50",
-        text: "Audit",
-        icon: AlertCircle,
-      },
-      used: {
+      USED: {
         color: "text-blue-600",
         bg: "bg-blue-50",
         text: "Used",
         icon: Lock,
       },
+      OUT_OF_SERVICE: {
+        color: "text-amber-600",
+        bg: "bg-amber-50",
+        text: "Out of Service",
+        icon: AlertCircle,
+      },
     };
     return (
-      configs[status.toLowerCase() as keyof typeof configs] || configs.inactive
+      configs[status.toUpperCase() as keyof typeof configs] || configs.UNUSED
     );
   };
-
-  const filteredVaults = vaults;
 
   return (
     <Card>
       <CardHeader className="pb-3 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
         <CardTitle className="flex items-center gap-2">
           <Package className="h-4 w-4 text-purple-500" />
-          Vaults ({vaults.length})
+          Vaults ({count})
         </CardTitle>
-        <div className="flex items-center gap-2">
+
+        <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
+          {/* Search */}
           <div className="relative">
-            <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-gray-400" />
             <Input
+              icon={
+                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              }
               placeholder="Search vaults..."
               className="pl-8 h-8 text-sm w-44"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setFilters({ search: e.target.value });
+              }}
             />
           </div>
+
+          {/* Status Dropdown */}
+          <Select
+            value={filters.status || ""}
+            onChange={(value) => setFilters({ status: value as VaultStatus })}
+            size="sm"
+          >
+            {vaultStatusOptions.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </Select>
+
           <Button
-            aria-label="filter"
+            aria-label="Reset filters"
             variant="outline"
             size="sm"
             className="h-8"
+            onClick={() => {
+              resetFilters();
+              setSearchTerm("");
+            }}
           >
-            <Filter size={13} />
+            <RotateCcw size={13} />
           </Button>
         </div>
       </CardHeader>
 
       <CardContent className="space-y-3">
-        {vaultsLoading ? (
+        {loading ? (
           <div className="space-y-3">
             {Array.from({ length: 3 }).map((_, idx) => (
               <div
@@ -108,9 +144,9 @@ export function VaultsListCard() {
               </div>
             ))}
           </div>
-        ) : filteredVaults.length > 0 ? (
+        ) : vaults.length > 0 ? (
           <div className="space-y-3">
-            {filteredVaults.map((vault) => {
+            {vaults.map((vault) => {
               const statusConfig = getVaultStatusConfig(vault.vault_status);
               const StatusIcon = statusConfig.icon;
               return (
@@ -126,10 +162,15 @@ export function VaultsListCard() {
                         />
                       </div>
                     </Tooltip>
+
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
                         <p className="text-sm font-medium text-gray-900 truncate">
-                          {vault.vault_id} | <span className="text-xs text-gray-400">Member Internal Vault ID:  {vault.member_internal_vault_id}</span>
+                          {vault.vault_id} |{" "}
+                          <span className="text-xs text-gray-400">
+                            Member Internal Vault ID:{" "}
+                            {vault.member_internal_vault_id}
+                          </span>
                         </p>
                       </div>
                       <div className="flex items-center gap-4 mt-1 text-xs text-gray-500">
@@ -155,6 +196,7 @@ export function VaultsListCard() {
                         />
                       </div>
                     </div>
+
                     <Link href={`/assets/vaults/${vault.vault_id}`}>
                       <Button variant="ghost" size="sm" className="h-8">
                         <Eye className="h-3.5 w-3.5" />
@@ -173,6 +215,17 @@ export function VaultsListCard() {
           </div>
         )}
       </CardContent>
+
+      {/* Pagination */}
+      <div className="mt-4 flex justify-center">
+        <Pagination
+          page={page}
+          limit={limit}
+          total={count}
+          setPage={setPage}
+          size="sm"
+        />
+      </div>
     </Card>
   );
 }

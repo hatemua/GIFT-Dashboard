@@ -11,7 +11,7 @@ export interface VaultItem {
   asset_count: number;
 }
 
-export type VaultStatus = 'UNUSED'|  'USED' | 'OUT_OF_SERVICE';
+export type VaultStatus = "UNUSED" | "USED" | "OUT_OF_SERVICE";
 
 export interface VaultValuation {
   currency: string;
@@ -79,4 +79,25 @@ export interface UpdateVaultStatusPayload {
   vault_status: VaultStatus;
   reason: string;
   last_audit_date?: string;
+}
+
+export interface VaultFilters {
+  search?: string;
+  from_date?: string;
+  to_date?: string;
+  status?: string;
+}
+
+export interface GetVaultsParams {
+  vaultSiteId: string;
+  page: number;
+  limit: number;
+  filters: VaultFilters;
+}
+
+export interface VaultsResponse {
+  count: number;
+  limit: number;
+  page: number;
+  vaults: VaultItem[];
 }

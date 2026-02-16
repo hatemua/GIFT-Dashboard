@@ -29,7 +29,7 @@ export const goldAccountService = {
   ): Promise<GoldAccountsResponse> => {
     const { limit = 10, page = 1, filters = {} } = params;
 
-    const response = await api.get(`/accounts`, {
+    const response = await api.get(`/dashboard/accounts`, {
       params: {
         page,
         limit,

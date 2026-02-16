@@ -22,13 +22,13 @@ export default function VaultSitesPage() {
   const {
     vaultSites,
     totalCount,
-    offset,
+    page,
     limit,
     filters,
     loading,
     error,
     fetchVaultSites,
-    setOffset,
+    setPage,
     resetFilters,
   } = useVaultSite();
 
@@ -38,7 +38,7 @@ export default function VaultSitesPage() {
 
   useEffect(() => {
     fetchVaultSites();
-  }, [limit, offset, filters]);
+  }, [limit, page, filters]);
 
   useEffect(() => {
     return () => resetFilters();
@@ -116,11 +116,11 @@ export default function VaultSitesPage() {
       {!loading && !error && vaultSites.length > 0 && (
         <div className="mt-6 flex justify-center">
           <Pagination
-            offset={offset}
+            page={page}
             limit={limit}
             total={totalCount}
-            setOffset={setOffset}
-          />
+            setPage={setPage}
+          />          
         </div>
       )}
     </DashboardShell>

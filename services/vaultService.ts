@@ -1,7 +1,10 @@
-// src/services/vaultService.ts
-
 import { api } from "@/lib/axios";
-import { Vault, CreateVaultPayload, UpdateVaultStatusPayload } from "@/types/vault";
+import {
+  Vault,
+  CreateVaultPayload,
+  UpdateVaultStatusPayload,
+  GetVaultsParams,
+} from "@/types/vault";
 
 export const vaultService = {
   async getVault(vaultId: string): Promise<Vault> {
@@ -16,12 +19,27 @@ export const vaultService = {
 
   async updateVaultStatus(
     vaultId: string,
-    payload: UpdateVaultStatusPayload
+    payload: UpdateVaultStatusPayload,
   ): Promise<Vault> {
-    const { data } = await api.put(
-      `/vaults/${vaultId}/status`,
-      payload
-    );
+    const { data } = await api.put(`/vaults/${vaultId}/status`, payload);
     return data;
+  },
+
+  // Get vaults for a specific vault site
+  async fetchVaultsByVaultSiteApi(params: GetVaultsParams) {
+    const { vaultSiteId, page, limit, filters } = params;
+
+    const response = await api.get(`/dashboard/${vaultSiteId}/vaults`, {
+      params: {
+        page,
+        limit,
+        status: filters.status,
+        search: filters.search,
+        from_date: filters.from_date,
+        to_date: filters.to_date,
+      },
+    });
+
+    return response.data;
   },
 };

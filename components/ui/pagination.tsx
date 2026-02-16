@@ -30,18 +30,20 @@ export function Pagination({
   const totalPages = Math.ceil(total / limit);
 
   const handleNextPage = () => {
-    if (page !== undefined && page < totalPages && setPage) {
-      setPage(page + 1);
-    } else if (offset !== undefined && offset + limit < total && setOffset) {
+    if (page !== undefined && setPage) {
+      const current = Number(page); // ensure it's a number
+      if (current < totalPages) setPage(current + 1);
+    } else if (offset !== undefined && setOffset) {
       setOffset(offset + limit);
     }
   };
 
   const handlePrevPage = () => {
-    if (page !== undefined && page > 1 && setPage) {
-      setPage(page - 1);
-    } else if (offset !== undefined && offset - limit >= 0 && setOffset) {
-      setOffset(offset - limit);
+    if (page !== undefined && setPage) {
+      const current = Number(page); // ensure it's a number
+      if (current > 1) setPage(current - 1);
+    } else if (offset !== undefined && setOffset) {
+      setOffset(Math.max(0, offset - limit));
     }
   };
 
@@ -62,19 +64,45 @@ export function Pagination({
     <div className="mt-10 flex justify-center">
       <div className="flex items-center gap-2 sm:gap-3">
         {/* Previous */}
-        <Button type="button" size="icon" variant="ghost" onClick={handlePrevPage} disabled={currentPage === 1} className={buttonClasses}>
+        <Button
+          type="button"
+          size="icon"
+          variant="ghost"
+          onClick={handlePrevPage}
+          disabled={currentPage === 1}
+          className={buttonClasses}
+        >
           <ChevronLeft className={size === "sm" ? "h-3 w-3" : "h-4 w-4"} />
         </Button>
 
         {/* Page indicator */}
         <div className="flex items-center gap-1 sm:gap-2 font-medium">
           <span className={pageIndicatorClasses}>{currentPage}</span>
-          <span className={size === "sm" ? "text-slate-400 text-sm" : "text-slate-400"}>/</span>
-          <span className={size === "sm" ? "text-slate-500 text-sm" : "text-slate-500"}>{totalPages}</span>
+          <span
+            className={
+              size === "sm" ? "text-slate-400 text-sm" : "text-slate-400"
+            }
+          >
+            /
+          </span>
+          <span
+            className={
+              size === "sm" ? "text-slate-500 text-sm" : "text-slate-500"
+            }
+          >
+            {totalPages}
+          </span>
         </div>
 
         {/* Next */}
-        <Button type="button" size="icon" variant="ghost" onClick={handleNextPage} disabled={currentPage === totalPages} className={buttonClasses}>
+        <Button
+          type="button"
+          size="icon"
+          variant="ghost"
+          onClick={handleNextPage}
+          disabled={currentPage === totalPages}
+          className={buttonClasses}
+        >
           <ChevronRight className={size === "sm" ? "h-3 w-3" : "h-4 w-4"} />
         </Button>
       </div>

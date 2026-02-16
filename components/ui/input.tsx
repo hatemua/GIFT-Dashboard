@@ -8,11 +8,14 @@ export interface InputProps
   error?: string;
   prefix?: string;
   icon?: React.ReactNode;
-  multiline?: boolean; // New prop to render textarea
-  rows?: number; // Number of rows for textarea
+  multiline?: boolean;
+  rows?: number;
 }
 
-const Input = React.forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProps>(
+const Input = React.forwardRef<
+  HTMLInputElement | HTMLTextAreaElement,
+  InputProps
+>(
   (
     {
       className,
@@ -24,15 +27,28 @@ const Input = React.forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProp
       icon,
       multiline = false,
       rows = 3,
+      onChange,
+      value,
       ...props
     },
-    ref,
+    ref
   ) => {
+    // Handle trimming trailing spaces
+    const handleChange = (
+      e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
+      const trimmedValue = e.target.value.replace(/\s+$/g, "");
+      onChange?.({
+        ...e,
+        target: { ...e.target, value: trimmedValue },
+      });
+    };
+
     return (
       <div className="space-y-1">
         {label && (
           <label className="text-sm font-medium text-slate-700">
-            {label}{" "}
+            {label}
             {required ? (
               <span className="text-red-500">*</span>
             ) : (
@@ -63,8 +79,10 @@ const Input = React.forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProp
                 "border-slate-200",
                 error && "border-red-500 focus-visible:ring-red-500",
                 "py-3",
-                className,
+                className
               )}
+              value={value}
+              onChange={handleChange}
               {...(props as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
             />
           ) : (
@@ -79,8 +97,10 @@ const Input = React.forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProp
                 prefix || icon ? "pl-10" : "px-3",
                 "h-10 border-slate-200",
                 error && "border-red-500 focus-visible:ring-red-500",
-                className,
+                className
               )}
+              value={value}
+              onChange={handleChange}
               {...(props as React.InputHTMLAttributes<HTMLInputElement>)}
             />
           )}
@@ -89,7 +109,7 @@ const Input = React.forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProp
         {error && <p className="text-xs text-red-600">{error}</p>}
       </div>
     );
-  },
+  }
 );
 
 Input.displayName = "Input";

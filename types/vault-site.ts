@@ -134,14 +134,13 @@ export interface InventorySummary {
 export interface VaultSiteStore {
   vaultSites: VaultSite[];
   vaultSiteDetails: vaultSiteDetails | null;
-  vaults: VaultItem[];
   inventorySummary: InventorySummary | null;
   inventoryByOwner: VaultSiteInventory["by_owner"] | [];
   inventoryByProductType: VaultSiteInventory["product_type"] | [];
   inventoryByVault: VaultSiteInventory["by_vault"] | [];
   totalCount: number;
   limit: number;
-  offset: number;
+  page: number;
   country?: string;
   loading: boolean;
   error: string | null;
@@ -157,8 +156,6 @@ export interface VaultSiteStore {
 
   createVaultSite: (payload: CreateVaultSitePayload) => Promise<VaultSite>;
 
-  fetchVaultsByVaultSiteId: (vaultSiteId: string) => Promise<void>;
-
   fetchVaultSiteInventory: (
     vaultSiteId: string,
     groupBy?: "owner" | "product_type" | "asset_status" | "vault_id",
@@ -168,7 +165,7 @@ export interface VaultSiteStore {
   setCountry: (country?: string) => void;
   setFilters: (filters: VaultSiteFilters) => void;
   resetFilters: () => void;
-  setOffset: (offset: number) => void;
+  setPage: (page: number) => void;
   setLimit: (limit: number) => void;
   resetVaultSiteDetails: () => void;
 }
@@ -182,7 +179,7 @@ export interface VaultSiteFilters {
 
 export interface GetVaultSitesParams {
   limit: number;
-  offset: number;
+  page: number;
   country?: string;
   filters: VaultSiteFilters;
 }

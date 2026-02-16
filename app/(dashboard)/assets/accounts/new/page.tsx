@@ -102,28 +102,22 @@ export default function NewGoldAccountPage() {
               {/* Vault ID */}
               <div className="space-y-1.5">
                 <Input
-                  required
                   label="Vault ID"
                   placeholder="VAULT-001"
                   error={errors.vault_id?.message}
                   className="h-11 rounded-md border-gray-200 focus:border-amber-500 focus:ring-amber-100"
-                  {...register("vault_id", {
-                    required: "Vault ID is required",
-                  })}
+                  {...register("vault_id")}
                 />
               </div>
 
               {/* Guarantee Deposit Account */}
               <div className="space-y-1.5">
                 <Input
-                  required
                   label="Guarantee Deposit Account"
                   placeholder="GDA-2025-00001"
                   error={errors.guarantee_deposit_account?.message}
                   className="h-11 rounded-md border-gray-200 focus:border-amber-500 focus:ring-amber-100"
-                  {...register("guarantee_deposit_account", {
-                    required: "Guarantee Deposit Account is required",
-                  })}
+                  {...register("guarantee_deposit_account")}
                 />
               </div>
 
