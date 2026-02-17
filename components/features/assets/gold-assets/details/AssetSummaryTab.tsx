@@ -31,7 +31,7 @@ export const AssetSummaryTab = ({ data }: Props) => {
         </div>
       </div>
 
-      {isAdmin && assetDetails && (
+      {isAdmin && assetDetails && assetDetails.ownership.asset_status !== "burned" && (
         <AssetActions
           tokenId={assetDetails.token_id}
           currentStatus={assetDetails.ownership.asset_status}
