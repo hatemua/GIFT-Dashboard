@@ -84,7 +84,7 @@ export default function MintAssetPage() {
 
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="space-y-6 max-w-6xl mx-auto mt-6"
+        className="space-y-6 max-w-6xl mt-6"
       >
         {/* ASSET DETAILS */}
         <Card className="border-l-4 border-l-gold-500 hover:shadow-lg transition-shadow duration-200">

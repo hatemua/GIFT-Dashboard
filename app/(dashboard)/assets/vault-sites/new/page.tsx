@@ -54,8 +54,8 @@ export default function NewVaultSitePage() {
       country: "",
       timezone: "",
       gps_coordinates: "",
-      number_of_vaults: 0,
-      maximum_weight_in_gold_kg: 0,
+      number_of_vaults: undefined,
+      maximum_weight_in_gold_kg: undefined,
       opening_hours: "",
       insurance_coverage_name_of_insurer: "",
       insurance_coverage_expiration_date: "",
@@ -379,6 +379,7 @@ export default function NewVaultSitePage() {
                   required
                   type="number"
                   label="Number of Vaults"
+                  placeholder="number of vaults"
                   min={0}
                   error={errors.number_of_vaults?.message}
                   {...register("number_of_vaults", {
@@ -394,6 +395,7 @@ export default function NewVaultSitePage() {
                 <Input
                   required
                   type="number"
+                  placeholder="1000"
                   label="Maximum Gold Capacity (kg)"
                   min={0}
                   error={errors.maximum_weight_in_gold_kg?.message}

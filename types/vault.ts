@@ -67,7 +67,7 @@ export interface Vault {
 
 export interface CreateVaultPayload {
   vault_site_id: string;
-  vault_id: string;
+  vault_id?: string;
   member_internal_vault_id?: string;
   vault_dimensions?: string;
   vault_gold_capacity_kg: number;

@@ -121,7 +121,7 @@ export default function NewTransactionPage() {
       />
 
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 max-w-6xl">
           {/* Step 1 */}
           <div>
             <div className="mb-2">

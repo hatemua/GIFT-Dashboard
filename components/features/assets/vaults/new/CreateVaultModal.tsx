@@ -22,7 +22,7 @@ export default function CreateVaultModal({
   const { vaultSiteDetails } = useVaultSite();
 
   const { showToast } = useToast();
-  const { createVault } = useVault();
+  const { createVault, fetchVaultsByVaultSiteId } = useVault();
 
   const {
     control,
@@ -32,7 +32,7 @@ export default function CreateVaultModal({
   } = useForm<CreateVaultPayload>({
     defaultValues: {
       vault_site_id: vaultSiteDetails?.vault_site_id,
-      vault_id: "",
+      vault_id: undefined,
       member_internal_vault_id: "",
       vault_dimensions: "",
       vault_gold_capacity_kg: 0,
@@ -47,6 +47,8 @@ export default function CreateVaultModal({
         ...data,
         vault_gold_capacity_kg: Number(data.vault_gold_capacity_kg),
       });
+      if (vaultSiteDetails?.vault_site_id)
+        await fetchVaultsByVaultSiteId(vaultSiteDetails?.vault_site_id);
 
       showToast({
         title: "Success",
@@ -59,7 +61,8 @@ export default function CreateVaultModal({
     } catch (err: any) {
       showToast({
         title: "Error",
-        message: err?.message || "Failed to create vault",
+        message:           err?.response?.data?.error_description ||
+          err?.message || "Failed to create vault",
         variant: "error",
       });
     }
@@ -72,20 +75,12 @@ export default function CreateVaultModal({
           <Controller
             name="vault_id"
             control={control}
-            rules={{
-              required: "Vault ID is required",
-              minLength: {
-                value: 3,
-                message: "Vault ID must be at least 3 characters",
-              },
-            }}
             render={({ field, fieldState }) => (
               <Input
                 {...field}
                 label="Vault ID"
                 placeholder="VAULT-001"
                 error={fieldState.error?.message}
-                required
               />
             )}
           />

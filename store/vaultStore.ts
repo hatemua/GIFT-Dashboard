@@ -63,6 +63,7 @@ export const useVaultStore = create<VaultState>((set, get) => ({
       set({ vault });
     } catch (err: any) {
       set({ error: err.message || "Failed to create vault" });
+      throw err;
     } finally {
       set({ loading: false });
     }
