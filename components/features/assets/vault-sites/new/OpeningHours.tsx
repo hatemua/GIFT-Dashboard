@@ -1,145 +1,159 @@
 "use client";
-import React from "react";
-import { Clock } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Input } from "@/components/ui/input";
 
-interface OpeningHoursProps {
-  value: string;
-  onChange: (value: string) => void;
-  className?: string;
-  label?: string;
-  error?: string;
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Clock } from "lucide-react";
+import { CardDescription, CardTitle } from "@/components/ui/card";
+
+type DayRange =
+  | "Mon-Fri"
+  | "Mon-Sat"
+  | "Mon-Sun"
+  | "Sat"
+  | "Sun";
+
+interface OpeningHourRule {
+  days: DayRange;
+  from: string;
+  to: string;
 }
 
-export const OpeningHours: React.FC<OpeningHoursProps> = ({
+interface OpeningHoursInputProps {
+  label?: string;
+  value?: string;
+  onChange?: (formatted: string) => void;
+}
+
+export function OpeningHours({
+  label = "Opening Hours",
   value,
   onChange,
-  className,
-  label = "Opening Hours",
-  error,
-}) => {
-  // Parse the value into from/to times
-  const parseTimes = React.useMemo(() => {
-    if (!value) return { from: "", to: "" };
+}: OpeningHoursInputProps) {
+  const [rules, setRules] = useState<OpeningHourRule[]>([
+    { days: "Mon-Fri", from: "09:00", to: "17:00" },
+  ]);
 
-    // Try to parse different formats
-    const match = value.match(/(\d{1,2}:\d{2})\s*[-–]\s*(\d{1,2}:\d{2})/);
-    if (match) {
-      return { from: match[1], to: match[2] };
-    }
+  const formatRules = (items: OpeningHourRule[]) =>
+    items
+      .map(rule => `${rule.days}: ${rule.from}-${rule.to}`)
+      .join(", ");
 
-    // Try 24-hour format without separator
-    const split = value.split(/[-–]/);
-    if (split.length === 2) {
-      return { from: split[0].trim(), to: split[1].trim() };
-    }
-
-    return { from: "", to: "" };
-  }, [value]);
-
-  const handleFromChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newFrom = e.target.value;
-    const newValue =
-      newFrom && parseTimes.to ? `${newFrom} - ${parseTimes.to}` : "";
-    onChange(newValue);
+  const updateRules = (updated: OpeningHourRule[]) => {
+    setRules(updated);
+    onChange?.(formatRules(updated));
   };
 
-  const handleToChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newTo = e.target.value;
-    const newValue =
-      parseTimes.from && newTo ? `${parseTimes.from} - ${newTo}` : "";
-    onChange(newValue);
+  const addRule = () =>
+    updateRules([
+      ...rules,
+      { days: "Sat", from: "09:00", to: "12:00" },
+    ]);
+
+  const removeRule = (index: number) =>
+    updateRules(rules.filter((_, i) => i !== index));
+
+  const updateRule = (
+    index: number,
+    field: keyof OpeningHourRule,
+    value: string
+  ) => {
+    const updated = [...rules];
+    updated[index] = { ...updated[index], [field]: value };
+    updateRules(updated);
   };
 
   return (
-    <div className={cn("space-y-3", className)}>
-      <div className="flex items-center justify-between">
-        <label className="flex items-center gap-2 text-sm font-medium text-gray-900">
-          <Clock className="h-4 w-4 text-gold-600" />
-          {label}
-        </label>
-        <span className="text-xs text-gray-500">24-hour format</span>
-      </div>
+    <div className="space-y-4">
+      {/* Label */}
+<div className="flex items-center gap-3">
+                  <div className="p-2 bg-blue-50 rounded-lg">
+                    <Clock className="h-5 w-5 text-blue-600" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-lg">Opening Hours</CardTitle>
+                    <CardDescription>
+                      Define when this location is open
 
-      <div className="grid grid-cols-2 gap-3">
-        <div className="space-y-2">
-          <label htmlFor="opening-from" className="text-xs text-gray-600">
-            From
-          </label>
-          <div className="relative">
-            <Input
-              id="opening-from"
-              type="time"
-              value={parseTimes.from}
-              onChange={handleFromChange}
-              className={cn(
-                "w-full pl-10",
-                error &&
-                  "border-red-300 focus:ring-red-200 focus:border-red-400",
-              )}
-              placeholder="09:00"
-              step="900" // 15-minute intervals
-            />
-            <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-              <div className="h-2 w-2 rounded-full bg-green-500"></div>
-            </div>
-          </div>
-        </div>
 
-        <div className="space-y-2">
-          <label htmlFor="opening-to" className="text-xs text-gray-600">
-            To
-          </label>
-          <div className="relative">
-            <Input
-              id="opening-to"
-              type="time"
-              value={parseTimes.to}
-              onChange={handleToChange}
-              className={cn(
-                "w-full pl-10",
-                error &&
-                  "border-red-300 focus:ring-red-200 focus:border-red-400",
-              )}
-              placeholder="17:00"
-              step="900"
-            />
-            <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-              <div className="h-2 w-2 rounded-full bg-red-500"></div>
-            </div>
-          </div>
-        </div>
-      </div>
+                    </CardDescription>
+                  </div>
+                </div>
 
-      {/* Display formatted value */}
-      {value && (
-        <div className="mt-2 rounded-lg bg-gray-50 border border-gray-200 p-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="h-6 w-6 rounded-full bg-gold-100 flex items-center justify-center">
-                <Clock className="h-3 w-3 text-gold-600" />
-              </div>
-              <span className="text-sm font-medium text-gray-900">
-                {parseTimes.from} - {parseTimes.to}
-              </span>
-            </div>
-            <button
-              type="button"
-              onClick={() => onChange("")}
-              className="text-xs text-gray-500 hover:text-red-600 transition-colors"
+      {/* Rules */}
+      <div className="space-y-3">
+        {rules.map((rule, index) => (
+          <div
+            key={index}
+            className="flex flex-wrap items-center gap-3 rounded-lg border bg-background p-3 shadow-sm"
+          >
+            <select
+              className="h-10 rounded-md border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+              value={rule.days}
+              onChange={e =>
+                updateRule(index, "days", e.target.value)
+              }
             >
-              Clear
-            </button>
+              <option>Mon-Fri</option>
+              <option>Mon-Sat</option>
+              <option>Mon-Sun</option>
+              <option>Sat</option>
+              <option>Sun</option>
+            </select>
+
+            <div className="flex items-center gap-2">
+              <Input
+                type="time"
+                value={rule.from}
+                onChange={e =>
+                  updateRule(index, "from", e.target.value)
+                }
+                className="w-[120px]"
+              />
+              <span className="text-xs text-muted-foreground">
+                to
+              </span>
+              <Input
+                type="time"
+                value={rule.to}
+                onChange={e =>
+                  updateRule(index, "to", e.target.value)
+                }
+                className="w-[120px]"
+              />
+            </div>
+
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="ml-auto text-muted-foreground hover:text-destructive"
+              onClick={() => removeRule(index)}
+            >
+              Remove
+            </Button>
           </div>
-        </div>
-      )}
+        ))}
+      </div>
 
-      {error && <p className="text-sm text-red-600 mt-1">{error}</p>}
+      {/* Add rule */}
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
+        onClick={addRule}
+        className="w-fit"
+      >
+        + Add day range
+      </Button>
 
-      <div className="text-xs text-gray-500 space-y-1">
-        <p>• Use 24-hour format (e.g., 13:30 for 1:30 PM)</p>
+      {/* Preview */}
+      <div className="rounded-lg border bg-muted/40 p-3 text-sm">
+        <span className="font-medium">Formatted:</span>{" "}
+        <span className="text-muted-foreground">
+          {formatRules(rules)}
+        </span>
       </div>
     </div>
   );
-};
+}

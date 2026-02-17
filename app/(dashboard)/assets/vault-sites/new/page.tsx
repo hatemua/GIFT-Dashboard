@@ -37,6 +37,7 @@ export default function NewVaultSitePage() {
   const {
     register,
     handleSubmit,
+    reset,
     control,
     formState: { errors, isSubmitting },
   } = useForm<CreateVaultSitePayload>({
@@ -83,13 +84,13 @@ export default function NewVaultSitePage() {
   const onSubmit = async (data: CreateVaultSitePayload) => {
     try {
       const payload: CreateVaultSitePayload = { ...data };
-    // Remove postal_code if empty or undefined
-    if (!payload.postal_code) {
-      delete payload.postal_code;
-    }
-        if (!payload.gps_coordinates) {
-      delete payload.gps_coordinates;
-    }
+      // Remove postal_code if empty or undefined
+      if (!payload.postal_code) {
+        delete payload.postal_code;
+      }
+      if (!payload.gps_coordinates) {
+        delete payload.gps_coordinates;
+      }
       // Upload insurance files if any
       if (insuranceFiles.length > 0) {
         const insuranceDocuments = await Promise.all(
@@ -140,9 +141,9 @@ export default function NewVaultSitePage() {
       });
 
       // Optionally reset the form and file states
-      // reset();
-      // setInsuranceFiles([]);
-      // setAuditFiles([]);
+      reset();
+      setInsuranceFiles([]);
+      setAuditFiles([]);
     } catch (err: any) {
       showToast({
         title: "Error",
@@ -336,6 +337,18 @@ export default function NewVaultSitePage() {
                     {...register("timezone")}
                     className="bg-gray-50/50"
                   />
+                  <div className="md:col-span-2">
+                    <Controller
+                      control={control}
+                      name="opening_hours"
+                      render={({ field }) => (
+                        <OpeningHours
+                          value={field.value}
+                          onChange={field.onChange}
+                        />
+                      )}
+                    />
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -387,23 +400,10 @@ export default function NewVaultSitePage() {
                       value: 100,
                       message: "Minimum 100 kg capacity required",
                     },
-                    valueAsNumber: true
+                    valueAsNumber: true,
                   })}
                   className="bg-gray-50/50"
                 />
-                <div className="md:col-span-2">
-                  <Controller
-                    control={control}
-                    name="opening_hours"
-                    render={({ field }) => (
-                      <OpeningHours
-                        value={field.value}
-                        onChange={field.onChange}
-                        error={errors.opening_hours?.message}
-                      />
-                    )}
-                  />
-                </div>
               </CardContent>
             </Card>
 
@@ -488,7 +488,8 @@ export default function NewVaultSitePage() {
                 <div className="space-y-2 flex-1">
                   <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
                     <Upload className="h-4 w-4" />
-                    Insurance Documentation
+                    Insurance Documentation{" "}
+                    <span className="text-red-500">*</span>
                   </label>
                   <FileUpload
                     multiple
@@ -515,7 +516,7 @@ export default function NewVaultSitePage() {
                 <div className="space-y-2 flex-1">
                   <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
                     <Upload className="h-4 w-4" />
-                    Audit Documentation
+                    Audit Documentation <span className="text-red-500">*</span>
                   </label>
 
                   <FileUpload
