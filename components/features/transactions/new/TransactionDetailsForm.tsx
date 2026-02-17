@@ -165,6 +165,7 @@ export const TransactionDetailsForm: React.FC = () => {
                 {...field}
                 required
                 type="number"
+                min={0}
                 label="Transaction Value"
                 placeholder="e.g. 10000"
                 error={errors.transaction_value?.message}

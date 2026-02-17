@@ -144,6 +144,7 @@ export default function CreateVaultModal({
               <Input
                 {...field}
                 type="number"
+                min={0}
                 label="Gold Capacity (kg)"
                 placeholder="10000"
                 error={fieldState.error?.message}

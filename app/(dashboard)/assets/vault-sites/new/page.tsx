@@ -91,6 +91,7 @@ export default function NewVaultSitePage() {
       if (!payload.gps_coordinates) {
         delete payload.gps_coordinates;
       }
+
       // Upload insurance files if any
       if (insuranceFiles.length > 0) {
         const insuranceDocuments = await Promise.all(
@@ -378,6 +379,7 @@ export default function NewVaultSitePage() {
                   required
                   type="number"
                   label="Number of Vaults"
+                  min={0}
                   error={errors.number_of_vaults?.message}
                   {...register("number_of_vaults", {
                     required: "Number of Vaults is required",
@@ -393,6 +395,7 @@ export default function NewVaultSitePage() {
                   required
                   type="number"
                   label="Maximum Gold Capacity (kg)"
+                  min={0}
                   error={errors.maximum_weight_in_gold_kg?.message}
                   {...register("maximum_weight_in_gold_kg", {
                     required: "Maximum Weight is required",
@@ -484,13 +487,19 @@ export default function NewVaultSitePage() {
             <Controller
               control={control}
               name="insurance_coverage_documentation"
-              render={({ field }) => (
+              rules={{
+                validate: () =>
+                  insuranceFiles.length > 0 ||
+                  "Insurance documentation is required",
+              }}
+              render={() => (
                 <div className="space-y-2 flex-1">
                   <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
                     <Upload className="h-4 w-4" />
                     Insurance Documentation{" "}
                     <span className="text-red-500">*</span>
                   </label>
+
                   <FileUpload
                     multiple
                     value={insuranceFiles}
@@ -501,6 +510,7 @@ export default function NewVaultSitePage() {
                   <p className="text-xs text-muted-foreground">
                     Upload the official insurance coverage documents
                   </p>
+
                   {errors.insurance_coverage_documentation && (
                     <p className="text-sm text-red-500 mt-1">
                       {errors.insurance_coverage_documentation.message}
@@ -509,10 +519,15 @@ export default function NewVaultSitePage() {
                 </div>
               )}
             />
+
             <Controller
               control={control}
               name="audit_documentation"
-              render={({ field }) => (
+              rules={{
+                validate: () =>
+                  auditFiles.length > 0 || "Audit documentation is required",
+              }}
+              render={() => (
                 <div className="space-y-2 flex-1">
                   <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
                     <Upload className="h-4 w-4" />
@@ -529,6 +544,7 @@ export default function NewVaultSitePage() {
                   <p className="text-xs text-muted-foreground">
                     Upload the official audit documents
                   </p>
+
                   {errors.audit_documentation && (
                     <p className="text-sm text-red-500 mt-1">
                       {errors.audit_documentation.message}

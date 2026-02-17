@@ -154,6 +154,7 @@ export default function NewGoldAccountPage() {
                 <Input
                   label="Initial Deposit"
                   type="number"
+                  min={0}
                   placeholder="0.00"
                   prefix="$"
                   error={errors.initial_deposit?.message}

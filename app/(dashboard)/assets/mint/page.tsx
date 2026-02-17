@@ -139,6 +139,7 @@ export default function MintAssetPage() {
             <Input
               required
               type="number"
+              min={0}
               label="Weight (grams)"
               placeholder="e.g. 1000"
               error={errors.weight_grams?.message}
@@ -153,6 +154,7 @@ export default function MintAssetPage() {
             <Input
               required
               type="number"
+              min={0}
               step="0.0001"
               label="Fineness"
               placeholder="e.g. 0.9999"
