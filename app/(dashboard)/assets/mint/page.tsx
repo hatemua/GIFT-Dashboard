@@ -39,10 +39,10 @@ export default function MintAssetPage() {
       fineness: undefined,
       weight_grams: undefined,
       certified: true,
-      manufacture_date: "",
+      manufacture_date: undefined,
       traceability_gic: "",
       initial_owner_igan: "",
-      certification_framework: "",
+      certification_framework: undefined,
       auto_verify_hash: true,
       certificate_base64: "",
       certificate_path: undefined,
@@ -169,7 +169,6 @@ export default function MintAssetPage() {
             <Controller
               control={control}
               name="manufacture_date"
-              rules={{ required: "Manufacture date is required" }}
               render={({ field }) => (
                 <DatePicker
                   {...field}
@@ -205,7 +204,6 @@ export default function MintAssetPage() {
             <Controller
               control={control}
               name="certification_framework"
-              rules={{ required: "Certification framework is required" }}
               render={({ field }) => (
                 <Select
                   {...field}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { PageHeader } from "@/components/layout/page-header";
@@ -26,7 +26,6 @@ export interface CreateTransactionFormValues {
   reciever_igan: string;
   sender_igan: string;
   initiator_signature: string;
-  counterparty_signature: string;
 }
 
 export default function NewTransactionPage() {
@@ -49,7 +48,6 @@ export default function NewTransactionPage() {
       reciever_igan: "",
       sender_igan: "",
       initiator_signature: "",
-      counterparty_signature: "",
     },
   });
 
@@ -59,35 +57,33 @@ export default function NewTransactionPage() {
 
   const onSubmit = async (data: CreateTransactionFormValues) => {
     try {
-      const requestedAssets = data.requested_assets;
-      const { counterparty_signature, ...transactionData } = data;
 
-      const res = await createTransaction(transactionData);
+      await createTransaction(data);
 
-      const transactionRef = res?.transaction_reference;
-      if (!transactionRef) {
-        throw new Error("Transaction reference not returned from server");
-      }
-      if (requestedAssets && requestedAssets.length > 0) {
-        await Promise.all(
-          requestedAssets.map(async (tokenId) => {
-            const payload: UpdateStatusRequest = {
-              token_id: tokenId,
-              new_status: "in_transit",
-              reason: "some reason",
-              effective_date: new Date().toISOString(),
-              supporting_document: undefined,
-            };
+      // const transactionRef = res?.transaction_reference;
+      // if (!transactionRef) {
+      //   throw new Error("Transaction reference not returned from server");
+      // }
+      // if (requestedAssets && requestedAssets.length > 0) {
+      //   await Promise.all(
+      //     requestedAssets.map(async (tokenId) => {
+      //       const payload: UpdateStatusRequest = {
+      //         token_id: tokenId,
+      //         new_status: "in_transit",
+      //         reason: "some reason",
+      //         effective_date: new Date().toISOString(),
+      //         supporting_document: undefined,
+      //       };
 
-            await updateStatus(tokenId, payload);
-          }),
-        );
-      }
-      await signTransaction(
-        transactionRef,
-        counterparty_signature,
-        "counterparty",
-      );
+      //       await updateStatus(tokenId, payload);
+      //     }),
+      //   );
+      // }
+      // await signTransaction(
+      //   transactionRef,
+      //   counterparty_signature,
+      //   "counterparty",
+      // );
       showToast({
         title: "Transaction Created",
         message: "Your transaction has been successfully submitted",

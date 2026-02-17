@@ -89,10 +89,12 @@ export function DropdownMenuContent({
   children,
   className,
   align = "end",
+  direction = "bottom",
 }: {
   children: React.ReactNode;
   className?: string;
   align?: "start" | "end";
+  direction?: "top" | "bottom";
 }) {
   const { open } = useDropdown();
 
@@ -101,7 +103,9 @@ export function DropdownMenuContent({
   return (
     <div
       className={clsx(
-        "absolute z-50 mt-2 min-w-[160px] rounded-lg border border-slate-200 bg-white shadow-lg",
+        "absolute z-50 min-w-[160px] rounded-lg border border-slate-200 bg-white shadow-lg",
+        // Use margin based on direction
+        direction === "bottom" ? "mt-2" : "mb-2 bottom-full",
         align === "start" ? "left-0" : "right-0",
         className
       )}
@@ -110,6 +114,7 @@ export function DropdownMenuContent({
     </div>
   );
 }
+
 
 /* -------------------------------------------------------------------------- */
 /*                                  Item                                      */

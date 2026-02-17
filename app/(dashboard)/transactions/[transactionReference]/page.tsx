@@ -50,11 +50,11 @@ export default function TransactionOrderDetailsPage({
       {loading || !hasFetched ? (
         <LoadingSkeleton />
       ) : transactionDetails ? (
-        <Card className="p-4 rounded-2xl border-0 shadow-lg bg-gradient-to-br from-white to-slate-50/50 overflow-hidden">
+        <Card className="p-4 rounded-2xl border-0 shadow-lg bg-gradient-to-br from-white to-slate-50/50">
           <TransactionHeader transaction={transactionDetails} />
 
           <Tabs defaultValue="overview" className="space-y-4 mt-3">
-            <TabsList className="bg-slate-100 p-1 rounded-xl w-fit">
+            <TabsList className="bg-slate-100 p-1 rounded-xl w-fit gap-1">
               <TabsTrigger
                 value="overview"
                 className="rounded-lg px-6 data-[state=active]:bg-white data-[state=active]:shadow-sm flex items-center gap-2"
