@@ -90,10 +90,10 @@ const MemberCard: React.FC<Props> = ({ item, onClick }) => {
         <div className="flex items-center gap-2 text-xs text-gray-500">
           {item.entity_type && <span>{item.entity_type}</span>}
           {item.created_at && (
-            <>
-              <span>•</span>
-              <span>{dayjs(item.created_at).format("MMM D")}</span>
-            </>
+            <span className="flex items-center gap-1">
+              <CalendarDays className="h-3 w-3" />
+              {dayjs(item.created_at).format("MMM D, YYYY")}
+            </span>
           )}
         </div>
       </div>
@@ -133,10 +133,10 @@ const AssetCard: React.FC<Props> = ({ item, onClick }) => {
             />
           )}
           {item.created_at && (
-            <>
-              <span>•</span>
-              <span>{dayjs(item.created_at).format("MMM D")}</span>
-            </>
+            <span className="flex items-center gap-1">
+              <CalendarDays className="h-3 w-3" />
+              {dayjs(item.created_at).format("MMM D, YYYY")}
+            </span>
           )}
         </div>
       </div>
