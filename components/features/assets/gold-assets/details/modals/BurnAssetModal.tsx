@@ -7,6 +7,8 @@ import { FileUpload } from "@/components/ui/file-upload";
 import { Button } from "@/components/ui/button";
 import { useAsset } from "@/hooks/useAsset";
 import { fileToBase64 } from "@/lib/utils";
+import { useToast } from "@/providers/toast-provider";
+import { Select, SelectItem } from "@/components/ui/select";
 
 interface BurnAssetModalProps {
   isOpen: boolean;
@@ -27,6 +29,8 @@ export const BurnAssetModal = ({
   tokenId,
 }: BurnAssetModalProps) => {
   const { loading, burnAsset } = useAsset();
+  const { showToast } = useToast();
+
   const {
     control,
     register,
@@ -49,18 +53,37 @@ export const BurnAssetModal = ({
   const submitHandler = async (values: BurnAssetFormValues) => {
     if (!values.justification_document) return;
 
-    const base64 = await fileToBase64(values.justification_document);
+    try {
+      const base64 = await fileToBase64(values.justification_document);
 
-    await burnAsset(tokenId, {
-      token_id: tokenId,
-      burn_reason: values.burn_reason,
-      authorized_by: values.authorized_by,
-      justification_document: base64,
-      irreversible: values.irreversible,
-    });
+      await burnAsset(tokenId, {
+        token_id: tokenId,
+        burn_reason: values.burn_reason,
+        authorized_by: values.authorized_by,
+        justification_document: base64,
+        irreversible: values.irreversible,
+      });
 
-    reset();
-    onClose();
+      showToast({
+        title: "Success",
+        message: "Asset burned successfully.",
+        variant: "success",
+      });
+
+      reset();
+      onClose();
+    } catch (error: any) {
+      console.error("Error burning asset:", error);
+
+      showToast({
+        title: "Error",
+        message:
+          error?.response?.data?.error_description ||
+          error?.message ||
+          "Failed to burn asset. Please try again.",
+        variant: "error",
+      });
+    }
   };
 
   const isDisabled = loading || isSubmitting || !irreversible;
@@ -77,20 +100,27 @@ export const BurnAssetModal = ({
     >
       <form onSubmit={handleSubmit(submitHandler)} className="space-y-5">
         {/* Burn reason */}
-        <Input
-          label="Burn reason"
-          required
-          multiline={true}
-          rows={6}
-          placeholder="Explain why this asset must be burned"
-          error={errors.burn_reason?.message}
-          {...register("burn_reason", {
+        <Controller
+          control={control}
+          name="burn_reason"
+          rules={{
             required: "Burn reason is required",
-            minLength: {
-              value: 10,
-              message: "Burn reason must be at least 10 characters",
-            },
-          })}
+          }}
+          render={({ field }) => (
+            <Select
+              required
+              label="Burn reason"
+              placeholder="Select reason for burning"
+              value={field.value}
+              onChange={field.onChange}
+              error={errors.burn_reason?.message}
+            >
+              <SelectItem value="other">Other</SelectItem>
+              <SelectItem value="reprocessed">Reprocessed</SelectItem>
+              <SelectItem value="damaged">Damaged</SelectItem>
+              <SelectItem value="delivered">Delivered</SelectItem>
+            </Select>
+          )}
         />
 
         {/* Authorized by */}

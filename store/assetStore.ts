@@ -172,7 +172,7 @@ export const useAssetStore = create<AssetState>((set, get) => ({
       await get().fetchAssetTracking(tokenId);
     } catch (err: any) {
       set({
-        errorAction: err?.response?.data?.message || "Failed to burn asset",
+        errorAction: err?.response?.data?.error_description || "Failed to burn asset",
       });
       throw err;
     } finally {
@@ -194,7 +194,7 @@ export const useAssetStore = create<AssetState>((set, get) => ({
       await get().fetchAssetTracking(tokenId);
     } catch (err: any) {
       set({
-        errorAction: err?.response?.data?.message || "Failed to update custody",
+        errorAction: err?.response?.data?.error_description || "Failed to update custody",
       });
       throw err;
     } finally {
