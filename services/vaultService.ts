@@ -33,10 +33,10 @@ export const vaultService = {
       params: {
         page,
         limit,
-        status: filters.status,
         search: filters.search,
         from_date: filters.from_date,
         to_date: filters.to_date,
+        ...(filters.status ? { status: filters.status } : {}),
       },
     });
 

@@ -14,6 +14,7 @@ export interface CreateGoldAccountPayload {
   member_gic: string;
   igan?: string;
   vault_id: string;
+  vault_site_id?: string;
   guarantee_deposit_account: string;
   gold_account_purpose: "trading" | "custody" | "collateral" | "savings";
   initial_deposit?: number;

@@ -98,15 +98,28 @@ export default function NewGoldAccountPage() {
                   })}
                 />
               </div>
+              {/* Vault Site ID */}
+              <div className="space-y-1.5">
+                <Input
+                  label="Vault Site ID"
+                  placeholder="VAULT-SITE-001"
+                  error={errors.vault_site_id?.message}
+                  className="h-11 rounded-md border-gray-200 focus:border-amber-500 focus:ring-amber-100"
+                  {...register("vault_site_id")}
+                />
+              </div>
 
               {/* Vault ID */}
               <div className="space-y-1.5">
                 <Input
+                  required
                   label="Vault ID"
                   placeholder="VAULT-001"
                   error={errors.vault_id?.message}
                   className="h-11 rounded-md border-gray-200 focus:border-amber-500 focus:ring-amber-100"
-                  {...register("vault_id")}
+                  {...register("vault_id", {
+                    required: "Vault ID is required",
+                  })}
                 />
               </div>
 
@@ -152,6 +165,7 @@ export default function NewGoldAccountPage() {
               {/* Initial Deposit */}
               <div className="space-y-1.5">
                 <Input
+                  required
                   label="Initial Deposit"
                   type="number"
                   min={0}
@@ -160,6 +174,7 @@ export default function NewGoldAccountPage() {
                   error={errors.initial_deposit?.message}
                   className="h-11 rounded-md border-gray-200 focus:border-amber-500 focus:ring-amber-100 pl-8"
                   {...register("initial_deposit", {
+                    required: "Initial Deposit is required",
                     min: {
                       value: 0,
                       message: "Initial deposit cannot be negative",

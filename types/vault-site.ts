@@ -1,5 +1,3 @@
-import { VaultItem } from "./vault";
-
 export interface VaultSite {
   vault_site_id: string;
   vault_site_name: string;
