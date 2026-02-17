@@ -1,16 +1,18 @@
+import { AssetStatus } from "./asset";
+
 export type SearchResultItem = {
-  source_type: SourceType;//all
-  member_gic?: string | null;//member
-  serial_number?: string | null;//asset
-  token_id?: string | null;//asset
-  gold_product_type_id?: string | null;//assset
-  transaction_reference?: string | null;//transaction
-  asset_status?: string;//asset
-  createdAt?: string;//all
-  transaction_type?: string;//transaction
-  transation_status?: string;//transaction
-  roles?: string[];//member
-  entity_type?: string;//member
+  source_type: SourceType; //all
+  member_gic?: string | null; //member
+  serial_number?: string | null; //asset
+  token_id?: string | null; //asset
+  gold_product_type_id?: string | null; //assset
+  transaction_reference?: string | null; //transaction
+  asset_status?: AssetStatus; //asset
+  created_at?: string; //all
+  transaction_type?: string; //transaction
+  transation_status?: string; //transaction
+  roles?: string[]; //member
+  entity_type?: string; //member
 };
 
 export interface SearchResponse {

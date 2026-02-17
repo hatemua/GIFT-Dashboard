@@ -3,20 +3,21 @@
 import React from "react";
 import Link from "next/link";
 import dayjs from "dayjs";
-import { ArrowLeftRight, ArrowRight, CalendarDays, Layers } from "lucide-react";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
-import { SearchResultItem, SourceType } from "@/types/search";
 import {
+  CalendarDays,
+  Layers,
   UserCircle,
   Package,
-  Tag,
-  BadgeCheck,
-  Fingerprint,
-  Shield,
+  ArrowLeftRight,
   CircleDollarSign,
+  ChevronRight,
 } from "lucide-react";
+import { Card, CardTitle } from "@/components/ui/card";
+import { StatusBadge } from "@/components/data-display/status-badge";
+import { AddressDisplay } from "@/components/blockchain/address-display";
+import { SearchResultItem } from "@/types/search";
+import { getAssetStatusLabel } from "@/lib/assets";
+import { cn } from "@/lib/utils";
 
 interface Props {
   item: SearchResultItem;
@@ -24,262 +25,202 @@ interface Props {
 }
 
 export const SearchResultCard: React.FC<Props> = ({ item, onClick }) => {
-  const iconConfig = getIconConfig(item.source_type);
-  const IconComponent = iconConfig.icon;
+  switch (item.source_type) {
+    case "member":
+      return <MemberCard item={item} onClick={onClick} />;
+    case "gold_asset":
+      return <AssetCard item={item} onClick={onClick} />;
+    case "transaction_order":
+      return <TransactionCard item={item} onClick={onClick} />;
+    default:
+      return null;
+  }
+};
 
-  const primaryLabel = getPrimaryLabel(item);
-  const secondaryInfo = getSecondaryInfo(item);
-  const metadata = getMetadata(item);
-
+/* ----------------------------- */
+/* COMMON CARD LAYOUT WRAPPER */
+/* ----------------------------- */
+const CardWrapper: React.FC<{
+  href: string;
+  icon: React.ReactNode;
+  children: React.ReactNode;
+  onClick?: () => void;
+}> = ({ href, icon, children, onClick }) => {
   return (
-    <Link
-      href={getLink(item)}
-      className="block group focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 rounded-lg"
-      onClick={onClick}
-    >
-      <Card className="rounded-lg border border-muted/10 bg-white/80 backdrop-blur-sm">
-        <CardHeader className="p-3">
-          <div className="flex items-start gap-2.5">
-            {/* Icon */}
-            <div
-              className={cn(
-                "p-2 rounded-lg border bg-gradient-to-br flex-shrink-0",
-                iconConfig.bg,
-                iconConfig.border,
-              )}
-            >
-              <IconComponent className={cn("h-3.5 w-3.5", iconConfig.color)} />
-            </div>
+    <Link href={href} onClick={onClick} className="block">
+      <Card className="group flex items-center gap-3 p-3 bg-white border border-gray-200 hover:border-gray-300 hover:bg-gray-50/80 transition-all duration-200 rounded-lg">
+        {/* Icon */}
+        <div className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center bg-gray-50">
+          {icon}
+        </div>
 
-            {/* Content */}
-            <div className="flex-1 min-w-0">
-              {/* Primary Row */}
-              <div className="flex items-center justify-between gap-2 mb-1">
-                <div className="flex items-center gap-1.5 min-w-0">
-                  <CardTitle className="text-xs font-semibold truncate">
-                    {primaryLabel}
-                  </CardTitle>
+        {/* Content */}
+        <div className="flex-1 min-w-0 flex items-center gap-3">
+          <div className="flex-1 min-w-0">{children}</div>
 
-                  <Badge
-                    variant="outline"
-                    className="text-[8px] px-1 py-0 h-4 capitalize bg-muted/5 border-muted/20 text-muted-foreground/70 font-normal"
-                  >
-                    {item.source_type.replace("_", " ")}
-                  </Badge>
-                </div>
-
-                {item.createdAt && (
-                  <span className="flex items-center text-[8px] text-muted-foreground/40 whitespace-nowrap">
-                    <CalendarDays className="h-2.5 w-2.5 mr-0.5" />
-                    {dayjs(item.createdAt).format("MMM D")}
-                  </span>
-                )}
-              </div>
-
-              {/* Secondary Info */}
-              {secondaryInfo.length > 0 && (
-                <div className="flex flex-wrap items-center gap-1 mb-1">
-                  {secondaryInfo.map((info, idx) =>
-                    info.badge ? (
-                      <Badge
-                        key={idx}
-                        className={cn(
-                          "text-[8px] px-1.5 py-0 h-4 font-normal border",
-                          info.color,
-                        )}
-                      >
-                        <info.icon className="h-2 w-2 mr-0.5" />
-                        {info.value}
-                      </Badge>
-                    ) : (
-                      <div
-                        key={idx}
-                        className="flex items-center gap-1 text-[8px] text-muted-foreground/60 bg-muted/10 px-1.5 py-0 rounded-full"
-                      >
-                        <info.icon className="h-2 w-2" />
-                        <span>{info.value}</span>
-                      </div>
-                    ),
-                  )}
-                </div>
-              )}
-
-              {/* Metadata */}
-              {metadata.length > 0 && (
-                <div className="flex items-center gap-2">
-                  {metadata.map((meta, idx) => (
-                    <div
-                      key={idx}
-                      className="flex items-center gap-1 text-[7px] text-muted-foreground/40"
-                    >
-                      <meta.icon className="h-2 w-2" />
-                      <span>{meta.value}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Arrow */}
-            <ArrowRight className="h-3.5 w-3.5 text-muted-foreground/20 group-hover:text-primary/40 group-hover:translate-x-0.5 transition-all" />
-          </div>
-        </CardHeader>
+          {/* Chevron */}
+          <ChevronRight className="h-4 w-4 text-gray-300 group-hover:text-gray-400 transition-colors" />
+        </div>
       </Card>
     </Link>
   );
 };
 
-/* -------------------------------------------------- */
-/* Helpers */
-/* -------------------------------------------------- */
-
-const getIconConfig = (type: SourceType) => {
-  const configs = {
-    member: {
-      icon: UserCircle,
-      color: "text-emerald-600",
-      bg: "bg-emerald-50",
-      border: "border-emerald-200",
-    },
-    gold_asset: {
-      icon: Package,
-      color: "text-amber-600",
-      bg: "bg-amber-50",
-      border: "border-amber-200",
-    },
-    transaction_order: {
-      icon: ArrowLeftRight,
-      color: "text-purple-600",
-      bg: "bg-purple-50",
-      border: "border-purple-200",
-    },
-  };
-
-  return configs[type] || configs.gold_asset;
+/* ----------------------------- */
+/* MEMBER CARD */
+/* ----------------------------- */
+const MemberCard: React.FC<Props> = ({ item, onClick }) => {
+  return (
+    <CardWrapper
+      href={`/members/${item.member_gic}`}
+      icon={<UserCircle className="h-4 w-4 text-emerald-600" />}
+      onClick={onClick}
+    >
+      <div className="flex flex-col gap-1">
+        <div className="flex items-center gap-2">
+          {item.member_gic && (
+            <AddressDisplay
+              address={item.member_gic}
+              truncate
+              startChars={4}
+              endChars={4}
+            />
+          )}
+        </div>
+        <div className="flex items-center gap-2 text-xs text-gray-500">
+          {item.entity_type && <span>{item.entity_type}</span>}
+          {item.created_at && (
+            <>
+              <span>•</span>
+              <span>{dayjs(item.created_at).format("MMM D")}</span>
+            </>
+          )}
+        </div>
+      </div>
+    </CardWrapper>
+  );
 };
 
+/* ----------------------------- */
+/* ASSET CARD */
+/* ----------------------------- */
+const AssetCard: React.FC<Props> = ({ item, onClick }) => {
+  return (
+    <CardWrapper
+      href={`/assets/${item.token_id}`}
+      icon={<Package className="h-4 w-4 text-amber-600" />}
+      onClick={onClick}
+    >
+      <div className="flex flex-col gap-1">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium text-gray-900 truncate">
+            {item.serial_number || "N/A"}
+          </span>
+          {item.asset_status && (
+            <StatusBadge
+              status={getAssetStatusLabel(item.asset_status)}
+              className="scale-75 origin-left"
+            />
+          )}
+        </div>
+        <div className="flex items-center gap-2 text-xs text-gray-500">
+          {item.token_id && (
+            <AddressDisplay
+              address={item.token_id}
+              truncate
+              startChars={4}
+              endChars={4}
+            />
+          )}
+          {item.created_at && (
+            <>
+              <span>•</span>
+              <span>{dayjs(item.created_at).format("MMM D")}</span>
+            </>
+          )}
+        </div>
+      </div>
+    </CardWrapper>
+  );
+};
+
+/* ----------------------------- */
+/* TRANSACTION CARD */
+/* ----------------------------- */
+const TransactionCard: React.FC<Props> = ({ item, onClick }) => {
+  const iconBgClass = getStatusColor(item.transation_status);
+
+  return (
+    <CardWrapper
+      href={`/transactions/${item.transaction_reference}`}
+      icon={<ArrowLeftRight className={`h-4 w-4 ${iconBgClass.text}`} />}
+      onClick={onClick}
+    >
+      <div className="flex flex-col gap-1">
+        <div className="flex items-center justify-between gap-2">
+          <CardTitle className="text-xs font-medium text-gray-900 truncate">
+            {item.transaction_reference || "N/A"}
+          </CardTitle>
+          {item.transation_status && (
+            <StatusBadge
+              status={item.transation_status}
+              className="text-[10px] px-2 py-0.5"
+            />
+          )}
+        </div>
+        <div className="flex items-center gap-2 text-xs text-gray-500">
+          {item.transaction_type && (
+            <span className="inline-flex items-center gap-1 bg-gray-50 px-1.5 py-0.5 rounded">
+              <CircleDollarSign className="h-3 w-3" />
+              {item.transaction_type}
+            </span>
+          )}
+          {item.created_at && (
+            <span className="flex items-center gap-1">
+              <CalendarDays className="h-3 w-3" />
+              {dayjs(item.created_at).format("MMM D, YYYY")}
+            </span>
+          )}
+        </div>
+      </div>
+    </CardWrapper>
+  );
+};
+
+/* ----------------------------- */
+/* UTILITIES */
+/* ----------------------------- */
 const getStatusColor = (status: string = "") => {
-  const statusMap: Record<string, string> = {
-    //transaction
-    EXECUTED: "bg-emerald-50 text-emerald-700 border-emerald-200",
-    PENDING_EXECUTION: "bg-amber-50 text-amber-700 border-amber-200",
-    PENDING_COUNTERPARTY: "bg-blue-50 text-blue-700 border-blue-200",
-    PENDING_SIGNATURE: "bg-violet-50 text-violet-700 border-violet-200",
-    //asset
-    stationary: "bg-slate-50 text-slate-700 border-slate-200",
-    in_transit: "bg-orange-50 text-orange-700 border-orange-200",
-    liquidated: "bg-emerald-50 text-emerald-700 border-emerald-200",
-    burned: "bg-rose-50 text-rose-700 border-rose-200",
-    default: "bg-gray-50 text-gray-700 border-gray-200",
+  const statusMap: Record<
+    string,
+    { bg: string; text: string; border: string }
+  > = {
+    executed: {
+      bg: "bg-emerald-50",
+      text: "text-emerald-600",
+      border: "border-emerald-200",
+    },
+    pending_execution: {
+      bg: "bg-amber-50",
+      text: "text-amber-600",
+      border: "border-amber-200",
+    },
+    pending_counterparty: {
+      bg: "bg-blue-50",
+      text: "text-blue-600",
+      border: "border-blue-200",
+    },
+    pending_signature: {
+      bg: "bg-violet-50",
+      text: "text-violet-600",
+      border: "border-violet-200",
+    },
+    default: {
+      bg: "bg-gray-50",
+      text: "text-gray-600",
+      border: "border-gray-200",
+    },
   };
 
   return statusMap[status.toLowerCase()] || statusMap.default;
 };
-
-const getPrimaryLabel = (item: SearchResultItem) => {
-  switch (item.source_type) {
-    case "member":
-      return item.member_gic || "N/A";
-    case "gold_asset":
-      return item.serial_number || item.token_id || "N/A";
-    case "transaction_order":
-      return item.transaction_reference || "N/A";
-    default:
-      return "N/A";
-  }
-};
-
-const getSecondaryInfo = (item: SearchResultItem) => {
-  const info: any[] = [];
-
-  switch (item.source_type) {
-    case "member":
-      if (item.entity_type)
-        info.push({
-          value: item.entity_type,
-          icon: UserCircle,
-        });
-
-      if (item.roles?.length)
-        info.push({
-          value: item.roles.join(", "),
-          icon: Shield,
-        });
-
-      break;
-
-    case "gold_asset":
-      if (item.gold_product_type_id)
-        info.push({
-          value: item.gold_product_type_id,
-          icon: Tag,
-        });
-
-      if (item.asset_status)
-        info.push({
-          value: item.asset_status,
-          icon: BadgeCheck,
-          badge: true,
-          color: getStatusColor(item.asset_status),
-        });
-
-      if (item.token_id)
-        info.push({
-          value: item.token_id,
-          icon: Fingerprint,
-        });
-
-      break;
-
-    case "transaction_order":
-      if (item.transaction_type)
-        info.push({
-          value: item.transaction_type,
-          icon: CircleDollarSign,
-        });
-
-      if (item.transation_status)
-        info.push({
-          value: item.transation_status,
-          icon: BadgeCheck,
-          badge: true,
-          color: getStatusColor(item.transation_status),
-        });
-
-      break;
-  }
-
-  return info;
-};
-
-const getMetadata = (item: SearchResultItem) => {
-  const metadata: any[] = [];
-
-  if (item.createdAt) {
-    metadata.push({
-      icon: CalendarDays,
-      value: dayjs(item.createdAt).format("MMM D, YYYY"),
-    });
-  }
-
-  metadata.push({
-    icon: Layers,
-    value: item.source_type.replace("_", " "),
-  });
-
-  return metadata;
-};
-
-const getLink = (item: SearchResultItem) => {
-  switch (item.source_type) {
-    case "member":
-      return `/members/${item.member_gic}`;
-    case "gold_asset":
-      return `/assets/${item.token_id}`;
-    case "transaction_order":
-      return `/transactions/${item.transaction_reference}`;
-    default:
-      return "/";
-  }
-};
-
