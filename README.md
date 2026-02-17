@@ -84,7 +84,6 @@ gift-dashboard/
 │
 ├── lib/
 │   ├── utils.ts                  # Utility functions (cn, formatters)
-│   ├── mock-data.ts              # Mock data for development
 │   ├── blockchain/               # Blockchain client utilities
 │   ├── api/                      # API client
 │   └── validations/              # Zod schemas
