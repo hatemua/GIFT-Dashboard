@@ -6,7 +6,6 @@ import { useKPIs } from "@/hooks/useKpi";
 import { useEffect } from "react";
 
 export default function MetricsGrid() {
-  const sparklineData = [45, 52, 48, 65, 58, 72, 68, 75, 80, 85];
   const { kpis, loading, fetchKPIs } = useKPIs();
 
   useEffect(() => {
@@ -39,26 +38,21 @@ export default function MetricsGrid() {
           <MetricCard
             title="Total Gold Under Management"
             value={`${formatWeight(kpis.gold_weight)} / ${formatCurrencyCompact(kpis.value_in_dollars)}`}
-            change={{ value: 8.2, trend: "up" }}
-            sparklineData={sparklineData}
             icon={<Package className="h-5 w-5" />}
           />
           <MetricCard
             title="Active Transactions"
             value={kpis.number_of_transactions.toString()}
-            change={{ value: 12.5, trend: "up" }}
             icon={<ArrowLeftRight className="h-5 w-5" />}
           />
           <MetricCard
             title="Total Gold Accounts"
             value={kpis.number_of_gold_accounts.toString()}
-            change={{ value: 3.1, trend: "up" }}
             icon={<Wallet className="h-5 w-5" />}
           />
           <MetricCard
             title="Members Network"
             value={kpis.number_of_members.toString()}
-            change={{ value: 0, trend: "up" }}
             icon={<Users className="h-5 w-5" />}
           />
         </>
