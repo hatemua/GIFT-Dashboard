@@ -26,12 +26,12 @@ export function ComplianceCard({ asset }: { asset: any }) {
           </div>
           <div>
             <p className="text-xs text-gray-500 mb-1">Last Audit</p>
-            <div className="flex items-center gap-2">
+            {asset.compliance.last_audit ? <div className="flex items-center gap-2">
               <Calendar className="h-3 w-3 text-gray-400" />
               <p className="text-sm font-medium text-gray-900">
                 {formatDate(asset.compliance.last_audit, "short")}
               </p>
-            </div>
+            </div> : "_"}
           </div>
         </div>
 

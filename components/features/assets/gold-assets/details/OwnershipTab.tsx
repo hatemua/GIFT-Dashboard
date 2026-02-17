@@ -86,7 +86,7 @@ export const OwnershipTab = ({ data }: Props) => {
                       className={cn(
                         "h-7 w-7 rounded-full border-2 flex items-center justify-center transition-all",
                         isCurrent
-                          ? "bg-emerald-500 border-emerald-200 dark:border-emerald-900/50 shadow-sm shadow-emerald-500/20"
+                          ? "bg-emerald-500 border-emerald-200 shadow-sm shadow-emerald-500/20"
                           : "bg-background border-muted group-hover:border-primary/40",
                       )}
                     >
@@ -105,7 +105,7 @@ export const OwnershipTab = ({ data }: Props) => {
                     className={cn(
                       "rounded-lg border p-3 transition-all",
                       isCurrent
-                        ? "border-emerald-200 bg-emerald-50/30 dark:bg-emerald-900/10 dark:border-emerald-900/50"
+                        ? "border-emerald-200 bg-emerald-50/30"
                         : "border-border bg-card hover:border-primary/30",
                     )}
                   >
@@ -133,7 +133,7 @@ export const OwnershipTab = ({ data }: Props) => {
                         className={cn(
                           "flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-medium shrink-0",
                           isCurrent
-                            ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300"
+                            ? "bg-emerald-100 text-emerald-700"
                             : "bg-muted text-muted-foreground",
                         )}
                       >
@@ -168,7 +168,7 @@ export const OwnershipTab = ({ data }: Props) => {
                         </span>
                       </div>
                       {isCurrent && (
-                        <span className="text-[10px] text-emerald-600 dark:text-emerald-400 flex items-center gap-0.5">
+                        <span className="text-[10px] text-emerald-600 flex items-center gap-0.5">
                           <CheckCircle2 className="h-2.5 w-2.5" />
                           Active
                         </span>

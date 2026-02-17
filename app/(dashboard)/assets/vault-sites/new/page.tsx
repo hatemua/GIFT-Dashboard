@@ -401,10 +401,6 @@ export default function NewVaultSitePage() {
                   error={errors.maximum_weight_in_gold_kg?.message}
                   {...register("maximum_weight_in_gold_kg", {
                     required: "Maximum Weight is required",
-                    min: {
-                      value: 100,
-                      message: "Minimum 100 kg capacity required",
-                    },
                     valueAsNumber: true,
                   })}
                   className="bg-gray-50/50"

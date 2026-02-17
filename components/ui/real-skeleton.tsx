@@ -8,7 +8,7 @@ export default function RealSkeleton({
   return (
     <div
       className={cn(
-        "animate-pulse rounded bg-slate-200 dark:bg-slate-800",
+        "animate-pulse rounded bg-slate-200",
         className
       )}
     />

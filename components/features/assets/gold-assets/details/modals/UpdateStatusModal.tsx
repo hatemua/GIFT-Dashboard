@@ -17,7 +17,7 @@ interface UpdateStatusFormValues {
   new_status?: AssetStatus;
   reason: string;
   effective_date: string;
-  supporting_document?: File;
+  supporting_document: File; // <-- now required
 }
 
 interface UpdateAssetStatusModalProps {
@@ -165,10 +165,6 @@ export const UpdateAssetStatusModal = ({
             error={errors.reason?.message}
             {...register("reason", {
               required: "Reason is required",
-              minLength: {
-                value: 10,
-                message: "Reason must be at least 10 characters",
-              },
             })}
           />
         </div>
@@ -176,11 +172,12 @@ export const UpdateAssetStatusModal = ({
         {/* Supporting document (full row) */}
         <div className="space-y-1 sm:col-span-2">
           <label className="text-sm font-medium text-slate-700">
-            Supporting document (optional)
+            Supporting document <span className="text-red-500">*</span>
           </label>
           <Controller
             control={control}
             name="supporting_document"
+            rules={{ required: "Supporting document is required" }}
             render={({ field }) => (
               <FileUpload
                 value={field.value}
@@ -190,6 +187,11 @@ export const UpdateAssetStatusModal = ({
               />
             )}
           />
+          {errors.supporting_document && (
+            <p className="text-xs text-red-600">
+              {errors.supporting_document.message}
+            </p>
+          )}
         </div>
 
         {/* Actions */}

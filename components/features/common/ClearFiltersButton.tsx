@@ -26,11 +26,11 @@ export const ClearFiltersButton: React.FC<ClearFiltersButtonProps> = ({
         inline-flex items-center justify-center
         rounded-md
         overflow-hidden
-        bg-white dark:bg-background
+        bg-white
         border border-muted/30
         transition-all duration-300
-        hover:bg-rose-50 dark:hover:bg-rose-950/30
-        hover:border-rose-200 dark:hover:border-rose-800
+        hover:bg-rose-50
+        hover:border-rose-200
         hover:scale-110 active:scale-90
         `,
         className

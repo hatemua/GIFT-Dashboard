@@ -97,7 +97,7 @@ export default function AssetCard({ asset }: AssetCardProps) {
           </div>
 
           {/* Date */}
-          {a.manufactureDate && (
+          {a.createdAt && (
             <div className="flex items-center justify-between text-xs pt-2 border-t">
               <div className="flex items-center gap-1.5">
                 <Calendar className="h-3 w-3 text-slate-400" />

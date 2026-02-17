@@ -40,12 +40,14 @@ export function AssetOverviewCard({ asset }: { asset: any }) {
             {meta.refiner_name}
           </InfoItem>
 
-          <InfoItem
-            label="Manufacture Date"
-            icon={<Calendar className="h-3 w-3" />}
-          >
-            {formatDate(meta.manufacture_date, "short")}
-          </InfoItem>
+          {meta.manufacture_date && (
+            <InfoItem
+              label="Manufacture Date"
+              icon={<Calendar className="h-3 w-3" />}
+            >
+              {formatDate(meta.manufacture_date, "short")}
+            </InfoItem>
+          )}
         </div>
 
         {/* ================= WEIGHT & FINENESS ================= */}
