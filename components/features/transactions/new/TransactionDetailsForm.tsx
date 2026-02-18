@@ -153,24 +153,18 @@ export const TransactionDetailsForm: React.FC = () => {
 
       {/* Section 2: Parties Involved */}
       <Card className="border-l-4 border-l-purple-500 hover:shadow-lg transition-shadow duration-200">
-        {" "}
         <CardHeader className="pb-4">
-          {" "}
           <div className="flex items-center gap-3">
-            {" "}
             <div className="p-2 bg-purple-50 rounded-lg">
-              {" "}
-              <Users className="h-5 w-5 text-purple-600" />{" "}
-            </div>{" "}
+              <Users className="h-5 w-5 text-purple-600" />
+            </div>
             <div>
-              {" "}
-              <CardTitle className="text-lg">Parties Involved</CardTitle>{" "}
+              <CardTitle className="text-lg">Parties Involved</CardTitle>
               <CardDescription>
-                {" "}
-                GICs and IGANs for counterparty and initiator{" "}
-              </CardDescription>{" "}
-            </div>{" "}
-          </div>{" "}
+                GICs and IGANs for counterparty and initiator
+              </CardDescription>
+            </div>
+          </div>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Initiator */}

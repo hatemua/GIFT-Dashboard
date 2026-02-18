@@ -1,13 +1,7 @@
 "use client";
 
 import * as React from "react";
-import {
-  useState,
-  useRef,
-  useEffect,
-  forwardRef,
-  ReactNode,
-} from "react";
+import { useState, useRef, useEffect, forwardRef, ReactNode } from "react";
 import { X } from "lucide-react";
 
 interface SelectProps {
@@ -19,7 +13,7 @@ interface SelectProps {
   error?: string;
   required?: boolean;
   className?: string;
-  size?: "sm" | "md"; // <-- add size prop
+  size?: "sm" | "md";
   onChange?: (value: string | string[]) => void;
   displayLabel?: (value: string) => string;
 }
@@ -35,11 +29,11 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
       error,
       required,
       className = "",
-      size = "md", // default size
+      size = "md",
       onChange,
       displayLabel,
     },
-    ref
+    ref,
   ) => {
     const [isOpen, setIsOpen] = useState(false);
     const [openUpwards, setOpenUpwards] = useState(false);
@@ -50,9 +44,9 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
       ? Array.isArray(value)
         ? value
         : value
-        ? [value]
-        : []
-      : value ?? "";
+          ? [value]
+          : []
+      : (value ?? "");
 
     // Close dropdown on outside click
     useEffect(() => {
@@ -133,10 +127,14 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
             onClick={handleToggleDropdown}
           >
             {selectedValues.length === 0 ? (
-              <span className="text-slate-400">{placeholder || "Select..."}</span>
+              <span className="text-slate-400">
+                {placeholder || "Select..."}
+              </span>
             ) : (
               <>
-                {!multiple && selectedValues && <span>{getLabel(selectedValues as string)}</span>}
+                {!multiple && selectedValues && (
+                  <span>{getLabel(selectedValues as string)}</span>
+                )}
                 {multiple &&
                   Array.isArray(selectedValues) &&
                   selectedValues.map((val) => (
@@ -157,7 +155,9 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
                   ))}
               </>
             )}
-            <span className="ml-auto text-slate-400 select-none">{isOpen ? "▲" : "▼"}</span>
+            <span className="ml-auto text-slate-400 select-none">
+              {isOpen ? "▲" : "▼"}
+            </span>
           </div>
 
           {isOpen && containerRef.current && (
@@ -173,7 +173,8 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
               {React.Children.map(children, (child: any) => {
                 const val = child.props.value;
                 const isSelected = multiple
-                  ? Array.isArray(selectedValues) && selectedValues.includes(val)
+                  ? Array.isArray(selectedValues) &&
+                    selectedValues.includes(val)
                   : selectedValues === val;
 
                 return (
@@ -185,7 +186,9 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
                     }`}
                   >
                     <span>{child.props.children}</span>
-                    {isSelected && multiple && <X size={14} className="text-gold-500" />}
+                    {isSelected && multiple && (
+                      <X size={14} className="text-gold-500" />
+                    )}
                   </div>
                 );
               })}
@@ -196,10 +199,15 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
         {error && <p className="text-xs text-red-600">{error}</p>}
       </div>
     );
-  }
+  },
 );
 
 Select.displayName = "Select";
 
-export const SelectItem = ({ value, children }: { value: string; children: ReactNode }) => <>{children}</>;
-
+export const SelectItem = ({
+  value,
+  children,
+}: {
+  value: string;
+  children: ReactNode;
+}) => <>{children}</>;

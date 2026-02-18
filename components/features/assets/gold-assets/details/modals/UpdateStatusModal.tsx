@@ -25,6 +25,7 @@ interface UpdateAssetStatusModalProps {
   currentStatus: AssetStatus;
   isOpen: boolean;
   onClose: () => void;
+  onUpdate?: () => void;
 }
 
 export const UpdateAssetStatusModal = ({
@@ -32,6 +33,7 @@ export const UpdateAssetStatusModal = ({
   currentStatus,
   isOpen,
   onClose,
+  onUpdate
 }: UpdateAssetStatusModalProps) => {
   const { showToast } = useToast();
   const { loadingAction: loading, updateStatus } = useAsset();
@@ -72,7 +74,7 @@ export const UpdateAssetStatusModal = ({
       };
 
       await updateStatus(tokenId, payload);
-
+      if (onUpdate) onUpdate();
       showToast({
         title: "Success",
         message: `Status updated to "${values.new_status}" successfully.`,

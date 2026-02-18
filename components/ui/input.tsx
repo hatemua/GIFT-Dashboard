@@ -92,10 +92,18 @@ const Input = React.forwardRef<
         <div className="relative">
           {/* Left Icon / Prefix */}
           {hasLeft && (
-            <div className="absolute inset-y-0 left-3 flex items-center gap-1 text-gray-500 pointer-events-none">
-              {icon && <span className="flex items-center">{icon}</span>}
-              {prefix && <span className="text-sm">{prefix}</span>}
-            </div>
+            <>
+              {icon && (
+                <div className="absolute inset-y-0 left-0 flex items-center gap-1 text-gray-500 pointer-events-none">
+                  <span className="flex items-center">{icon}</span>
+                </div>
+              )}
+              {prefix && (
+                <div className="absolute inset-y-0 left-3 flex items-center gap-1 text-gray-500 pointer-events-none">
+                  <span className="text-sm">{prefix}</span>
+                </div>
+              )}
+            </>
           )}
 
           {/* Right Icon */}

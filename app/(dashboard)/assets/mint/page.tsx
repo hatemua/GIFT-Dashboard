@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useWatch } from "react-hook-form";
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { PageHeader } from "@/components/layout/page-header";
 import { Input } from "@/components/ui/input";
@@ -15,14 +15,19 @@ import {
 } from "@/components/ui/card";
 import { useToast } from "@/providers/toast-provider";
 import { MintAssetForm } from "@/types/asset";
-import { Building, Shield, Upload } from "lucide-react";
+import { Building, Loader2, Shield, Upload } from "lucide-react";
 import { SingleDocumentUpload } from "@/components/features/common/SingleDocumentUpload";
 import { useAsset } from "@/hooks/useAsset";
 import { Select, SelectItem } from "@/components/ui/select";
+import { useGoldAccount } from "@/hooks/useGoldAccount";
+import { useEffect, useState } from "react";
+import { useDebounce } from "@/hooks/useDebounce";
 
 export default function MintAssetPage() {
   const { mintAsset } = useAsset();
   const { showToast } = useToast();
+  const { fetchAccountByIgan } = useGoldAccount();
+  const [loadingOwnerIgan, setLoadingOwnerIgan] = useState(false);
 
   const {
     control,
@@ -69,6 +74,33 @@ export default function MintAssetPage() {
       });
     }
   };
+  const ownerIgan = useWatch({ control, name: "initial_owner_igan" });
+
+  const debouncedOwnerIgan = useDebounce(ownerIgan);
+
+  useEffect(() => {
+    if (!debouncedOwnerIgan) {
+      setValue("traceability_gic", "");
+      return;
+    }
+
+    const load = async () => {
+      setLoadingOwnerIgan(true);
+      try {
+        const account = await fetchAccountByIgan(debouncedOwnerIgan);
+
+        setValue("traceability_gic", account?.member_gic ?? "", {
+          shouldValidate: true,
+        });
+      } catch {
+        setValue("traceability_gic", "");
+      } finally {
+        setLoadingOwnerIgan(false);
+      }
+    };
+
+    load();
+  }, [debouncedOwnerIgan, fetchAccountByIgan, setValue]);
 
   return (
     <DashboardShell>
@@ -178,27 +210,41 @@ export default function MintAssetPage() {
                 />
               )}
             />
-
-            <Input
-              required
-              label="Traceability GIC"
-              placeholder="GIC-2025-0001"
-              error={errors.traceability_gic?.message}
-              {...register("traceability_gic", {
-                required: "Traceability GIC is required",
-              })}
-              className="bg-gray-50/50"
+            <Controller
+              name="initial_owner_igan"
+              control={control}
+              rules={{ required: "Initial Owner IGAN is required" }}
+              render={({ field }) => (
+                <Input
+                  required
+                  label="Initial Owner IGAN"
+                  placeholder="IGAN-2025-12345"
+                  error={errors.initial_owner_igan?.message}
+                  {...field}
+                  className="bg-gray-50/50"
+                />
+              )}
             />
-
-            <Input
-              required
-              label="Initial Owner IGAN"
-              placeholder="IGAN-2025-12345"
-              error={errors.initial_owner_igan?.message}
-              {...register("initial_owner_igan", {
-                required: "Initial owner IGAN is required",
-              })}
-              className="bg-gray-50/50"
+            <Controller
+              name="traceability_gic"
+              control={control}
+              rules={{ required: "Traceability GIC is required" }}
+              render={({ field }) => (
+                <Input
+                  required
+                  disabled
+                  label="Traceability GIC"
+                  placeholder="GIC-2025-0001"
+                  error={errors.traceability_gic?.message}
+                  {...field}
+                  className="bg-gray-50/50"
+                  rightIcon={
+                    loadingOwnerIgan ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : null
+                  }
+                />
+              )}
             />
 
             <Controller

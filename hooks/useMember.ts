@@ -6,6 +6,7 @@ import {
   CreateMemberResponse,
   GetMemberResponse,
   GetMemberAccountsResponse,
+  MembersResponse,
 } from "@/types/member";
 
 interface UseMemberReturn {
@@ -33,7 +34,7 @@ interface UseMemberReturn {
   memberAccounts?: GetMemberAccountsResponse;
 
   // Actions
-  fetchMembers: () => Promise<void>;
+  fetchMembers: () => Promise<MembersResponse | undefined>;
   createMember: (
     member: CreateMemberInput,
   ) => Promise<CreateMemberResponse | undefined>;

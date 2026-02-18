@@ -35,7 +35,7 @@ interface MemberState {
   accountsError?: string;
 
   // Member actions
-  fetchMembers: () => Promise<void>;
+  fetchMembers: () => Promise<MembersResponse | undefined>;
   createMember: (
     member: CreateMemberInput,
   ) => Promise<CreateMemberResponse | undefined>;
@@ -81,6 +81,7 @@ export const useMemberStore = create<MemberState>((set, get) => ({
         filters,
       });
       set({ members: data.members, count: data.count });
+      return data;
     } catch (err: any) {
       set({ error: err?.message || "Failed to fetch members" });
     } finally {

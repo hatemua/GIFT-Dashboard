@@ -23,13 +23,16 @@ import { UpdateAssetStatusModal } from "../../assets/gold-assets/details/modals/
 import { AssetStatus } from "@/types/asset";
 import { TransferAssetModal } from "../../assets/gold-assets/details/modals/TransferAssetModal";
 import { useAuthStore } from "@/store/authStore";
+import { StatusBadge } from "@/components/data-display/status-badge";
+import { getAssetStatusLabel } from "@/lib/assets";
+import { useTransaction } from "@/hooks/useTransaction";
 
 interface AssetItem {
   token_id: string;
   quantity: number;
   weight_grams: number;
   fine_weight_grams: number;
-  status?: AssetStatus;
+  status: AssetStatus;
 }
 
 interface TransactionAssetsProps {
@@ -39,6 +42,7 @@ interface TransactionAssetsProps {
 export const TransactionAssets: React.FC<TransactionAssetsProps> = ({
   transaction,
 }) => {
+  const { fetchTransactionByReference } = useTransaction();
   const { isAdmin } = useAuthStore();
 
   const transactionStatus = transaction.status;
@@ -66,6 +70,10 @@ export const TransactionAssets: React.FC<TransactionAssetsProps> = ({
     setTransferOpen(true);
     setCustodyOpen(false);
     setStatusOpen(false);
+  };
+
+  const onUpdate = async () => {
+    await fetchTransactionByReference(transaction.transaction_reference);
   };
 
   if (transaction.assets.length === 0)
@@ -110,6 +118,7 @@ export const TransactionAssets: React.FC<TransactionAssetsProps> = ({
                   <p className="font-medium text-slate-900 truncate">
                     {asset.token_id}
                   </p>
+                  <StatusBadge status={getAssetStatusLabel(asset.status)} />
                 </div>
 
                 {/* Right side: Asset details + Dropdown */}
@@ -177,6 +186,9 @@ export const TransactionAssets: React.FC<TransactionAssetsProps> = ({
       {currentAsset && (
         <TransferAssetModal
           tokenId={currentAsset.token_id}
+          from_igan={transaction.parties.initiator.igan}
+          to_igan={transaction.parties.counterparty.igan}
+          transaction_reference={transaction.transaction_reference}
           isOpen={isTransferOpen}
           onClose={() => setTransferOpen(false)}
         />
@@ -195,6 +207,7 @@ export const TransactionAssets: React.FC<TransactionAssetsProps> = ({
           currentStatus={currentAsset?.status}
           isOpen={isStatusOpen}
           onClose={() => setStatusOpen(false)}
+          onUpdate={onUpdate}
         />
       )}
     </>

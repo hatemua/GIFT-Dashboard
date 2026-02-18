@@ -23,7 +23,7 @@ export const SignTransactionModal = ({
   onClose,
 }: SignTransactionModalProps) => {
   const { showToast } = useToast();
-  const { signTransaction, loading } = useTransaction();
+  const { signTransaction, fetchTransactionByReference, signing } = useTransaction();
 
   const {
     register,
@@ -39,6 +39,7 @@ export const SignTransactionModal = ({
   const submitHandler = async (values: SignTransactionFormValues) => {
     try {
       await signTransaction(transactionRef, values.signature, "counterparty");
+      await fetchTransactionByReference(transactionRef);
 
       showToast({
         title: "Success",
@@ -59,7 +60,7 @@ export const SignTransactionModal = ({
     }
   };
 
-  const isDisabled = loading || isSubmitting;
+  const isDisabled = signing || isSubmitting;
 
   return (
     <Modal
@@ -88,13 +89,13 @@ export const SignTransactionModal = ({
               reset();
               onClose();
             }}
-            disabled={loading}
+            disabled={signing}
           >
             Cancel
           </Button>
 
           <Button type="submit" disabled={isDisabled}>
-            {loading || isSubmitting ? "Signing..." : "Sign"}
+            {signing || isSubmitting ? "Signing..." : "Sign"}
           </Button>
         </div>
       </form>

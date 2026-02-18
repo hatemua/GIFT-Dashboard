@@ -1,3 +1,5 @@
+import { AssetStatus } from "./asset";
+
 export interface Transaction {
   id?: string;
   transaction_reference: string;
@@ -84,6 +86,7 @@ export interface TransactionDetails {
     quantity: number;
     weight_grams: number;
     fine_weight_grams: number;
+    status: AssetStatus;
   }[];
   valuation: {
     date: string; // ISO date string
