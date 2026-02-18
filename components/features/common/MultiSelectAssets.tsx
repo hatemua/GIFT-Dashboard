@@ -4,10 +4,11 @@ import React, { useEffect, useState } from "react";
 import { useAsset } from "@/hooks/useAsset";
 import { Asset } from "@/types/asset";
 import AssetsFilters from "../assets/gold-assets/list/AssetsFilters";
-import { useFormContext, Controller } from "react-hook-form";
-import { CreateTransactionInput, Transaction } from "@/types/transaction";
+import { useFormContext, Controller, useWatch } from "react-hook-form";
+import { CreateTransactionInput } from "@/types/transaction";
 import { Pagination } from "@/components/ui/pagination";
 import MiniAssetCard from "../assets/gold-assets/list/MiniAssetCard";
+import { CreateTransactionFormValues } from "@/app/(dashboard)/transactions/new/page";
 
 interface MultiSelectAssetsProps {
   name?: keyof CreateTransactionInput;
@@ -29,16 +30,26 @@ const MultiSelectAssets: React.FC<MultiSelectAssetsProps> = ({
     fetchAssets,
     setPage,
   } = useAsset();
-  const { control } = useFormContext<Transaction>();
+  const { control } = useFormContext<CreateTransactionFormValues>();
+  const watchedSenderIGAN = useWatch({
+    name: "sender_igan",
+    control,
+  });
 
   const [isFiltersInitailized, setIsFiltersInitailized] =
     useState<boolean>(false);
 
   useEffect(() => {
-    setFilters({ status: "stationary" });
-    setIsFiltersInitailized(true);
-  }, []);
-  
+    if (watchedSenderIGAN) {
+      setFilters({
+        ...filters,
+        owner: watchedSenderIGAN,
+        status: "stationary",
+      });
+      setIsFiltersInitailized(true);
+    }
+  }, [watchedSenderIGAN]);
+
   useEffect(() => {
     if (isFiltersInitailized) {
       fetchAssets();
@@ -79,7 +90,9 @@ const MultiSelectAssets: React.FC<MultiSelectAssetsProps> = ({
             </div>
           ) : assets.length === 0 ? (
             <div className="text-center py-10 text-gray-500">
-              No assets found
+              {isFiltersInitailized
+                ? "No assets found"
+                : "Please enter the Initiator IGAN first to load the available assets."}
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-4">

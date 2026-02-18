@@ -48,7 +48,7 @@ interface GoldAccountStore {
   // Actions
   createAccount: (payload: CreateGoldAccountPayload) => Promise<void>;
   fetchAccounts: () => Promise<void>;
-  fetchAccountByIgan: (igan: string) => Promise<void>;
+  fetchAccountByIgan: (igan: string) => Promise<GoldAccountDetails | undefined>;
   fetchAccountBalance: (igan: string, currency?: string) => Promise<void>;
   fetchAccountAssets: (igan: string, params?: any) => Promise<void>;
   searchAccountAssets: (igan: string, params?: any) => Promise<void>;
@@ -137,6 +137,7 @@ export const useGoldAccountStore = create<GoldAccountStore>((set, get) => ({
     try {
       const data = await goldAccountService.getAccountByIgan(igan);
       set({ selectedAccount: data });
+      return data;
     } catch (err: any) {
       set({ error: err?.message || "Failed to fetch account details" });
     } finally {

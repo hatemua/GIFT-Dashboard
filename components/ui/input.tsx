@@ -9,6 +9,7 @@ export interface InputProps extends React.InputHTMLAttributes<
   error?: string;
   prefix?: string;
   icon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
   multiline?: boolean;
   rows?: number;
 }
@@ -26,10 +27,12 @@ const Input = React.forwardRef<
       error,
       prefix,
       icon,
+      rightIcon,
       multiline = false,
       rows = 3,
       onChange,
       value,
+      disabled,
       ...props
     },
     ref,
@@ -54,16 +57,12 @@ const Input = React.forwardRef<
       let newValue = e.target.value;
 
       if (type === "number") {
-        // Remove invalid characters
         newValue = newValue.replace(/[eE+-]/g, "");
-
-        // Remove leading zeros ONLY if there are more digits
         if (/^0\d+/.test(newValue)) {
           newValue = newValue.replace(/^0+/, "");
         }
       }
 
-      // Trim trailing spaces for text
       if (!multiline) {
         newValue = newValue.replace(/\s+$/g, "");
       }
@@ -73,6 +72,9 @@ const Input = React.forwardRef<
         target: { ...e.target, value: newValue },
       });
     };
+
+    const hasLeft = prefix || icon;
+    const hasRight = rightIcon;
 
     return (
       <div className="space-y-1">
@@ -88,10 +90,18 @@ const Input = React.forwardRef<
         )}
 
         <div className="relative">
-          {(prefix || icon) && (
-            <div className="absolute inset-y-0 left-0 flex items-center gap-1 text-gray-500">
+          {/* Left Icon / Prefix */}
+          {hasLeft && (
+            <div className="absolute inset-y-0 left-3 flex items-center gap-1 text-gray-500 pointer-events-none">
               {icon && <span className="flex items-center">{icon}</span>}
               {prefix && <span className="text-sm">{prefix}</span>}
+            </div>
+          )}
+
+          {/* Right Icon */}
+          {hasRight && (
+            <div className="absolute inset-y-0 right-3 flex items-center text-gray-500">
+              {rightIcon}
             </div>
           )}
 
@@ -104,12 +114,14 @@ const Input = React.forwardRef<
                 "placeholder:text-slate-400",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-1",
                 "disabled:cursor-not-allowed disabled:opacity-50",
-                prefix || icon ? "pl-12 pr-3" : "px-3",
+                hasLeft ? "pl-12" : "pl-3",
+                hasRight ? "pr-12" : "pr-3",
                 "border-slate-200 py-3",
                 error && "border-red-500 focus-visible:ring-red-500",
                 className,
               )}
               value={value}
+              disabled={disabled}
               onChange={handleChange}
               {...props}
             />
@@ -122,12 +134,14 @@ const Input = React.forwardRef<
                 "placeholder:text-slate-400",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-1",
                 "disabled:cursor-not-allowed disabled:opacity-50",
-                prefix || icon ? "pl-12 pr-3" : "px-3",
+                hasLeft ? "pl-12" : "pl-3",
+                hasRight ? "pr-12" : "pr-3",
                 "h-10 border-slate-200",
                 error && "border-red-500 focus-visible:ring-red-500",
                 className,
               )}
               value={value}
+              disabled={disabled}
               onKeyDown={handleKeyDown}
               onChange={handleChange}
               {...props}

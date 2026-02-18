@@ -35,6 +35,7 @@ export interface AssetsFilters {
   from_date?: string;
   to_date?: string;
   status?: string;
+  owner?: string;
 }
 
 export interface Asset {

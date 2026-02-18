@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useForm, FormProvider } from "react-hook-form";
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { PageHeader } from "@/components/layout/page-header";
@@ -12,7 +13,6 @@ import { TransactionAssetsForm } from "@/components/features/transactions/new/Tr
 import { useAsset } from "@/hooks/useAsset";
 import { Button } from "@/components/ui/button";
 import { CreditCard } from "lucide-react";
-import { UpdateStatusRequest } from "@/types/asset";
 
 export interface CreateTransactionFormValues {
   transaction_reference: string;
@@ -22,17 +22,17 @@ export interface CreateTransactionFormValues {
   requested_assets: string[];
   valuation_date: string;
   valuation_currency: string;
-  transaction_value: number;
+  transaction_value: string;
   reciever_igan: string;
   sender_igan: string;
   initiator_signature: string;
 }
 
 export default function NewTransactionPage() {
-  const { createTransaction, signTransaction, signing, loading } =
-    useTransaction();
+  const router = useRouter();
+  const { createTransaction, loading } = useTransaction();
   const { showToast } = useToast();
-  const { updateStatus, setFilters, resetFilters } = useAsset();
+  const { setFilters, resetFilters } = useAsset();
 
   const methods = useForm<CreateTransactionFormValues>({
     mode: "onChange",
@@ -42,7 +42,7 @@ export default function NewTransactionPage() {
       counterparty_gic: "",
       initiator_gic: "",
       valuation_date: undefined,
-      transaction_value: 0,
+      transaction_value: "",
       valuation_currency: "",
       requested_assets: [],
       reciever_igan: "",
@@ -57,33 +57,11 @@ export default function NewTransactionPage() {
 
   const onSubmit = async (data: CreateTransactionFormValues) => {
     try {
-
-      await createTransaction(data);
-
-      // const transactionRef = res?.transaction_reference;
-      // if (!transactionRef) {
-      //   throw new Error("Transaction reference not returned from server");
-      // }
-      // if (requestedAssets && requestedAssets.length > 0) {
-      //   await Promise.all(
-      //     requestedAssets.map(async (tokenId) => {
-      //       const payload: UpdateStatusRequest = {
-      //         token_id: tokenId,
-      //         new_status: "in_transit",
-      //         reason: "some reason",
-      //         effective_date: new Date().toISOString(),
-      //         supporting_document: undefined,
-      //       };
-
-      //       await updateStatus(tokenId, payload);
-      //     }),
-      //   );
-      // }
-      // await signTransaction(
-      //   transactionRef,
-      //   counterparty_signature,
-      //   "counterparty",
-      // );
+      const payload = {
+        ...data,
+        transaction_value: Number(data.transaction_value),
+      };
+      const res = await createTransaction(payload);
       showToast({
         title: "Transaction Created",
         message: "Your transaction has been successfully submitted",
@@ -91,6 +69,7 @@ export default function NewTransactionPage() {
       });
 
       reset();
+      router.push(`/transactions/${res?.transaction_reference}`);
     } catch (err: any) {
       showToast({
         title: "Creation Failed",

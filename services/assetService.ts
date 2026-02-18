@@ -34,6 +34,7 @@ export const assetService = {
         from_date: filters.from_date,
         to_date: filters.to_date,
         status: filters.status,
+        owner: filters.owner,
       },
     });
 

@@ -50,7 +50,7 @@ interface UseGoldAccountReturn {
   resetSelectedAccount: () => void;
   createAccount: (payload: CreateGoldAccountPayload) => Promise<void>;
   fetchAccounts: () => Promise<void>;
-  fetchAccountByIgan: (igan: string) => Promise<void>;
+  fetchAccountByIgan: (igan: string) => Promise<GoldAccountDetails | undefined>;
   fetchAccountBalance: (igan: string, currency?: string) => Promise<void>;
   fetchAccountAssets: (igan: string, params?: any) => Promise<void>;
   searchAccountAssets: (igan: string, params?: any) => Promise<void>;

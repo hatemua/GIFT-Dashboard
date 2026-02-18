@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
-import { useFormContext, Controller } from "react-hook-form";
+import React, { useEffect, useState } from "react";
+import { useFormContext, Controller, useWatch } from "react-hook-form";
 import {
   Card,
   CardHeader,
@@ -12,16 +12,80 @@ import {
 import { Input } from "@/components/ui/input";
 import { Select, SelectItem } from "@/components/ui/select";
 import { DatePicker } from "@/components/ui/date-picker";
-import { FileText, DollarSign, Users, PenTool } from "lucide-react";
+import { FileText, DollarSign, Users, PenTool, Loader2 } from "lucide-react";
 import { TRANSACTION_TYPE_OPTIONS2 } from "@/constants/transactionOrders";
 import { CreateTransactionFormValues } from "@/app/(dashboard)/transactions/new/page";
+import { useGoldAccount } from "@/hooks/useGoldAccount";
+import { useDebounce } from "@/hooks/useDebounce";
 
 export const TransactionDetailsForm: React.FC = () => {
   const {
     control,
     formState: { errors },
-    register,
+    setValue,
   } = useFormContext<CreateTransactionFormValues>();
+
+  const { fetchAccountByIgan } = useGoldAccount();
+
+  /* ---------------- Watch IGANs ---------------- */
+  const senderIgan = useWatch({ control, name: "sender_igan" });
+  const receiverIgan = useWatch({ control, name: "reciever_igan" });
+
+  const debouncedSenderIgan = useDebounce(senderIgan);
+  const debouncedReceiverIgan = useDebounce(receiverIgan);
+
+  const [loadingSender, setLoadingSender] = useState(false);
+  const [loadingReceiver, setLoadingReceiver] = useState(false);
+
+  /* ---------------- Fetch Initiator ---------------- */
+  useEffect(() => {
+    if (!debouncedSenderIgan) {
+      setValue("initiator_gic", "");
+      return;
+    }
+
+    const load = async () => {
+      setLoadingSender(true);
+      try {
+        const account = await fetchAccountByIgan(debouncedSenderIgan);
+
+        setValue("initiator_gic", account?.member_gic ?? "", {
+          shouldValidate: true,
+        });
+      } catch {
+        setValue("initiator_gic", "");
+      } finally {
+        setLoadingSender(false);
+      }
+    };
+
+    load();
+  }, [debouncedSenderIgan, fetchAccountByIgan, setValue]);
+
+  /* ---------------- Fetch Counterparty ---------------- */
+  useEffect(() => {
+    if (!debouncedReceiverIgan) {
+      setValue("counterparty_gic", "");
+      return;
+    }
+
+    const load = async () => {
+      setLoadingReceiver(true);
+      try {
+        const account = await fetchAccountByIgan(debouncedReceiverIgan);
+
+        setValue("counterparty_gic", account?.member_gic ?? "", {
+          shouldValidate: true,
+        });
+      } catch {
+        setValue("counterparty_gic", "");
+      } finally {
+        setLoadingReceiver(false);
+      }
+    };
+
+    load();
+  }, [debouncedReceiverIgan, fetchAccountByIgan, setValue]);
 
   return (
     <div className="space-y-6">
@@ -89,95 +153,96 @@ export const TransactionDetailsForm: React.FC = () => {
 
       {/* Section 2: Parties Involved */}
       <Card className="border-l-4 border-l-purple-500 hover:shadow-lg transition-shadow duration-200">
+        {" "}
         <CardHeader className="pb-4">
+          {" "}
           <div className="flex items-center gap-3">
+            {" "}
             <div className="p-2 bg-purple-50 rounded-lg">
-              <Users className="h-5 w-5 text-purple-600" />
-            </div>
+              {" "}
+              <Users className="h-5 w-5 text-purple-600" />{" "}
+            </div>{" "}
             <div>
-              <CardTitle className="text-lg">Parties Involved</CardTitle>
+              {" "}
+              <CardTitle className="text-lg">Parties Involved</CardTitle>{" "}
               <CardDescription>
-                GICs and IGANs for counterparty and initiator
-              </CardDescription>
-            </div>
-          </div>
+                {" "}
+                GICs and IGANs for counterparty and initiator{" "}
+              </CardDescription>{" "}
+            </div>{" "}
+          </div>{" "}
         </CardHeader>
-
         <CardContent className="space-y-6">
-          {/* Initiator Section */}
-          <div>
-            <h4 className="text-sm font-medium text-gray-700 mb-3">Initiator Details (Sender)</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Controller
-                name="initiator_gic"
-                control={control}
-                rules={{ required: "Initiator GIC is required" }}
-                render={({ field }) => (
-                  <Input
-                    required
-                    {...field}
-                    label="Initiator GIC"
-                    placeholder="GIC-2025-0001"
-                    error={errors.initiator_gic?.message}
-                    className="bg-gray-50/50"
-                  />
-                )}
-              />
+          {/* Initiator */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Controller
+              name="sender_igan"
+              control={control}
+              rules={{ required: "Initiator IGAN is required" }}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  required
+                  label="Initiator IGAN"
+                  placeholder="IGAN-54321"
+                  error={errors.sender_igan?.message}
+                />
+              )}
+            />
 
-              <Controller
-                name="sender_igan"
-                control={control}
-                rules={{ required: "Initiator IGAN is required" }}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    required
-                    label="Initiator IGAN"
-                    placeholder="IGAN-54321"
-                    error={errors.sender_igan?.message}
-                    className="bg-gray-50/50"
-                  />
-                )}
-              />
-            </div>
+            <Controller
+              name="initiator_gic"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  required
+                  disabled
+                  label="Initiator GIC"
+                  rightIcon={
+                    loadingSender ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : null
+                  }
+                />
+              )}
+            />
           </div>
 
-          {/* Counterparty Section */}
-          <div>
-            <h4 className="text-sm font-medium text-gray-700 mb-3">Counterparty Details (Receiver)</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Controller
-                name="counterparty_gic"
-                control={control}
-                rules={{ required: "Counterparty GIC is required" }}
-                render={({ field }) => (
-                  <Input
-                    required
-                    {...field}
-                    label="Counterparty GIC"
-                    placeholder="GIC-2025-0002"
-                    error={errors.counterparty_gic?.message}
-                    className="bg-gray-50/50"
-                  />
-                )}
-              />
+          {/* Counterparty */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Controller
+              name="reciever_igan"
+              control={control}
+              rules={{ required: "Counterparty IGAN is required" }}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  required
+                  label="Counterparty IGAN"
+                  placeholder="IGAN-12345"
+                  error={errors.reciever_igan?.message}
+                />
+              )}
+            />
 
-              <Controller
-                name="reciever_igan"
-                control={control}
-                rules={{ required: "Counterparty IGAN is required" }}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    required
-                    label="Counterparty IGAN"
-                    placeholder="IGAN-12345"
-                    error={errors.reciever_igan?.message}
-                    className="bg-gray-50/50"
-                  />
-                )}
-              />
-            </div>
+            <Controller
+              name="counterparty_gic"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  required
+                  disabled
+                  label="Counterparty GIC"
+                  rightIcon={
+                    loadingReceiver ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : null
+                  }
+                />
+              )}
+            />
           </div>
         </CardContent>
       </Card>
@@ -219,7 +284,8 @@ export const TransactionDetailsForm: React.FC = () => {
             control={control}
             rules={{
               required: "Transaction Value is required",
-              min: { value: 0.01, message: "Transaction Value must be positive" },
+              validate: (value) =>
+                Number(value) > 0 || "Transaction Value must be positive",
             }}
             render={({ field }) => (
               <Input
@@ -231,7 +297,11 @@ export const TransactionDetailsForm: React.FC = () => {
                 placeholder="e.g. 10000"
                 error={errors.transaction_value?.message}
                 className="bg-gray-50/50"
-                {...register("transaction_value", { valueAsNumber: true })}
+                value={field.value ?? ""}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  field.onChange(val === "" ? "" : val);
+                }}
               />
             )}
           />
