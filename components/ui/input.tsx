@@ -1,8 +1,9 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
-export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement> {
+export interface InputProps extends React.InputHTMLAttributes<
+  HTMLInputElement | HTMLTextAreaElement
+> {
   label?: string;
   required?: boolean;
   error?: string;
@@ -31,14 +32,12 @@ const Input = React.forwardRef<
       value,
       ...props
     },
-    ref
+    ref,
   ) => {
     /* -------------------------------
        Prevent invalid number keys
     -------------------------------- */
-    const handleKeyDown = (
-      e: React.KeyboardEvent<HTMLInputElement>
-    ) => {
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (type === "number") {
         if (["e", "E", "+", "-"].includes(e.key)) {
           e.preventDefault();
@@ -50,7 +49,7 @@ const Input = React.forwardRef<
        Handle value change correctly
     -------------------------------- */
     const handleChange = (
-      e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+      e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     ) => {
       let newValue = e.target.value;
 
@@ -83,24 +82,17 @@ const Input = React.forwardRef<
             {required ? (
               <span className="text-red-500 ml-0.5">*</span>
             ) : (
-              <span className="text-gray-400 text-xs ml-1">
-                (optional)
-              </span>
+              <span className="text-gray-400 text-xs ml-1">(optional)</span>
             )}
           </label>
         )}
 
         <div className="relative">
-          {prefix && (
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">
-              {prefix}
-            </span>
-          )}
-
-          {icon && (
-            <span className="absolute left-3 top-1/2 -translate-y-1/2">
-              {icon}
-            </span>
+          {(prefix || icon) && (
+            <div className="absolute inset-y-0 left-0 flex items-center gap-1 text-gray-500">
+              {icon && <span className="flex items-center">{icon}</span>}
+              {prefix && <span className="text-sm">{prefix}</span>}
+            </div>
           )}
 
           {multiline ? (
@@ -112,15 +104,14 @@ const Input = React.forwardRef<
                 "placeholder:text-slate-400",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-1",
                 "disabled:cursor-not-allowed disabled:opacity-50",
-                prefix || icon ? "pl-10 pr-3" : "px-3",
+                prefix || icon ? "pl-12 pr-3" : "px-3",
                 "border-slate-200 py-3",
-                error &&
-                  "border-red-500 focus-visible:ring-red-500",
-                className
+                error && "border-red-500 focus-visible:ring-red-500",
+                className,
               )}
               value={value}
               onChange={handleChange}
-              {...(props as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
+              {...props}
             />
           ) : (
             <input
@@ -131,26 +122,23 @@ const Input = React.forwardRef<
                 "placeholder:text-slate-400",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-1",
                 "disabled:cursor-not-allowed disabled:opacity-50",
-                prefix || icon ? "pl-10 pr-3" : "px-3",
+                prefix || icon ? "pl-12 pr-3" : "px-3",
                 "h-10 border-slate-200",
-                error &&
-                  "border-red-500 focus-visible:ring-red-500",
-                className
+                error && "border-red-500 focus-visible:ring-red-500",
+                className,
               )}
               value={value}
               onKeyDown={handleKeyDown}
               onChange={handleChange}
-              {...(props as React.InputHTMLAttributes<HTMLInputElement>)}
+              {...props}
             />
           )}
         </div>
 
-        {error && (
-          <p className="text-xs text-red-600">{error}</p>
-        )}
+        {error && <p className="text-xs text-red-600">{error}</p>}
       </div>
     );
-  }
+  },
 );
 
 Input.displayName = "Input";

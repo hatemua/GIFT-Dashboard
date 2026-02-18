@@ -111,3 +111,11 @@ export const CUSTODY_ARRANGEMENTS = [
   },
 ] as const;
 
+export const TRANSFER_REASONS = [
+  { value: "sale", label: "Sale" },
+  { value: "custody", label: "Custody" },
+  { value: "collateral", label: "Collateral" },
+  { value: "other", label: "Other" },
+];
+
+

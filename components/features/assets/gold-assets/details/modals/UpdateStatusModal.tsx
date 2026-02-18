@@ -17,7 +17,7 @@ interface UpdateStatusFormValues {
   new_status?: AssetStatus;
   reason: string;
   effective_date: string;
-  supporting_document: File; // <-- now required
+  supporting_document: File;
 }
 
 interface UpdateAssetStatusModalProps {

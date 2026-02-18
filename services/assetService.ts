@@ -3,6 +3,8 @@ import {
   AssetDetails,
   AssetsResponse,
   AssetTrackingResponse,
+  AssetTransferRequest,
+  AssetTransferResponse,
   BurnAssetRequest,
   BurnAssetResponse,
   GetAssetsParams,
@@ -75,6 +77,15 @@ export const assetService = {
   ): Promise<UpdateStatusResponse> => {
     const response = await api.put<UpdateStatusResponse>(
       `/assets/${token_id}/status`,
+      data,
+    );
+    return response.data;
+  },
+  transferAsset: async (
+    data: AssetTransferRequest,
+  ): Promise<AssetTransferResponse> => {
+    const response = await api.post<AssetTransferResponse>(
+      "/assets/transfer",
       data,
     );
     return response.data;

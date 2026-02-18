@@ -1,4 +1,12 @@
-export type AssetStatus = "stationary" | "in_transit" | "liquidated" | "burned" | 'locked' | 'missing' | 'stolen';
+export type AssetStatus =
+  | "stationary"
+  | "in_transit"
+  | "liquidated"
+  | "burned"
+  | "locked"
+  | "missing"
+  | "stolen";
+
 export interface MintAssetForm {
   serial_number: string;
   refiner_name: string;
@@ -39,7 +47,7 @@ export interface Asset {
   gold_product_type_id: string;
   certificate_path: string;
   certificate_hash: string;
-  manufacture_date: string; // ISO date string
+  manufacture_date: string;
   status: AssetStatus;
 
   custody_party_type: string | null;
@@ -57,10 +65,10 @@ export interface Asset {
 
   added_by: string;
 
-  createdAt: string; // ISO date string
-  updatedAt: string; // ISO date string
-  created_at: string; // ISO date string
-  updated_at: string; // ISO date string
+  createdAt: string;
+  updatedAt: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface AssetsResponse {
@@ -77,7 +85,7 @@ export interface AssetMetadata {
   fineness: number;
   fine_weight_grams: number;
   gold_product_type_id: string;
-  manufacture_date: string; // YYYY-MM-DD
+  manufacture_date: string;
   certificate_origin_hash: string;
   traceability_gic: string;
 }
@@ -92,14 +100,14 @@ export interface AssetCompliance {
   certification_framework: string;
   certified: boolean;
   conflict_free: boolean;
-  last_audit: string; // YYYY-MM-DD
+  last_audit: string;
 }
 
 export interface AssetValuation {
   asset_value: number;
   gold_rate: number;
   currency: string;
-  as_of: string; // ISO date
+  as_of: string;
 }
 
 export interface AssetDetails {
@@ -138,16 +146,11 @@ export interface TrackingEvent {
   description?: string;
   details?: Record<string, any>;
   valuation_snapshot?: ValuationSnapshot;
-
-  // Blockchain info
   block_number: number | string;
   transaction_hash: string;
-
-  // Optional transaction metadata
   transaction_reference?: string;
   transaction_type?: string;
 }
-
 
 export interface OwnershipChainItem {
   owner_igan: string;
@@ -207,7 +210,7 @@ export interface AssetTrackingResponse {
 export interface BurnAssetRequest {
   token_id: string;
   burn_reason: string;
-  justification_document: string; // base64 PDF
+  justification_document: string;
   authorized_by: string;
   irreversible: boolean;
 }
@@ -268,3 +271,25 @@ export interface UpdateStatusResponse {
   blockchain_tx: string;
 }
 
+export interface AssetTransferRequest {
+  token_id: string;
+  from_igan: string;
+  to_igan: string;
+  quantity: number;
+  transaction_reference: string;
+  transfer_reason: string;
+  compliance_check: boolean;
+}
+
+export interface AssetTransferResponse {
+  status: string;
+  transaction_id: string;
+  token_id: string;
+  from_igan: string;
+  to_igan: string;
+  quantity: number;
+  transfer_reason: string;
+  compliance_status: string;
+  blockchain_tx: string;
+  executed_at: string;
+}

@@ -1,76 +1,58 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   TransactionDetails,
   TransactionStatus,
   TransactionType,
 } from "@/types/transaction";
-import { CardTitle } from "@/components/ui/card";
-import { StatusBadge } from "@/components/data-display/status-badge";
 import { Badge } from "@/components/ui/badge";
 import {
   ArrowLeftRight,
-  CalendarIcon,
-  ClockIcon,
   CreditCard,
   ShieldCheck,
   ShoppingCart,
+  Clock,
+  ChevronRight,
 } from "lucide-react";
 import { formatDate, formatCurrency } from "@/lib/utils";
 import { AddressDisplay } from "@/components/blockchain/address-display";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { SignTransactionModal } from "./SignTransactionModal";
+import { useAuthStore } from "@/store/authStore";
 
-const statusStyles: Record<
+const statusConfig: Record<
   TransactionStatus,
-  { label: string; className: string }
+  { label: string; dot: string; bg: string }
 > = {
   EXECUTED: {
     label: "Executed",
-    className: "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200",
+    dot: "bg-emerald-500",
+    bg: "bg-emerald-50",
   },
   PENDING_EXECUTION: {
-    label: "Pending execution",
-    className: "bg-amber-50 text-amber-700 ring-1 ring-amber-200",
+    label: "Pending",
+    dot: "bg-amber-500",
+    bg: "bg-amber-50",
   },
   PENDING_COUNTERPARTY: {
-    label: "Pending counterparty",
-    className: "bg-sky-50 text-sky-700 ring-1 ring-sky-200",
+    label: "Needs signature",
+    dot: "bg-blue-500",
+    bg: "bg-blue-50",
   },
   PENDING_SIGNATURE: {
-    label: "Pending signature",
-    className: "bg-sky-50 text-sky-700 ring-1 ring-sky-200",
+    label: "Awaiting",
+    dot: "bg-blue-500",
+    bg: "bg-blue-50",
   },
 };
 
-const transactionTypeStyles: Record<
-  TransactionType,
-  { label: string; icon: React.ReactNode; className: string }
-> = {
-  TRANSFER: {
-    label: "Transfer",
-    icon: <ArrowLeftRight className="h-4 w-4" />,
-    className:
-      "bg-gradient-to-br from-slate-100 to-slate-200 text-slate-700 ring-1 ring-slate-200",
-  },
-  SALE: {
-    label: "Sale",
-    icon: <ShoppingCart className="h-4 w-4" />,
-    className:
-      "bg-gradient-to-br from-indigo-50 to-indigo-100 text-indigo-700 ring-1 ring-indigo-200",
-  },
-  PURCHASE: {
-    label: "Purchase",
-    icon: <CreditCard className="h-4 w-4" />,
-    className:
-      "bg-gradient-to-br from-emerald-50 to-emerald-100 text-emerald-700 ring-1 ring-emerald-200",
-  },
-  COLLATERAL: {
-    label: "Collateral",
-    icon: <ShieldCheck className="h-4 w-4" />,
-    className:
-      "bg-gradient-to-br from-amber-50 to-amber-100 text-amber-700 ring-1 ring-amber-200",
-  },
+const typeIcons = {
+  TRANSFER: ArrowLeftRight,
+  SALE: ShoppingCart,
+  PURCHASE: CreditCard,
+  COLLATERAL: ShieldCheck,
 };
 
 interface TransactionHeaderProps {
@@ -80,47 +62,36 @@ interface TransactionHeaderProps {
 export const TransactionHeader: React.FC<TransactionHeaderProps> = ({
   transaction,
 }) => {
+  const { isAdmin } = useAuthStore();
+  const [isSignModalOpen, setIsSignModalOpen] = useState(false);
+
   if (!transaction) return null;
-  const typeStyle = transactionTypeStyles[transaction.type as TransactionType];
-  const statusStyle = statusStyles[transaction.status as TransactionStatus];
+
+  const Icon = typeIcons[transaction.type as TransactionType];
+  const status = statusConfig[transaction.status as TransactionStatus];
+  const isPending = transaction.status === "PENDING_COUNTERPARTY";
 
   return (
-    <div
-      className={cn(
-        "group relative flex flex-col lg:flex-row lg:items-center justify-between gap-6",
-        "rounded-2xl border border-slate-200 bg-white/80 backdrop-blur",
-        "p-6",
-      )}
-    >
-      {/* Left */}
-      <div className="flex-1">
-        {/* Title */}
-        <div className="flex items-start gap-4">
-          <div
-            className={cn(
-              "flex items-center justify-center rounded-xl p-3",
-              "transition-transform group-hover:scale-105",
-              typeStyle.className,
-            )}
-          >
-            {typeStyle.icon}
-          </div>
+    <>
+      <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
+        {/* Main row - ultra compact */}
+        <div className="px-4 py-3 flex items-center justify-between gap-3">
+          {/* Left: Icon + Reference + Amount */}
+          <div className="flex items-center gap-2 min-w-0 flex-1">
+            <div className="shrink-0 w-8 h-8 rounded-md bg-slate-100 flex items-center justify-center text-slate-600">
+              <Icon className="w-4 h-4" />
+            </div>
 
-          <div className="space-y-1">
-            <CardTitle className="text-xl font-semibold tracking-tight">
-              Transaction{" "}
-              <span className="text-slate-500 font-normal">
+            <div className="flex items-center gap-2 min-w-0 flex-wrap">
+              <Badge
+                variant="outline"
+                className="font-mono text-[10px] h-5 px-1.5 bg-slate-50 border-slate-200"
+              >
                 {transaction.transaction_reference}
-              </span>
-            </CardTitle>
-
-            <div className="flex flex-wrap items-center gap-2">
-              <Badge variant="outline" className="text-xs">
-                {typeStyle.label}
               </Badge>
 
               {transaction.valuation.amount && (
-                <span className="text-sm font-semibold text-slate-900">
+                <span className="text-sm font-semibold text-slate-900 whitespace-nowrap">
                   {formatCurrency(
                     transaction.valuation.amount,
                     transaction.valuation.currency,
@@ -129,51 +100,84 @@ export const TransactionHeader: React.FC<TransactionHeaderProps> = ({
               )}
             </div>
           </div>
+
+          {/* Right: Status + Action */}
+          <div className="flex items-center gap-2 shrink-0">
+            <div
+              className={cn(
+                "flex items-center gap-1.5 px-2 py-1 rounded-full",
+                status.bg,
+              )}
+            >
+              <span className={cn("w-1.5 h-1.5 rounded-full", status.dot)} />
+              <span className="text-[11px] font-medium text-slate-700">
+                {status.label}
+              </span>
+            </div>
+
+            {isPending && isAdmin && (
+              <Button
+                size="sm"
+                onClick={() => setIsSignModalOpen(true)}
+                className="h-7 px-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs gap-1"
+              >
+                Sign
+                <ChevronRight className="w-3 h-3" />
+              </Button>
+            )}
+          </div>
         </div>
 
-        {/* Metadata */}
-        <div className="mt-4 flex flex-wrap gap-3 text-sm">
-          <div className="flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-2 text-slate-600">
-            <ClockIcon className="h-4 w-4" />
-            <span>
-              Created{" "}
-              <span className="font-medium text-slate-900">
-                {formatDate(transaction.created_at, "long")}
-              </span>
-            </span>
+        {/* Metadata row - condensed */}
+        <div className="px-4 py-2 bg-slate-50/80 border-t border-slate-100 flex items-center gap-3 text-[11px] text-slate-500">
+          <div className="flex items-center gap-1.5">
+            <Clock className="w-3.5 h-3.5" />
+            <span>{formatDate(transaction.created_at, "short")}</span>
           </div>
 
           {transaction.executed_at && (
-            <div className="flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-2 text-slate-600">
-              <CalendarIcon className="h-4 w-4" />
-              <span>
-                Executed{" "}
-                <span className="font-medium text-slate-900">
-                  {formatDate(transaction.executed_at, "long")}
-                </span>
-              </span>
-            </div>
+            <>
+              <span className="text-slate-300">|</span>
+              <span>✓ {formatDate(transaction.executed_at, "short")}</span>
+            </>
+          )}
+
+          <span className="text-slate-300">|</span>
+
+          <div className="flex items-center gap-1">
+            <span className="font-mono">
+              <AddressDisplay
+                address={transaction.transaction_id}
+                truncate
+                startChars={4}
+                endChars={3}
+                className="text-slate-600"
+              />
+            </span>
+          </div>
+
+          {transaction.type && (
+            <>
+              <span className="text-slate-300">|</span>
+              <Badge
+                variant="secondary"
+                className="text-[10px] h-5 px-1.5 bg-slate-200/50"
+              >
+                {transaction.type}
+              </Badge>
+            </>
           )}
         </div>
       </div>
 
-      {/* Right */}
-      <div className="flex flex-col items-end gap-3">
-        <StatusBadge
-          status={statusStyle.label}
-          className={statusStyle.className}
+      {/* Sign Transaction Modal */}
+      {isSignModalOpen && (
+        <SignTransactionModal
+          transactionRef={transaction.transaction_reference}
+          isOpen={isSignModalOpen}
+          onClose={() => setIsSignModalOpen(false)}
         />
-
-        <div className="flex items-center gap-2 text-xs text-slate-500">
-          <span>ID</span>
-          <AddressDisplay
-            address={transaction.transaction_id}
-            truncate
-            startChars={4}
-            endChars={4}
-          />
-        </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 };

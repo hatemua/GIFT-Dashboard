@@ -70,7 +70,11 @@ export function DropdownMenuTrigger({
   return (
     <button
       type="button"
-      onClick={() => setOpen(!open)}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setOpen(!open);
+      }}
       className={clsx(
         "inline-flex items-center justify-center",
         className
@@ -80,6 +84,7 @@ export function DropdownMenuTrigger({
     </button>
   );
 }
+
 
 /* -------------------------------------------------------------------------- */
 /*                                 Content                                    */
@@ -102,9 +107,12 @@ export function DropdownMenuContent({
 
   return (
     <div
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
       className={clsx(
         "absolute z-50 min-w-[160px] rounded-lg border border-slate-200 bg-white shadow-lg",
-        // Use margin based on direction
         direction === "bottom" ? "mt-2" : "mb-2 bottom-full",
         align === "start" ? "left-0" : "right-0",
         className

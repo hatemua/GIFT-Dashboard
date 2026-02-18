@@ -7,6 +7,8 @@ import {
   BurnAssetRequest,
   UpdateCustodyRequest,
   UpdateStatusRequest,
+  AssetTransferRequest,
+  AssetTransferResponse,
 } from "@/types/asset";
 import { useAssetStore } from "@/store/assetStore";
 
@@ -30,14 +32,9 @@ interface UseAssetReturn {
   fetchAssets: () => Promise<void>;
   mintAsset: (asset: MintAssetForm) => Promise<Asset | undefined>;
   burnAsset: (tokenId: string, data: BurnAssetRequest) => Promise<void>;
-  updateCustody: (
-    tokenId: string,
-    data: UpdateCustodyRequest,
-  ) => Promise<void>;
-  updateStatus: (
-    tokenId: string,
-    data: UpdateStatusRequest,
-  ) => Promise<void>;
+  updateCustody: (tokenId: string, data: UpdateCustodyRequest) => Promise<void>;
+  updateStatus: (tokenId: string, data: UpdateStatusRequest) => Promise<void>;
+  transferAsset: (data: AssetTransferRequest) => Promise<AssetTransferResponse>;
 
   fetchAssetByTokenId: (tokenId: string) => Promise<void>;
   fetchAssetTracking: (tokenId: string) => Promise<void>;
@@ -71,6 +68,7 @@ export const useAsset = (): UseAssetReturn => {
     burnAsset,
     updateCustody,
     updateStatus,
+    transferAsset,
 
     fetchAssetByTokenId,
     fetchAssetTracking,
@@ -105,6 +103,7 @@ export const useAsset = (): UseAssetReturn => {
     burnAsset,
     updateCustody,
     updateStatus,
+    transferAsset,
 
     fetchAssetByTokenId,
     fetchAssetTracking,

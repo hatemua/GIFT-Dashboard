@@ -26,13 +26,15 @@ interface TransactionState {
   filters: TransactionOrdersFilters;
 
   fetchTransactions: () => Promise<void>;
-  createTransaction: (transaction: CreateTransactionInput) => Promise<Transaction | undefined>;
+  createTransaction: (
+    transaction: CreateTransactionInput,
+  ) => Promise<Transaction | undefined>;
   fetchTransactionByReference: (reference: string) => Promise<void>;
   fetchTransactionEvents: (reference: string) => Promise<void>;
   signTransaction: (
     reference: string,
     signature: string,
-    role: "counterparty" | "initiator"
+    role: "counterparty" | "initiator",
   ) => Promise<SignTransactionResponse | undefined>;
   setFilters: (filters: TransactionOrdersFilters) => void;
   resetFilters: () => void;
@@ -108,7 +110,11 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
   },
 
   fetchTransactionEvents: async (reference: string) => {
-    set({ loadingEvents: true, error: undefined, transactionEvents: undefined });
+    set({
+      loadingEvents: true,
+      error: undefined,
+      transactionEvents: undefined,
+    });
     try {
       const data: TransactionEventsResponse =
         await transactionService.getTransactionEventsByReference(reference);
@@ -126,9 +132,8 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
 
   signTransaction: async (
     reference: string,
-signature: string,
-    signing_role: "counterparty" | "initiator"
-    
+    signature: string,
+    signing_role: "counterparty" | "initiator",
   ): Promise<SignTransactionResponse | undefined> => {
     set({ signing: true, error: undefined });
     try {
@@ -142,7 +147,7 @@ signature: string,
       const message =
         err?.response?.data?.error_description ||
         err?.message ||
-        "Failed to sign transaction";
+        "Failed to sign transaction. Please try again.";
       set({ error: message });
       throw new Error(message);
     } finally {

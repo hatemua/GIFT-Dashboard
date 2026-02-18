@@ -13,7 +13,7 @@ import { TransactionSignatures } from "@/components/features/transactions/detail
 import { TransactionParties } from "@/components/features/transactions/details/TransactionParties";
 import { TransactionEvents } from "@/components/features/transactions/details/TransactionEvents";
 import { LoadingSkeleton } from "@/components/features/assets/gold-assets/details/LoadingSkeleton";
-import { Wallet, Users, FileText, Activity, Gem } from "lucide-react";
+import { Wallet, Users, FileText, Activity, Gem, LayoutDashboard } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
 interface TransactionOrderDetailsPageProps {
@@ -59,7 +59,7 @@ export default function TransactionOrderDetailsPage({
                 value="overview"
                 className="rounded-lg px-6 data-[state=active]:bg-white data-[state=active]:shadow-sm flex items-center gap-2"
               >
-                <Users className="w-4 h-4" />
+                <LayoutDashboard className="w-4 h-4" />
                 Overview
               </TabsTrigger>
 

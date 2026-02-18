@@ -10,6 +10,8 @@ import {
   BurnAssetRequest,
   UpdateCustodyRequest,
   UpdateStatusRequest,
+  AssetTransferRequest,
+  AssetTransferResponse,
 } from "@/types/asset";
 
 interface AssetState {
@@ -45,12 +47,15 @@ interface AssetState {
   burnAsset: (tokenId: string, data: BurnAssetRequest) => Promise<void>;
   updateCustody: (
     tokenId: string,
-    data: UpdateCustodyRequest,
+    data: UpdateCustodyRequest
   ) => Promise<void>;
   updateStatus: (
     tokenId: string,
-    data: UpdateStatusRequest,
+    data: UpdateStatusRequest
   ) => Promise<void>;
+  transferAsset: (
+    data: AssetTransferRequest
+  ) => Promise<AssetTransferResponse>;
 
   setFilters: (filters: Partial<AssetsFilters>) => void;
   resetFilters: () => void;
@@ -83,13 +88,11 @@ export const useAssetStore = create<AssetState>((set, get) => ({
     set({ loading: true, error: undefined });
     try {
       const { page, limit, filters } = get();
-
       const data: AssetsResponse = await assetService.getAssets({
         page,
         limit,
         filters,
       });
-
       set({
         assets: data.assets,
         count: data.count,
@@ -151,9 +154,7 @@ export const useAssetStore = create<AssetState>((set, get) => ({
       return data;
     } catch (err: any) {
       const message =
-        err?.response?.data?.message ||
-        err?.message ||
-        "Failed to mint asset";
+        err?.response?.data?.message || err?.message || "Failed to mint asset";
       set({ error: message });
       throw new Error(message);
     } finally {
@@ -172,7 +173,8 @@ export const useAssetStore = create<AssetState>((set, get) => ({
       await get().fetchAssetTracking(tokenId);
     } catch (err: any) {
       set({
-        errorAction: err?.response?.data?.error_description || "Failed to burn asset",
+        errorAction:
+          err?.response?.data?.error_description || "Failed to burn asset",
       });
       throw err;
     } finally {
@@ -183,10 +185,7 @@ export const useAssetStore = create<AssetState>((set, get) => ({
   /* ------------------------
      Update custody
   -------------------------*/
-  updateCustody: async (
-    tokenId: string,
-    data: UpdateCustodyRequest,
-  ) => {
+  updateCustody: async (tokenId: string, data: UpdateCustodyRequest) => {
     set({ loadingAction: true, errorAction: undefined });
     try {
       await assetService.updateCustody(tokenId, data);
@@ -194,7 +193,8 @@ export const useAssetStore = create<AssetState>((set, get) => ({
       await get().fetchAssetTracking(tokenId);
     } catch (err: any) {
       set({
-        errorAction: err?.response?.data?.error_description || "Failed to update custody",
+        errorAction:
+          err?.response?.data?.error_description || "Failed to update custody",
       });
       throw err;
     } finally {
@@ -205,21 +205,42 @@ export const useAssetStore = create<AssetState>((set, get) => ({
   /* ------------------------
      Update status
   -------------------------*/
-  updateStatus: async (
-    tokenId: string,
-    data: UpdateStatusRequest,
-  ) => {
+  updateStatus: async (tokenId: string, data: UpdateStatusRequest) => {
     set({ loadingAction: true, errorAction: undefined });
     try {
       await assetService.updateStatus(tokenId, data);
       await get().fetchAssetByTokenId(tokenId);
       await get().fetchAssetTracking(tokenId);
-      return;
     } catch (err: any) {
-      const message = err?.response?.data?.error_description || "Failed to update status"
-      set({
-        errorAction: message,
-      });
+      const message =
+        err?.response?.data?.error_description || "Failed to update status";
+      set({ errorAction: message });
+      throw err;
+    } finally {
+      set({ loadingAction: false });
+    }
+  },
+
+  /* ------------------------
+     Transfer asset
+  -------------------------*/
+  transferAsset: async (data: AssetTransferRequest) => {
+    set({ loadingAction: true, errorAction: undefined });
+    try {
+      const response: AssetTransferResponse =
+        await assetService.transferAsset(data);
+
+      // Refresh the asset and its tracking info
+      await get().fetchAssetByTokenId(data.token_id);
+      await get().fetchAssetTracking(data.token_id);
+
+      return response;
+    } catch (err: any) {
+      const message =
+        err?.response?.data?.error_description ||
+        err?.response?.data?.message ||
+        "Failed to transfer asset";
+      set({ errorAction: message });
       throw err;
     } finally {
       set({ loadingAction: false });

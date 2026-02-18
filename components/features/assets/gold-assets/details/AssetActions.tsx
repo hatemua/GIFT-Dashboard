@@ -63,19 +63,18 @@ export function AssetActions({ tokenId, currentStatus }: Props) {
         isOpen={isBurnOpen}
         onClose={() => setBurnOpen(false)}
       />
-<UpdateCustodyModal
+      <UpdateCustodyModal
         tokenId={tokenId}
         isOpen={isCustodyOpen}
         onClose={() => setCustodyOpen(false)}
       />
-      
 
       <UpdateAssetStatusModal
         tokenId={tokenId}
         currentStatus={currentStatus}
         isOpen={isStatusOpen}
         onClose={() => setStatusOpen(false)}
-      /> 
+      />
     </>
   );
 }
