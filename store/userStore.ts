@@ -7,6 +7,7 @@ import {
   UsersFilters,
   UsersResponse,
   UserStatus,
+  MeResponse,
 } from "@/types/user";
 import { userService } from "@/services/userService";
 
@@ -23,6 +24,10 @@ interface UserState {
   actionLoading: boolean;
   actionError?: string;
 
+  me?: MeResponse;
+  meLoading: boolean;
+  meError?: string;
+
   setPage: (page: number) => void;
   setLimit: (limit: number) => void;
   setFilters: (filters: UsersFilters) => void;
@@ -31,6 +36,8 @@ interface UserState {
   fetchUsers: () => Promise<void>;
   createUser: (user: CreateUserForm) => Promise<User | undefined>;
   updateUserStatus: (payload: UpdateUserStatusPayload) => Promise<void>;
+
+  fetchMe: () => Promise<void>;
 }
 
 export const useUserStore = create<UserState>((set, get) => ({
@@ -45,6 +52,10 @@ export const useUserStore = create<UserState>((set, get) => ({
 
   actionLoading: false,
   actionError: undefined,
+
+  me: undefined,
+  meLoading: false,
+  meError: undefined,
 
   fetchUsers: async () => {
     set({ loading: true, error: undefined });
@@ -124,6 +135,19 @@ export const useUserStore = create<UserState>((set, get) => ({
     }
   },
 
+  fetchMe: async () => {
+    set({ meLoading: true, meError: undefined });
+    try {
+      const data = await userService.getMe();
+      set({ me: data });
+    } catch (err: any) {
+      set({ meError: err?.message || "Failed to fetch current user" });
+    } finally {
+      set({ meLoading: false });
+    }
+  },
+
+  // ---------- Filters ----------
   setFilters: (filters: UsersFilters) =>
     set((state) => ({
       filters: { ...state.filters, ...filters },

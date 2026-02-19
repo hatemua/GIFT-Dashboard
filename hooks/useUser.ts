@@ -1,4 +1,11 @@
-import { CreateUserForm, UpdateUserStatusPayload, User, UserItem, UsersFilters } from "@/types/user";
+import {
+  CreateUserForm,
+  UpdateUserStatusPayload,
+  User,
+  UserItem,
+  UsersFilters,
+  MeResponse,
+} from "@/types/user";
 import { useUserStore } from "@/store/userStore";
 
 interface UseUserReturn {
@@ -13,13 +20,19 @@ interface UseUserReturn {
   count: number;
   filters: UsersFilters;
 
+  me?: MeResponse;
+  meLoading: boolean;
+  meError?: string;
+
   setPage: (page: number) => void;
   setLimit: (limit: number) => void;
   setFilters: (filters: UsersFilters) => void;
   resetFilters: () => void;
+
   fetchUsers: () => Promise<void>;
   createUser: (user: CreateUserForm) => Promise<User | undefined>;
   updateUserStatus: (payload: UpdateUserStatusPayload) => Promise<void>;
+  fetchMe: () => Promise<void>;
 }
 
 export const useUser = (): UseUserReturn => {
@@ -33,13 +46,17 @@ export const useUser = (): UseUserReturn => {
     filters,
     actionLoading,
     actionError,
+    me,
+    meLoading,
+    meError,
     setPage,
     setLimit,
     setFilters,
     resetFilters,
     fetchUsers,
     createUser,
-    updateUserStatus
+    updateUserStatus,
+    fetchMe
   } = useUserStore();
 
   return {
@@ -52,12 +69,16 @@ export const useUser = (): UseUserReturn => {
     limit,
     count,
     filters,
+    me,
+    meLoading,
+    meError,
     setPage,
     setLimit,
     setFilters,
     resetFilters,
     fetchUsers,
     createUser,
-    updateUserStatus
+    updateUserStatus,
+    fetchMe
   };
 };

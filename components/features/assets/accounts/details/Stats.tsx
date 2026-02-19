@@ -94,12 +94,6 @@ export const Stats: React.FC<StatsProps> = ({ account }) => {
         }
         footer={
           <div className="flex items-center gap-2 mt-2">
-            <div className="h-1.5 flex-1 bg-gray-100 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-gradient-to-r from-amber-400 to-amber-500 rounded-full"
-                style={{ width: "85%" }}
-              />
-            </div>
             <span className="text-xs text-gray-500">{purity}% purity</span>
           </div>
         }

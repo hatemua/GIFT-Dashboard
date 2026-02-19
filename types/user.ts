@@ -53,3 +53,8 @@ export interface UpdateUserStatusPayload {
   user_id: string;
   action: "activate" | "deactivate";
 }
+
+export interface MeResponse {
+  user_id: string;
+  member: string;
+}

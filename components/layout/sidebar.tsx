@@ -8,9 +8,12 @@ import { ChevronRight, LogOut } from "lucide-react";
 import { useState } from "react";
 import { useLogout } from "@/hooks/useAuth";
 import { useAuthStore } from "@/store/authStore";
+import { useUser } from "@/hooks/useUser";
+import { AddressDisplay } from "../blockchain/address-display";
 
 export function Sidebar() {
   const { isAdmin } = useAuthStore();
+  const { me } = useUser();
   const pathname = usePathname();
   const { mutate: logout } = useLogout();
 
@@ -149,9 +152,14 @@ export function Sidebar() {
             </div>
 
             <div className="leading-tight">
-              <p className="text-sm font-semibold text-slate-900">
-                {isAdmin ? "GIFT Admin" : "GIFT Auditor"}
-              </p>
+              {me?.user_id && (
+                <AddressDisplay
+                  address={me.user_id}
+                  truncate
+                  startChars={3}
+                  endChars={3}
+                />
+              )}
               <p className="text-xs text-slate-500">
                 {isAdmin ? "Admin" : "Auditor"}
               </p>

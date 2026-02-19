@@ -2,6 +2,7 @@ import { api } from "@/lib/axios";
 import {
   CreateUserForm,
   GetUsersParams,
+  MeResponse,
   UpdateUserStatusPayload,
   User,
   UsersResponse,
@@ -36,6 +37,10 @@ export const userService = {
     const response = await api.put(`/users/${payload.user_id}/status`, {
       action: payload.action,
     });
+    return response.data;
+  },
+  getMe: async (): Promise<MeResponse> => {
+    const response = await api.get<MeResponse>("/dashboard/me");
     return response.data;
   },
 };
