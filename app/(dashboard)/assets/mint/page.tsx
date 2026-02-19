@@ -168,34 +168,64 @@ export default function MintAssetPage() {
               className="bg-gray-50/50"
             />
 
-            <Input
-              required
-              type="number"
-              min={0}
-              label="Weight (grams)"
-              placeholder="e.g. 1000"
-              error={errors.weight_grams?.message}
-              {...register("weight_grams", {
+            <Controller
+              control={control}
+              name="weight_grams"
+              rules={{
                 required: "Weight is required",
-                min: { value: 1, message: "Weight must be at least 1 gram" },
-                valueAsNumber: true,
-              })}
-              className="bg-gray-50/50"
+                min: { value: 0, message: "Weight must be at least 0" },
+              }}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  type="number"
+                  min={0}
+                  step={0.0001}
+                  label="Weight (grams)"
+                  placeholder="e.g. 1000"
+                  error={errors.weight_grams?.message}
+                  value={field.value ?? ""}
+                  onChange={(e) =>
+                    field.onChange(
+                      e.target.value === ""
+                        ? undefined
+                        : Number(e.target.value),
+                    )
+                  }
+                  className="bg-gray-50/50"
+                  required
+                />
+              )}
             />
 
-            <Input
-              required
-              type="number"
-              min={0}
-              step="0.0001"
-              label="Fineness"
-              placeholder="e.g. 0.9999"
-              error={errors.fineness?.message}
-              {...register("fineness", {
+            <Controller
+              control={control}
+              name="fineness"
+              rules={{
                 required: "Fineness is required",
-                valueAsNumber: true,
-              })}
-              className="bg-gray-50/50"
+                min: { value: 0, message: "Fineness must be at least 0" },
+              }}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  type="number"
+                  min={0}
+                  step={0.0001}
+                  label="Fineness"
+                  placeholder="e.g. 0.9999"
+                  error={errors.fineness?.message}
+                  value={field.value ?? ""}
+                  onChange={(e) =>
+                    field.onChange(
+                      e.target.value === ""
+                        ? undefined
+                        : Number(e.target.value),
+                    )
+                  }
+                  className="bg-gray-50/50"
+                  required
+                />
+              )}
             />
 
             <Controller

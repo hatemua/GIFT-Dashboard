@@ -164,22 +164,33 @@ export default function NewGoldAccountPage() {
 
               {/* Initial Deposit */}
               <div className="space-y-1.5">
-                <Input
-                  required
-                  label="Initial Deposit"
-                  type="number"
-                  min={0}
-                  placeholder="0.00"
-                  prefix="$"
-                  error={errors.initial_deposit?.message}
-                  className="h-11 rounded-md border-gray-200 focus:border-amber-500 focus:ring-amber-100 pl-8"
-                  {...register("initial_deposit", {
+                <Controller
+                  control={control}
+                  name="initial_deposit"
+                  rules={{
                     required: "Initial Deposit is required",
-                    min: {
-                      value: 0,
-                      message: "Initial deposit cannot be negative",
-                    },
-                  })}
+                  }}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      type="number"
+                      min={0}
+                      label="Initial Deposit"
+                      placeholder="0.00"
+                      prefix="$"
+                      error={errors.initial_deposit?.message}
+                      value={field.value ?? ""}
+                      onChange={(e) =>
+                        field.onChange(
+                          e.target.value === ""
+                            ? undefined
+                            : Number(e.target.value),
+                        )
+                      }
+                      className="bg-gray-50/50"
+                      required
+                    />
+                  )}
                 />
               </div>
 
@@ -199,31 +210,37 @@ export default function NewGoldAccountPage() {
             </div>
 
             {/* Actions */}
-            <div className="mt-4 max-w-7xl mx-auto flex items-center justify-between">
-              <div className="text-xs text-gray-500 flex items-center gap-1">
-                <span className="text-red-500">*</span>
-                <span>Required field</span>
-              </div>
+            <div className="sticky mt-2 bottom-6 bg-white/90 backdrop-blur-sm border border-gray-200 rounded-xl p-4 shadow-lg">
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-gray-600">
+                  <p className="font-medium">
+                    Review all information before submission
+                  </p>
+                  <p className="text-xs mt-1">
+                    All fields marked with * are required
+                  </p>
+                </div>
 
-              <div className="flex items-center gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="rounded-md px-4 py-2 h-9 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 text-sm transition-colors"
-                  onClick={() => reset()}
-                  disabled={isSubmitting || loading}
-                >
-                  Reset
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="rounded-md px-4 py-2 h-9 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 text-sm transition-colors"
+                    onClick={() => reset()}
+                    disabled={isSubmitting || loading}
+                  >
+                    Reset
+                  </Button>
 
-                <Button
-                  type="submit"
-                  variant="gold"
-                  className="px-5 py-2 h-9 rounded-md font-medium transition-all text-sm"
-                  disabled={isSubmitting || loading}
-                >
-                  {isSubmitting || loading ? "Creating..." : "Create Account"}
-                </Button>
+                  <Button
+                    type="submit"
+                    variant="gold"
+                    className="px-5 py-2 h-9 rounded-md font-medium transition-all text-sm"
+                    disabled={isSubmitting || loading}
+                  >
+                    {isSubmitting || loading ? "Creating..." : "Create Account"}
+                  </Button>
+                </div>
               </div>
             </div>
           </CardContent>

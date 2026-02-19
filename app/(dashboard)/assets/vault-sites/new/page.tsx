@@ -375,35 +375,60 @@ export default function NewVaultSitePage() {
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
-                <Input
-                  required
-                  type="number"
-                  label="Number of Vaults"
-                  placeholder="number of vaults"
-                  min={0}
-                  error={errors.number_of_vaults?.message}
-                  {...register("number_of_vaults", {
+                <Controller
+                  control={control}
+                  name="number_of_vaults"
+                  rules={{
                     required: "Number of Vaults is required",
-                    min: {
-                      value: 1,
-                      message: "Minimum 1 vault required",
-                    },
-                    valueAsNumber: true,
-                  })}
-                  className="bg-gray-50/50"
+                  }}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      type="number"
+                      min={0}
+                      step={1}
+                      label="Number of Vaults"
+                      placeholder="e.g. 3"
+                      error={errors.number_of_vaults?.message}
+                      value={field.value ?? ""}
+                      onChange={(e) =>
+                        field.onChange(
+                          e.target.value === ""
+                            ? undefined
+                            : Number(e.target.value),
+                        )
+                      }
+                      className="bg-gray-50/50"
+                      required
+                    />
+                  )}
                 />
-                <Input
-                  required
-                  type="number"
-                  placeholder="1000"
-                  label="Maximum Gold Capacity (kg)"
-                  min={0}
-                  error={errors.maximum_weight_in_gold_kg?.message}
-                  {...register("maximum_weight_in_gold_kg", {
+                <Controller
+                  control={control}
+                  name="maximum_weight_in_gold_kg"
+                  rules={{
                     required: "Maximum Weight is required",
-                    valueAsNumber: true,
-                  })}
-                  className="bg-gray-50/50"
+                  }}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      type="number"
+                      min={0}
+                      label="Maximum Gold Capacity (kg)"
+                      placeholder="1000"
+                      error={errors.maximum_weight_in_gold_kg?.message}
+                      value={field.value ?? ""}
+                      onChange={(e) =>
+                        field.onChange(
+                          e.target.value === ""
+                            ? undefined
+                            : Number(e.target.value),
+                        )
+                      }
+                      className="bg-gray-50/50"
+                      required
+                    />
+                  )}
                 />
               </CardContent>
             </Card>
@@ -429,6 +454,7 @@ export default function NewVaultSitePage() {
                 <Input
                   required
                   label="Insurance Company"
+                  placeholder="Enter insurance company"
                   error={errors.insurance_coverage_name_of_insurer?.message}
                   {...register("insurance_coverage_name_of_insurer", {
                     required: "Insurance Company is required",

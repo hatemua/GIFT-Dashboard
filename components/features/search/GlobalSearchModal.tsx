@@ -10,6 +10,7 @@ import { SearchSkeleton } from "./SearchSkeleton";
 import { NoResults } from "./NoResults";
 import { ResultsStats } from "./ResultsStats";
 import { SearchResultCard } from "./SearchResultCard";
+import { useDebounce } from "@/hooks/useDebounce";
 
 export const GlobalSearchModal: React.FC<{
   open: boolean;
@@ -26,11 +27,18 @@ export const GlobalSearchModal: React.FC<{
     total,
     setPage,
   } = useSearchStore();
+  
+  const [inputValue, setInputValue] = React.useState(query);
+  const debouncedQuery = useDebounce(inputValue, 300);
 
   const handleClose = () => {
     onClose();
     reset();
   };
+
+  React.useEffect(() => {
+    setQuery(debouncedQuery);
+  }, [debouncedQuery]);
 
   return (
     <Modal
@@ -46,8 +54,8 @@ export const GlobalSearchModal: React.FC<{
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           }
           placeholder="Search members, assets, transactions..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
           className="h-10 pl-9"
           autoFocus
         />
@@ -72,7 +80,7 @@ export const GlobalSearchModal: React.FC<{
                     onClick={handleClose}
                   />
                 ))}
-                              {total > limit && (
+                {total > limit && (
                   <Pagination
                     page={page}
                     limit={limit}
@@ -80,9 +88,8 @@ export const GlobalSearchModal: React.FC<{
                     setPage={setPage}
                     size="sm"
                   />
-              )}
+                )}
               </div>
-
             </>
           )}
         </div>

@@ -61,8 +61,10 @@ export default function CreateVaultModal({
     } catch (err: any) {
       showToast({
         title: "Error",
-        message:           err?.response?.data?.error_description ||
-          err?.message || "Failed to create vault",
+        message:
+          err?.response?.data?.error_description ||
+          err?.message ||
+          "Failed to create vault",
         variant: "error",
       });
     }
@@ -124,25 +126,27 @@ export default function CreateVaultModal({
               />
             )}
           />
-
           <Controller
-            name="vault_gold_capacity_kg"
             control={control}
+            name="vault_gold_capacity_kg"
             rules={{
               required: "Gold capacity is required",
-              min: {
-                value: 1,
-                message: "Capacity must be greater than 0",
-              },
             }}
-            render={({ field, fieldState }) => (
+            render={({ field }) => (
               <Input
                 {...field}
                 type="number"
                 min={0}
                 label="Gold Capacity (kg)"
-                placeholder="10000"
-                error={fieldState.error?.message}
+                placeholder="1000"
+                error={errors.vault_gold_capacity_kg?.message}
+                value={field.value ?? ""}
+                onChange={(e) =>
+                  field.onChange(
+                    e.target.value === "" ? undefined : Number(e.target.value),
+                  )
+                }
+                className="bg-gray-50/50"
                 required
               />
             )}

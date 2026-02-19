@@ -313,9 +313,9 @@ export const TransactionDetailsForm: React.FC = () => {
                 error={errors.valuation_currency?.message}
                 className="bg-gray-50/50"
               >
-                <SelectItem value="USD">USD - US Dollar</SelectItem>
-                <SelectItem value="EUR">EUR - Euro</SelectItem>
-                <SelectItem value="CHF">CHF - Swiss Franc</SelectItem>
+                <SelectItem value="USD">USD</SelectItem>
+                <SelectItem value="EUR">EUR</SelectItem>
+                <SelectItem value="CHF">CHF</SelectItem>
               </Select>
             )}
           />
