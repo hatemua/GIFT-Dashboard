@@ -6,9 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/providers/toast-provider";
 import { useTransaction } from "@/hooks/useTransaction";
+import { TransactionDetails } from "@/types/transaction";
 
 interface SignTransactionModalProps {
-  transactionRef: string;
+  transaction: TransactionDetails;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -18,12 +19,13 @@ interface SignTransactionFormValues {
 }
 
 export const SignTransactionModal = ({
-  transactionRef,
+  transaction,
   isOpen,
   onClose,
 }: SignTransactionModalProps) => {
   const { showToast } = useToast();
-  const { signTransaction, fetchTransactionByReference, signing } = useTransaction();
+  const { signTransaction, fetchTransactionByReference, signing } =
+    useTransaction();
 
   const {
     register,
@@ -38,8 +40,13 @@ export const SignTransactionModal = ({
 
   const submitHandler = async (values: SignTransactionFormValues) => {
     try {
-      await signTransaction(transactionRef, values.signature, "counterparty");
-      await fetchTransactionByReference(transactionRef);
+      await signTransaction(
+        transaction.transaction_reference,
+        values.signature,
+        "counterparty",
+      );
+
+      await fetchTransactionByReference(transaction.transaction_reference);
 
       showToast({
         title: "Success",

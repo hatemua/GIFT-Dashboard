@@ -9,6 +9,7 @@ import {
   TransactionEventsResponse,
   CreateTransactionInput,
   SignTransactionResponse,
+  UpdateTransactionStatusResponse,
 } from "@/types/transaction";
 
 interface TransactionState {
@@ -36,6 +37,11 @@ interface TransactionState {
     signature: string,
     role: "counterparty" | "initiator",
   ) => Promise<SignTransactionResponse | undefined>;
+  updateTransactionStatus: (
+    reference: string,
+    new_status: string,
+    reason?: string | null,
+  ) => Promise<UpdateTransactionStatusResponse | undefined>;
   setFilters: (filters: TransactionOrdersFilters) => void;
   resetFilters: () => void;
   setPage: (page: number) => void;
@@ -152,6 +158,35 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
       throw new Error(message);
     } finally {
       set({ signing: false });
+    }
+  },
+
+  updateTransactionStatus: async (
+    reference: string,
+    new_status: string,
+    reason?: string | null,
+  ): Promise<UpdateTransactionStatusResponse | undefined> => {
+    set({ loading: true, error: undefined });
+    try {
+      const data = await transactionService.updateTransactionStatus(reference, {
+        new_status,
+        reason,
+      });
+      set((state) => ({
+        transactionDetails: state.transactionDetails
+          ? { ...state.transactionDetails, status: data.new_status }
+          : state.transactionDetails,
+      }));
+      return data;
+    } catch (err: any) {
+      const message =
+        err?.response?.data?.error_description ||
+        err?.message ||
+        "Failed to update transaction status";
+      set({ error: message });
+      throw new Error(message);
+    } finally {
+      set({ loading: false });
     }
   },
 

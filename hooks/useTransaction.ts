@@ -7,6 +7,7 @@ import {
   TransactionEventsResponse,
   CreateTransactionInput,
   SignTransactionResponse,
+  UpdateTransactionStatusResponse,
 } from "@/types/transaction";
 
 interface UseTransactionReturn {
@@ -35,6 +36,12 @@ interface UseTransactionReturn {
     signature: string,
     role: "counterparty" | "initiator",
   ) => Promise<SignTransactionResponse | undefined>;
+  updateTransactionStatus: (
+    reference: string,
+    new_status: string,
+    reason?: string | null,
+  ) => Promise<UpdateTransactionStatusResponse | undefined>;
+
   setFilters: (filters: TransactionOrdersFilters) => void;
   resetFilters: () => void;
   setPage: (page: number) => void;
@@ -64,6 +71,7 @@ export const useTransaction = (): UseTransactionReturn => {
     fetchTransactionByReference,
     fetchTransactionEvents,
     signTransaction,
+    updateTransactionStatus,
     setFilters,
     resetFilters,
     setPage,
@@ -79,7 +87,7 @@ export const useTransaction = (): UseTransactionReturn => {
     limit,
     loading,
     loadingEvents,
-    signing, // new
+    signing,
     lastSignedTransaction,
     error,
     filters,
@@ -88,6 +96,7 @@ export const useTransaction = (): UseTransactionReturn => {
     fetchTransactionByReference,
     fetchTransactionEvents,
     signTransaction,
+    updateTransactionStatus,
     setFilters,
     resetFilters,
     setPage,

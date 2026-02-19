@@ -132,6 +132,16 @@ export interface SignTransactionResponse {
   blockchain_tx: string;
 }
 
+export interface UpdateTransactionStatusResponse {
+  status: string;
+  transaction_reference: string;
+  previous_status: string;
+  new_status: string;
+  reason: string | null;
+  updated_at: string;
+  updated_by: string;
+  blockchain_tx: string | null;
+}
 
 export type TransactionType = "TRANSFER" | "SALE" | "PURCHASE" | "COLLATERAL";
 export type TransactionStatus =

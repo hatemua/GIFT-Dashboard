@@ -164,16 +164,6 @@ export const TransactionAssets: React.FC<TransactionAssetsProps> = ({
                           <UserCheck className="h-4 w-4 text-slate-500" />
                           Update Custody
                         </DropdownMenuItem>
-
-                        {transactionStatus === "PENDING_EXECUTION" && (
-                          <DropdownMenuItem
-                            onClick={() => handleTransferAsset(asset)}
-                            className="flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 rounded-md transition-colors"
-                          >
-                            <Repeat className="h-4 w-4 text-slate-500" />
-                            Transfer Asset
-                          </DropdownMenuItem>
-                        )}
                       </DropdownMenuContent>
                     </DropdownMenu>
                   )}

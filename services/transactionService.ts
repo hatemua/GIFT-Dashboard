@@ -3,10 +3,10 @@ import {
   CreateTransactionInput,
   GetTransactionsParams,
   SignTransactionResponse,
-  Transaction,
   TransactionDetails,
   TransactionEventsResponse,
   TransactionOrdersResponse,
+  UpdateTransactionStatusResponse,
 } from "@/types/transaction";
 
 export const transactionService = {
@@ -62,6 +62,19 @@ export const transactionService = {
   ): Promise<SignTransactionResponse> => {
     const response = await api.post<SignTransactionResponse>(
       `/transactions/${transaction_reference}/sign`,
+      data,
+    );
+    return response.data;
+  },
+  updateTransactionStatus: async (
+    transaction_reference: string,
+    data: {
+      new_status: string;
+      reason?: string | null;
+    },
+  ): Promise<UpdateTransactionStatusResponse> => {
+    const response = await api.put<UpdateTransactionStatusResponse>(
+      `/transactions/${transaction_reference}/status`,
       data,
     );
     return response.data;

@@ -2,7 +2,6 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Shield, Calendar } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 
 interface InsuranceCardProps {
   vault: any;
@@ -10,11 +9,6 @@ interface InsuranceCardProps {
 
 export function InsuranceCard({ vault }: InsuranceCardProps) {
   const insurance = vault.insurance_coverage;
-  const sodId = insurance.documentation_sod_id;
-
- const sodBadge = sodId
-  ? { label: `SOD: ${sodId}`, variant: "outline" as const }
-  : { label: "Missing", variant: "warning" as const };
 
   return (
     <Card>
@@ -44,7 +38,7 @@ export function InsuranceCard({ vault }: InsuranceCardProps) {
         </div>
 
         {/* Expiry + SOD */}
-        <div className="flex items-center justify-between text-sm">
+        <div className="flex flex-col items-start gap-2 justify-between text-sm">
           <div>
             <p className="text-xs text-gray-500">Expires</p>
             <div className="flex items-center gap-1">
@@ -52,10 +46,12 @@ export function InsuranceCard({ vault }: InsuranceCardProps) {
               {new Date(insurance.expiration_date).toLocaleDateString()}
             </div>
           </div>
-
-          <Badge variant={sodBadge.variant} className="text-xs">
-            {sodBadge.label}
-          </Badge>
+          <div className="pt-2 border-t">
+            <p className="text-xs text-gray-500 mb-1">Documentation</p>
+            <p className="text-sm font-mono text-gray-700">
+              {insurance.documentation_sod_id ?? "N/A"}
+            </p>
+          </div>
         </div>
       </CardContent>
     </Card>

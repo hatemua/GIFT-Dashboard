@@ -230,10 +230,6 @@ export const useAssetStore = create<AssetState>((set, get) => ({
       const response: AssetTransferResponse =
         await assetService.transferAsset(data);
 
-      // Refresh the asset and its tracking info
-      await get().fetchAssetByTokenId(data.token_id);
-      await get().fetchAssetTracking(data.token_id);
-
       return response;
     } catch (err: any) {
       const message =
@@ -241,7 +237,7 @@ export const useAssetStore = create<AssetState>((set, get) => ({
         err?.response?.data?.message ||
         "Failed to transfer asset";
       set({ errorAction: message });
-      throw err;
+      throw new Error(message);
     } finally {
       set({ loadingAction: false });
     }

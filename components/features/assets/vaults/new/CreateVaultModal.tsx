@@ -35,7 +35,7 @@ export default function CreateVaultModal({
       vault_id: undefined,
       member_internal_vault_id: "",
       vault_dimensions: "",
-      vault_gold_capacity_kg: 0,
+      vault_gold_capacity_kg: undefined,
       vault_status: "UNUSED",
       last_audit_date: "",
     },

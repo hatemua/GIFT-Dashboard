@@ -21,6 +21,9 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { SignTransactionModal } from "./SignTransactionModal";
 import { useAuthStore } from "@/store/authStore";
+import { useAsset } from "@/hooks/useAsset";
+import { useTransaction } from "@/hooks/useTransaction";
+import { useToast } from "@/providers/toast-provider";
 
 const statusConfig: Record<
   TransactionStatus,
@@ -62,14 +65,76 @@ interface TransactionHeaderProps {
 export const TransactionHeader: React.FC<TransactionHeaderProps> = ({
   transaction,
 }) => {
+  const { showToast } = useToast();
+
   const { isAdmin } = useAuthStore();
+  const { transferAsset } = useAsset();
+  const { updateTransactionStatus } = useTransaction();
   const [isSignModalOpen, setIsSignModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   if (!transaction) return null;
 
   const Icon = typeIcons[transaction.type as TransactionType];
   const status = statusConfig[transaction.status as TransactionStatus];
-  const isPending = transaction.status === "PENDING_COUNTERPARTY";
+  const isPendingCounterparty = transaction.status === "PENDING_COUNTERPARTY";
+  const isPendingExecution = transaction.status === "PENDING_EXECUTION";
+
+  const onTransferAssets = async () => {
+    setLoading(true);
+
+    try {
+      const allStationary = transaction.assets.every(
+        (asset) => asset.status === "stationary",
+      );
+
+      if (!allStationary) {
+        showToast({
+          title: "Cannot transfer",
+          message: "Some assets are not stationary and cannot be transferred.",
+          variant: "error",
+        });
+        return;
+      }
+      await Promise.all(
+        transaction.assets.map((asset) => {
+          const payload = {
+            token_id: asset.token_id,
+            from_igan: transaction.parties.initiator.igan,
+            to_igan: transaction.parties.counterparty.igan,
+            quantity: 1,
+            transaction_reference: transaction.transaction_reference,
+            transfer_reason: "other",
+            compliance_check: true,
+          };
+
+          return transferAsset(payload);
+        }),
+      );
+
+      await updateTransactionStatus(
+        transaction.transaction_reference,
+        "executed",
+        "other",
+      );
+
+      showToast({
+        title: "Transfer successful",
+        message:
+          "All assets have been transferred and the transaction is executed.",
+        variant: "success",
+      });
+    } catch (err: any) {
+      showToast({
+        title: "Transfer failed",
+        message:
+          err?.message || "An error occurred while transferring the assets.",
+        variant: "error",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -115,13 +180,25 @@ export const TransactionHeader: React.FC<TransactionHeaderProps> = ({
               </span>
             </div>
 
-            {isPending && isAdmin && (
+            {isPendingCounterparty && isAdmin && (
               <Button
                 size="sm"
                 onClick={() => setIsSignModalOpen(true)}
                 className="h-7 px-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs gap-1"
               >
                 Sign
+                <ChevronRight className="w-3 h-3" />
+              </Button>
+            )}
+            {isPendingExecution && isAdmin && (
+              <Button
+                size="sm"
+                variant={"gold"}
+                onClick={onTransferAssets}
+                className="h-7 px-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs gap-1"
+                disabled={loading}
+              >
+                {loading ? "Transfering..." : "Transfer Assets"}
                 <ChevronRight className="w-3 h-3" />
               </Button>
             )}
@@ -173,7 +250,7 @@ export const TransactionHeader: React.FC<TransactionHeaderProps> = ({
       {/* Sign Transaction Modal */}
       {isSignModalOpen && (
         <SignTransactionModal
-          transactionRef={transaction.transaction_reference}
+          transaction={transaction}
           isOpen={isSignModalOpen}
           onClose={() => setIsSignModalOpen(false)}
         />
