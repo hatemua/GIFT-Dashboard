@@ -4,7 +4,6 @@ import React from "react";
 import { Modal } from "@/components/ui/modal";
 import { Input } from "@/components/ui/input";
 import { useSearchStore } from "@/store/searchStore";
-import { Pagination } from "@/components/ui/pagination";
 import { Search } from "lucide-react";
 import { SearchSkeleton } from "./SearchSkeleton";
 import { NoResults } from "./NoResults";
@@ -22,10 +21,6 @@ export const GlobalSearchModal: React.FC<{
     results,
     loading,
     reset,
-    page,
-    limit,
-    total,
-    setPage,
   } = useSearchStore();
   
   const [inputValue, setInputValue] = React.useState(query);
@@ -80,15 +75,6 @@ export const GlobalSearchModal: React.FC<{
                     onClick={handleClose}
                   />
                 ))}
-                {total > limit && (
-                  <Pagination
-                    page={page}
-                    limit={limit}
-                    total={total}
-                    setPage={setPage}
-                    size="sm"
-                  />
-                )}
               </div>
             </>
           )}

@@ -11,9 +11,7 @@ export const NoResults = () => {
       {/* Icon Section */}
       <div className="relative flex items-center justify-center">
         <div className="absolute h-20 w-20 rounded-full bg-primary/10 blur-2xl opacity-60" />
-        <div className="relative flex h-16 w-16 items-center justify-center rounded-full bg-muted/30 border border-border/30 backdrop-blur-md">
-          <Search className="h-7 w-7 text-primary/60" />
-        </div>
+        <Search className="h-7 w-7 text-gray-400" />
       </div>
 
       {/* Content */}
