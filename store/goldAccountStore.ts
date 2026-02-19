@@ -46,7 +46,7 @@ interface GoldAccountStore {
   movementsError?: string;
 
   // Actions
-  createAccount: (payload: CreateGoldAccountPayload) => Promise<void>;
+  createAccount: (payload: CreateGoldAccountPayload) => Promise<CreateGoldAccountResponse>;
   fetchAccounts: () => Promise<void>;
   fetchAccountByIgan: (igan: string) => Promise<GoldAccountDetails | undefined>;
   fetchAccountBalance: (igan: string, currency?: string) => Promise<void>;
@@ -97,6 +97,7 @@ export const useGoldAccountStore = create<GoldAccountStore>((set, get) => ({
     try {
       const account = await goldAccountService.createAccount(payload);
       set({ createdAccount: account, loading: false });
+      return account;
     } catch (err: any) {
       const message =
         err?.response?.data?.error_description ||

@@ -48,7 +48,7 @@ interface UseGoldAccountReturn {
   setFilters: (filters: AccountsFilters) => void;
   resetFilters: () => void;
   resetSelectedAccount: () => void;
-  createAccount: (payload: CreateGoldAccountPayload) => Promise<void>;
+  createAccount: (payload: CreateGoldAccountPayload) => Promise<CreateGoldAccountResponse>;
   fetchAccounts: () => Promise<void>;
   fetchAccountByIgan: (igan: string) => Promise<GoldAccountDetails | undefined>;
   fetchAccountBalance: (igan: string, currency?: string) => Promise<void>;

@@ -1,5 +1,5 @@
 "use client";
-
+import { useRouter } from "next/navigation";
 import { useForm, Controller, useWatch } from "react-hook-form";
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { PageHeader } from "@/components/layout/page-header";
@@ -24,6 +24,7 @@ import { useEffect, useState } from "react";
 import { useDebounce } from "@/hooks/useDebounce";
 
 export default function MintAssetPage() {
+  const router = useRouter();
   const { mintAsset } = useAsset();
   const { showToast } = useToast();
   const { fetchAccountByIgan } = useGoldAccount();
@@ -58,7 +59,7 @@ export default function MintAssetPage() {
     try {
       const payload = { ...data };
 
-      await mintAsset(payload);
+      const res = await mintAsset(payload);
       showToast({
         title: "Success",
         message: "Asset minted successfully",
@@ -66,6 +67,7 @@ export default function MintAssetPage() {
       });
 
       reset();
+      router.push(`/assets/${res?.token_id}`);
     } catch (err: any) {
       showToast({
         title: "Error",

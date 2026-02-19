@@ -1,21 +1,20 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
-
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { PageHeader } from "@/components/layout/page-header";
-
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectItem } from "@/components/ui/select";
-
 import { useToast } from "@/providers/toast-provider";
 import { useGoldAccount } from "@/hooks/useGoldAccount";
 import { CreateGoldAccountPayload } from "@/types/goldAccount";
 import { GOLD_ACCOUNT_PURPOSES } from "@/constants/goldAccount";
 
 export default function NewGoldAccountPage() {
+  const router = useRouter();
   const { showToast } = useToast();
   const { loading, createAccount } = useGoldAccount();
 
@@ -31,7 +30,7 @@ export default function NewGoldAccountPage() {
 
   const onSubmit = async (data: CreateGoldAccountPayload) => {
     try {
-      await createAccount({
+      const res = await createAccount({
         ...data,
         initial_deposit: data.initial_deposit
           ? Number(data.initial_deposit)
@@ -45,6 +44,7 @@ export default function NewGoldAccountPage() {
       });
 
       reset();
+      router.push(`/assets/accounts/${res?.igan}`);
     } catch (err: any) {
       showToast({
         title: "Error",
@@ -208,43 +208,42 @@ export default function NewGoldAccountPage() {
                 />
               </div>
             </div>
-
-            {/* Actions */}
-            <div className="sticky mt-2 bottom-6 bg-white/90 backdrop-blur-sm border border-gray-200 rounded-xl p-4 shadow-lg">
-              <div className="flex items-center justify-between">
-                <div className="text-sm text-gray-600">
-                  <p className="font-medium">
-                    Review all information before submission
-                  </p>
-                  <p className="text-xs mt-1">
-                    All fields marked with * are required
-                  </p>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="rounded-md px-4 py-2 h-9 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 text-sm transition-colors"
-                    onClick={() => reset()}
-                    disabled={isSubmitting || loading}
-                  >
-                    Reset
-                  </Button>
-
-                  <Button
-                    type="submit"
-                    variant="gold"
-                    className="px-5 py-2 h-9 rounded-md font-medium transition-all text-sm"
-                    disabled={isSubmitting || loading}
-                  >
-                    {isSubmitting || loading ? "Creating..." : "Create Account"}
-                  </Button>
-                </div>
-              </div>
-            </div>
           </CardContent>
         </Card>
+        {/* Actions */}
+        <div className="sticky bottom-6 bg-white/90 backdrop-blur-sm border border-gray-200 rounded-xl p-4 shadow-lg">
+          <div className="flex items-center justify-between">
+            <div className="text-sm text-gray-600">
+              <p className="font-medium">
+                Review all information before submission
+              </p>
+              <p className="text-xs mt-1">
+                All fields marked with * are required
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                className="rounded-md px-4 py-2 h-9 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 text-sm transition-colors"
+                onClick={() => reset()}
+                disabled={isSubmitting || loading}
+              >
+                Reset
+              </Button>
+
+              <Button
+                type="submit"
+                variant="gold"
+                className="px-5 py-2 h-9 rounded-md font-medium transition-all text-sm"
+                disabled={isSubmitting || loading}
+              >
+                {isSubmitting || loading ? "Creating..." : "Create Account"}
+              </Button>
+            </div>
+          </div>
+        </div>
       </form>
     </DashboardShell>
   );
