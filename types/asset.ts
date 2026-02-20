@@ -233,8 +233,8 @@ export interface UpdateCustodyRequest {
   token_id: string;
   custody_party_type: string;
   custody_party_id: string;
-  vault_site_id: string;
-  vault_id: string;
+  vault_site_id?: string;
+  vault_id?: string;
   custody_type: string;
   custody_agreement_ref: string;
 }

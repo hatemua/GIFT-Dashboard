@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useWatch } from "react-hook-form";
 import { Modal } from "@/components/ui/modal";
 import { Input } from "@/components/ui/input";
 import { FileUpload } from "@/components/ui/file-upload";
@@ -47,12 +47,20 @@ export const UpdateCustodyModal = ({
     defaultValues: {
       custody_party_type: "",
       custody_party_id: "",
-      vault_site_id: "",
-      vault_id: "",
+      vault_site_id: undefined,
+      vault_id: undefined,
       custody_type: "",
       custody_agreement_ref: null,
     },
   });
+
+  /* 🔍 Watch custody party type */
+  const custodyPartyType = useWatch({
+    control,
+    name: "custody_party_type",
+  });
+
+  const isLsp = custodyPartyType === "lsp";
 
   /* ---------------- Submit handler ---------------- */
   const submitHandler = async (values: UpdateCustodyFormValues) => {
@@ -61,7 +69,6 @@ export const UpdateCustodyModal = ({
         throw new Error("Custody agreement is required");
       }
 
-      // Convert file to base64 and upload
       const base64File = await fileToBase64(values.custody_agreement_ref);
       const document_id = `CA-${crypto.randomUUID()}`;
 
@@ -72,13 +79,12 @@ export const UpdateCustodyModal = ({
         document_base64: base64File,
       });
 
-      // Build payload with document_id
       const payload: UpdateCustodyRequest = {
         token_id: tokenId,
         custody_party_type: values.custody_party_type,
         custody_party_id: values.custody_party_id,
-        vault_site_id: values.vault_site_id,
-        vault_id: values.vault_id,
+        vault_site_id: isLsp ? undefined : values.vault_site_id,
+        vault_id: isLsp ? undefined : values.vault_id,
         custody_type: values.custody_type,
         custody_agreement_ref: document_id,
       };
@@ -164,26 +170,28 @@ export const UpdateCustodyModal = ({
           {/* Vault site ID */}
           <Input
             label="Vault Site ID"
-            required
+            required={!isLsp}
+            disabled={isLsp}
             placeholder="Vault site identifier"
             error={errors.vault_site_id?.message}
             {...register("vault_site_id", {
-              required: "Vault site ID is required",
+              required: isLsp ? false : "Vault site ID is required",
             })}
           />
 
           {/* Vault ID */}
           <Input
             label="Vault ID"
-            required
+            required={!isLsp}
+            disabled={isLsp}
             placeholder="Vault identifier"
             error={errors.vault_id?.message}
             {...register("vault_id", {
-              required: "Vault ID is required",
+              required: isLsp ? false : "Vault ID is required",
             })}
           />
 
-          {/* Custody type / arrangement */}
+          {/* Custody type */}
           <Controller
             control={control}
             name="custody_type"
@@ -216,15 +224,18 @@ export const UpdateCustodyModal = ({
           />
         </div>
 
-        {/* Custody agreement reference */}
+        {/* Custody agreement document */}
         <div className="space-y-1">
           <label className="text-sm font-medium text-slate-700">
             Custody Agreement Document <span className="text-red-500">*</span>
           </label>
+
           <Controller
             control={control}
             name="custody_agreement_ref"
-            rules={{ required: "Custody agreement document is required" }}
+            rules={{
+              required: "Custody agreement document is required",
+            }}
             render={({ field }) => (
               <FileUpload
                 value={field.value}
@@ -234,6 +245,7 @@ export const UpdateCustodyModal = ({
               />
             )}
           />
+
           {errors.custody_agreement_ref && (
             <p className="text-xs text-red-600">
               {errors.custody_agreement_ref.message}
