@@ -8,7 +8,7 @@ export interface CreateMemberInput {
 }
 
 export interface CreateMemberResponse {
-    member_gic: string;
+  member_gic: string;
   access_token: string;
   secret_token: string;
 
@@ -16,7 +16,7 @@ export interface CreateMemberResponse {
   entity_type: "company" | "individual";
   compliance_level: "basic" | "standard" | "enhanced";
 
-  created_at: string; // ISO date
+  created_at: string;
   created_by_admin: string;
 
   member_hash: string;
@@ -42,7 +42,6 @@ export interface GetMembersParams {
   filters?: MembersFilters;
 }
 
-
 export interface Member {
   member_gic: string;
   status: "active" | string;
@@ -50,11 +49,11 @@ export interface Member {
   member_role: number;
   entity_type: "company" | "institution" | string;
   member_hash: string | null;
-  createdAt: string; // ISO date string
-  updatedAt: string; // ISO date string
+  createdAt: string;
+  updatedAt: string;
   added_by: string | null;
-  created_at: string; // ISO date string
-  updated_at: string; // ISO date string
+  created_at: string;
+  updated_at: string;
   roles: string[];
 }
 
@@ -99,3 +98,12 @@ export interface GetMemberAccountsResponse {
   goldAccounts: MemberAccount[];
 }
 
+export type MemberRole =
+  | "ROLE_REFINER"
+  | "ROLE_MINTER"
+  | "ROLE_CUSTODIAN"
+  | "ROLE_VAULT_OP"
+  | "ROLE_LSP"
+  | "ROLE_AUDITOR"
+  | "ROLE_GMO"
+  | "ROLE_TRADER";

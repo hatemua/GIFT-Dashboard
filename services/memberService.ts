@@ -6,6 +6,7 @@ import {
   GetMemberResponse,
   GetMembersParams,
   Member,
+  MemberRole,
   MembersResponse,
 } from "@/types/member";
 
@@ -28,22 +29,26 @@ export const memberService = {
         from_date: filters.from_date,
         to_date: filters.to_date,
         roles: filters.roles,
-        status: 'active'
+        status: "active",
       },
     });
 
     return response.data;
   },
 
-    // Get single member by GIC
+  // Get single member by GIC
   getMemberByGic: async (member_gic: string): Promise<GetMemberResponse> => {
     const response = await api.get<GetMemberResponse>(`/members/${member_gic}`);
     return response.data;
   },
 
   // Get member accounts
-  getMemberAccounts: async (member_gic: string): Promise<GetMemberAccountsResponse> => {
-    const response = await api.get<GetMemberAccountsResponse>(`/members/${member_gic}/accounts`);
+  getMemberAccounts: async (
+    member_gic: string,
+  ): Promise<GetMemberAccountsResponse> => {
+    const response = await api.get<GetMemberAccountsResponse>(
+      `/members/${member_gic}/accounts`,
+    );
     return response.data;
   },
 
@@ -75,6 +80,16 @@ export const memberService = {
       },
     });
 
+    return response.data;
+  },
+  changeMemberRole: async (
+    member_gic: string,
+    member_role: MemberRole,
+    action: "assign" | "revoke",
+  ) => {
+    const response = await api.put<Member>(
+      `/members/${member_gic}/${member_role}/${action}`,
+    );
     return response.data;
   },
 };

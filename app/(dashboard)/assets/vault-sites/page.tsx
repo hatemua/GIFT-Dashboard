@@ -114,14 +114,12 @@ export default function VaultSitesPage() {
 
       {/* Pagination */}
       {!loading && !error && vaultSites.length > 0 && (
-        <div className="mt-6 flex justify-center">
-          <Pagination
-            page={page}
-            limit={limit}
-            total={totalCount}
-            setPage={setPage}
-          />          
-        </div>
+        <Pagination
+          page={page}
+          limit={limit}
+          total={totalCount}
+          setPage={setPage}
+        />
       )}
     </DashboardShell>
   );

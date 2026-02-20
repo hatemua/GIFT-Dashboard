@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface PaginationProps {
@@ -26,8 +27,8 @@ export function Pagination({
     page !== undefined
       ? page
       : offset !== undefined
-      ? Math.floor(offset / limit) + 1
-      : 1;
+        ? Math.floor(offset / limit) + 1
+        : 1;
 
   const totalPages = Math.ceil(total / limit);
 
@@ -61,7 +62,7 @@ export function Pagination({
       : "min-w-[36px] text-center rounded-xl bg-gold-500 px-3 py-1 text-white shadow-sm";
 
   return (
-    <div className="flex justify-center">
+    <div className={cn("flex justify-center", variant === "default" && "mt-4")}>
       <div className="flex items-center gap-2 sm:gap-3">
         {/* Previous */}
         <Button

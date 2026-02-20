@@ -7,6 +7,7 @@ import {
   MembersResponse,
   GetMemberResponse,
   GetMemberAccountsResponse,
+  MemberRole,
 } from "@/types/member";
 import { memberService } from "@/services/memberService";
 
@@ -46,6 +47,11 @@ interface MemberState {
 
   fetchMemberByGic: (member_gic: string) => Promise<void>;
   fetchMemberAccounts: (member_gic: string) => Promise<void>;
+  changeMemberRole: (
+    member_gic: string,
+    member_role: MemberRole,
+    action: "assign" | "revoke",
+  ) => Promise<Member | undefined>;
 
   setFilters: (filters: MembersFilters) => void;
   resetFilters: () => void;
@@ -216,6 +222,32 @@ export const useMemberStore = create<MemberState>((set, get) => ({
       set({ accountsError: message });
     } finally {
       set({ accountsLoading: false });
+    }
+  },
+  changeMemberRole: async (
+    member_gic: string,
+    member_role: MemberRole,
+    action: "assign" | "revoke",
+  ) => {
+    set({ actionLoading: true, actionError: undefined });
+    try {
+      const updatedMember = await memberService.changeMemberRole(
+        member_gic,
+        member_role,
+        action,
+      );
+
+      await get().fetchMembers();
+      return updatedMember;
+    } catch (err: any) {
+      const message =
+        err?.response?.data?.error_description ||
+        err?.message ||
+        "Failed to change member role";
+      set({ actionError: message });
+      throw new Error(message);
+    } finally {
+      set({ actionLoading: false });
     }
   },
 

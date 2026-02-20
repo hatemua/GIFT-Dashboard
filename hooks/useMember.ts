@@ -7,29 +7,26 @@ import {
   GetMemberResponse,
   GetMemberAccountsResponse,
   MembersResponse,
+  MemberRole,
 } from "@/types/member";
 
 interface UseMemberReturn {
-  // Lists
   members: Member[];
   blacklistedMembers: Member[];
 
-  // Pagination & filters
   page: number;
   limit: number;
   filters: MembersFilters;
   count: number;
 
-  // Loading / errors
-  loading: boolean; // fetch members / selected member
+  loading: boolean;
   error?: string;
-  actionLoading: boolean; // create / blacklist / remove
+  actionLoading: boolean;
   actionError?: string;
 
-  accountsLoading: boolean; // fetching accounts
+  accountsLoading: boolean;
   accountsError?: string;
 
-  // Selected member & accounts
   selectedMember?: GetMemberResponse;
   memberAccounts?: GetMemberAccountsResponse;
 
@@ -43,6 +40,11 @@ interface UseMemberReturn {
   removeFromBlacklist: (member_gic: string) => Promise<void>;
   fetchMemberByGic: (member_gic: string) => Promise<void>;
   fetchMemberAccounts: (member_gic: string) => Promise<void>;
+  changeMemberRole: (
+      member_gic: string,
+      member_role: MemberRole,
+      action: "assign" | "revoke",
+    ) => Promise<Member | undefined>;
 
   // Setters
   setFilters: (filters: MembersFilters) => void;
@@ -79,6 +81,7 @@ export const useMember = (): UseMemberReturn => {
     removeFromBlacklist,
     fetchMemberByGic,
     fetchMemberAccounts,
+    changeMemberRole,
     setFilters,
     resetFilters,
     setPage,
@@ -108,6 +111,7 @@ export const useMember = (): UseMemberReturn => {
     removeFromBlacklist,
     fetchMemberByGic,
     fetchMemberAccounts,
+    changeMemberRole,
     setFilters,
     resetFilters,
     setPage,

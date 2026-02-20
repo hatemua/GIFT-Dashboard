@@ -9,6 +9,7 @@ import {
   Trash2,
   Plus,
   MoreVertical,
+  UserCheck,
 } from "lucide-react";
 import { Member } from "@/types/member";
 import {
@@ -26,6 +27,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import { useAuthStore } from "@/store/authStore";
+import { useState } from "react";
+import { ChangeMemberRoleModal } from "./ChangeMemberRoleModal";
 
 interface MembersGridProps {
   members: Member[];
@@ -44,6 +47,8 @@ export default function MembersGrid({
   onRemove,
 }: MembersGridProps) {
   const { isAdmin } = useAuthStore();
+  const [isOpen, setIsOpenModal] = useState<boolean>(false);
+  const [selectedMember, setSelectedMember] = useState<Member | null>(null);
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {members.map((member) => (
@@ -79,20 +84,29 @@ export default function MembersGrid({
                 >
                   {/* View Details */}
                   <Link href={`/members/${member.member_gic}`}>
-                  <DropdownMenuItem
-                    className="flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 rounded-md transition-colors"
-                  >
-                    <ExternalLink className="h-4 w-4 text-slate-500" />
-                    View Details
-                  </DropdownMenuItem>
+                    <DropdownMenuItem className="flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 rounded-md transition-colors">
+                      <ExternalLink className="h-4 w-4 text-slate-500" />
+                      View Details
+                    </DropdownMenuItem>
                   </Link>
+
+                                    {isAdmin && (
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setSelectedMember(member);
+                        setIsOpenModal(true);
+                      }}
+                      className="flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 rounded-md transition-colors"
+                    >
+                      <UserCheck className="h-4 w-4 text-slate-500" />
+                      Change Role
+                    </DropdownMenuItem>
+                  )}
 
                   {/* Add to Blacklist */}
                   {onAdd && isAdmin && (
                     <DropdownMenuItem
-                      onClick={() =>
-                        onAdd(member.member_gic)
-                      }
+                      onClick={() => onAdd(member.member_gic)}
                       className="flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
                     >
                       <Plus className="h-4 w-4 text-red-500" />
@@ -103,9 +117,7 @@ export default function MembersGrid({
                   {/* Remove */}
                   {onRemove && isAdmin && (
                     <DropdownMenuItem
-                      onClick={() =>
-                        onRemove(member.member_gic)
-                      }
+                      onClick={() => onRemove(member.member_gic)}
                       className="flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
                     >
                       <Trash2 className="h-4 w-4 text-red-500" />
@@ -190,6 +202,16 @@ export default function MembersGrid({
           </CardContent>
         </Card>
       ))}
+      {selectedMember && (
+        <ChangeMemberRoleModal
+          open={isOpen}
+          onClose={() => {
+            setIsOpenModal(false);
+            setSelectedMember(null);
+          }}
+          member={selectedMember}
+        />
+      )}
     </div>
   );
 }

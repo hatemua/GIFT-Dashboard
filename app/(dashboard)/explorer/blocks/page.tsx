@@ -83,9 +83,7 @@ export default function BlocksPage() {
 
       {/* Empty */}
       {!loading && !hasBlocks && (
-        <EmptyState
-          type={filters ? "noResults" : "blocks"}
-        />
+        <EmptyState type={filters ? "noResults" : "blocks"} />
       )}
 
       {/* Content */}
