@@ -9,6 +9,7 @@ import { ROLE_COLORS, ROLES } from "@/constants/member";
 import { useMember } from "@/hooks/useMember";
 import { UserPlus, UserMinus, Shield, Check, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/providers/toast-provider";
 
 interface ChangeMemberRoleModalProps {
   open: boolean;
@@ -26,6 +27,8 @@ export const ChangeMemberRoleModal: React.FC<ChangeMemberRoleModalProps> = ({
   onClose,
   member,
 }) => {
+  const { showToast } = useToast();
+
   const { control, handleSubmit, watch, reset, setValue } = useForm<FormValues>(
     {
       defaultValues: { member_role: null, action: "assign" },
@@ -46,6 +49,11 @@ export const ChangeMemberRoleModal: React.FC<ChangeMemberRoleModalProps> = ({
     if (!data.member_role) return;
     try {
       await changeMemberRole(member.member_gic, data.member_role, data.action);
+      showToast({
+        title: "Success",
+        message: `Role "${selectedRole}" ${action === "assign" ? "assigned" : "revoked"} successfully.`,
+        variant: "success",
+      });
       reset();
       onClose();
     } catch (err) {
