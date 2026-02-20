@@ -185,49 +185,49 @@ export function SiteInformationCard({ vault }: { vault: vaultSiteDetails }) {
             />
             <InfoSection
               title="State / Province"
-              value={vault.location.state_or_province ?? "N/A"}
+              value={vault.location.state_or_province || "N/A"}
               icon={MapPin}
               color="text-emerald-600"
               bgColor="bg-emerald-50"
             />
             <InfoSection
               title="Postal Code"
-              value={vault.location.postal_code ?? "N/A"}
+              value={vault.location.postal_code || "N/A"}
               icon={Hash}
               color="text-purple-600"
               bgColor="bg-purple-50"
             />
             <InfoSection
               title="Registered Address"
-              value={vault.location.registered_address ?? "N/A"}
+              value={vault.location.registered_address || "N/A"}
               icon={Building}
               color="text-yellow-600"
               bgColor="bg-yellow-50"
             />
             <InfoSection
               title="Operational Address"
-              value={vault.location.operational_address ?? "N/A"}
+              value={vault.location.operational_address || "N/A"}
               icon={Building}
               color="text-purple-600"
               bgColor="bg-purple-50"
             />
             <InfoSection
               title="GPS Coordinates"
-              value={vault.location.gps_coordinates ?? "N/A"}
+              value={vault.location.gps_coordinates || "N/A"}
               icon={MapPin}
               color="text-emerald-600"
               bgColor="bg-emerald-50"
             />
             <InfoSection
               title="Timezone"
-              value={vault.location.timezone ?? "N/A"}
+              value={vault.location.timezone || "N/A"}
               icon={Globe}
               color="text-indigo-600"
               bgColor="bg-indigo-50"
             />
             <InfoSection
               title="Opening Hours"
-              value={vault.opening_hours ?? "N/A"}
+              value={vault.opening_hours || "N/A"}
               icon={Clock}
               color="text-pink-600"
               bgColor="bg-pink-50"

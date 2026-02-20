@@ -126,7 +126,7 @@ export const useVaultSiteStore = create<VaultSiteStore>((set, get) => ({
       // Handle grouped data
       switch (groupBy) {
         case "owner":
-          set({ inventoryByOwner: data.by_owner, inventoryLoading: false });
+          set({ inventoryByOwner: data.owner, inventoryLoading: false });
           break;
         case "product_type":
           set({
