@@ -111,19 +111,11 @@ const AssetCard: React.FC<Props> = ({ item, onClick }) => {
       icon={<Package className="h-4 w-4 text-amber-600" />}
       onClick={onClick}
     >
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col items-start gap-1">
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium text-gray-900 truncate">
             {item.serial_number || "N/A"}
           </span>
-          {item.asset_status && (
-            <StatusBadge
-              status={getAssetStatusLabel(item.asset_status)}
-              className="scale-75 origin-left"
-            />
-          )}
-        </div>
-        <div className="flex items-center gap-2 text-xs text-gray-500">
           {item.token_id && (
             <AddressDisplay
               address={item.token_id}
@@ -132,6 +124,18 @@ const AssetCard: React.FC<Props> = ({ item, onClick }) => {
               endChars={4}
             />
           )}
+          {item.asset_status && (
+            <StatusBadge
+              status={getAssetStatusLabel(item.asset_status)}
+              className="scale-75 origin-left"
+            />
+          )}
+        </div>
+        <div className="flex items-center gap-2 text-xs text-gray-500">
+          {item.gold_product_type_id && (
+            <StatusBadge status={item.gold_product_type_id} />
+          )}
+
           {item.created_at && (
             <span className="flex items-center gap-1">
               <CalendarDays className="h-3 w-3" />

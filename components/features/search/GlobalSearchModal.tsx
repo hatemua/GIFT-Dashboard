@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Modal } from "@/components/ui/modal";
 import { Input } from "@/components/ui/input";
 import { useSearchStore } from "@/store/searchStore";
@@ -15,23 +15,19 @@ export const GlobalSearchModal: React.FC<{
   open: boolean;
   onClose: () => void;
 }> = ({ open, onClose }) => {
-  const {
-    query,
-    setQuery,
-    results,
-    loading,
-    reset,
-  } = useSearchStore();
-  
+  const { query, setQuery, results, loading, reset } = useSearchStore();
+
   const [inputValue, setInputValue] = React.useState(query);
   const debouncedQuery = useDebounce(inputValue, 300);
 
   const handleClose = () => {
+    setInputValue("");
+    setQuery("");
     onClose();
     reset();
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     setQuery(debouncedQuery);
   }, [debouncedQuery]);
 

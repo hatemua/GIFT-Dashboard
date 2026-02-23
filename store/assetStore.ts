@@ -254,8 +254,10 @@ export const useAssetStore = create<AssetState>((set, get) => ({
 
   resetFilters: () =>
     set({
+      assets: [],
       filters: {},
       page: 1,
+      count: 0
     }),
 
   setPage: (page: number) => set({ page }),
