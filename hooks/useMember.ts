@@ -8,6 +8,7 @@ import {
   GetMemberAccountsResponse,
   MembersResponse,
   MemberRole,
+  ChangeMemberRoleResponse,
 } from "@/types/member";
 
 interface UseMemberReturn {
@@ -44,7 +45,7 @@ interface UseMemberReturn {
       member_gic: string,
       member_role: MemberRole,
       action: "assign" | "revoke",
-    ) => Promise<Member | undefined>;
+    ) => Promise<ChangeMemberRoleResponse | undefined>;
 
   // Setters
   setFilters: (filters: MembersFilters) => void;

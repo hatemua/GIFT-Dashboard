@@ -19,7 +19,6 @@ export const TransactionEvents: React.FC<TransactionEventsProps> = ({
     fetchTransactionEvents,
   } = useTransaction();
 
-  // Fetch events on mount
   useEffect(() => {
     if (transactionReference) fetchTransactionEvents(transactionReference);
   }, [transactionReference, fetchTransactionEvents]);

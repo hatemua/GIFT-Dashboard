@@ -69,8 +69,8 @@ export interface TransactionItem {
 export interface TransactionDetails {
   transaction_reference: string;
   transaction_id: string;
-  type: string; // e.g., "transfer"
-  status: string; // e.g., "executed"
+  type: string;
+  status: string;
   parties: {
     initiator: {
       gic: string;
@@ -89,19 +89,19 @@ export interface TransactionDetails {
     status: AssetStatus;
   }[];
   valuation: {
-    date: string; // ISO date string
-    currency: string; // e.g., "USD"
-    amount: number; // total value
-    spot_price_reference: number; // e.g., 65
+    date: string;
+    currency: string;
+    amount: number;
+    spot_price_reference: number;
   };
   signatures: {
     signer: string;
     signing_role: "initiator" | "counterparty" | string;
-    timestamp: string; // ISO datetime
+    timestamp: string;
     signature: string;
   }[];
-  created_at: string; // ISO datetime
-  executed_at: string; // ISO datetime
+  created_at: string;
+  executed_at: string;
 }
 
 export interface TransactionEvent {

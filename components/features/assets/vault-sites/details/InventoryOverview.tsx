@@ -76,14 +76,11 @@ export function InventoryOverview() {
 
   const vaultSiteId = vaultSiteDetails?.vault_site_id;
 
-  // Fetch summary and grouped data
   useEffect(() => {
     if (!vaultSiteId) return;
 
-    // Fetch summary
     fetchVaultSiteInventory(vaultSiteId);
 
-    // Fetch grouped data
     fetchVaultSiteInventory(vaultSiteId, "owner");
     fetchVaultSiteInventory(vaultSiteId, "product_type");
     fetchVaultSiteInventory(vaultSiteId, "vault_id");

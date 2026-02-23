@@ -1,5 +1,6 @@
 import { api } from "@/lib/axios";
 import {
+  ChangeMemberRoleResponse,
   CreateMemberInput,
   CreateMemberResponse,
   GetMemberAccountsResponse,
@@ -86,8 +87,8 @@ export const memberService = {
     member_gic: string,
     member_role: MemberRole,
     action: "assign" | "revoke",
-  ) => {
-    const response = await api.put<Member>(
+  ) : Promise<ChangeMemberRoleResponse>  => {
+    const response = await api.put<ChangeMemberRoleResponse>(
       `/members/${member_gic}/${member_role}/${action}`,
     );
     return response.data;

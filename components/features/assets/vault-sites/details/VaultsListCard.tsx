@@ -11,7 +11,6 @@ import {
   Eye,
   AlertCircle,
   Lock,
-  Filter,
   RotateCcw,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -39,12 +38,10 @@ export function VaultsListCard() {
   const vaultSiteId = useVaultSite().vaultSiteDetails?.vault_site_id;
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Refetch vaults when page, limit, or filters change
   useEffect(() => {
     if (vaultSiteId) fetchVaultsByVaultSiteId(vaultSiteId);
   }, [vaultSiteId, page, limit, filters, fetchVaultsByVaultSiteId]);
 
-  // Vault status options for dropdown
   const vaultStatusOptions: { label: string; value: VaultStatus }[] = [
     { label: "All", value: "" as VaultStatus },
     { label: "Unused", value: "UNUSED" },

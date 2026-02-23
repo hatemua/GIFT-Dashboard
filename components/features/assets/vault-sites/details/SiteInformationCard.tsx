@@ -253,13 +253,13 @@ export function SiteInformationCard({ vault }: { vault: vaultSiteDetails }) {
             label="Maximum Weight"
             value={vault.storage_capacity.maximum_weight_in_gold_kg}
             unit="kg"
-            icon={Scale} // or another icon if you want
+            icon={Scale}
           />
           <StatCard
             label="Utilization"
             value={vault.storage_capacity.utilization_percent}
             unit="%"
-            icon={PieChart} // you can choose a chart icon here
+            icon={PieChart}
           />
         </div>
 

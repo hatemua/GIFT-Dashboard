@@ -84,7 +84,7 @@ export default function NewVaultSitePage() {
   const onSubmit = async (data: CreateVaultSitePayload) => {
     try {
       const payload: CreateVaultSitePayload = { ...data };
-      // Remove postal_code if empty or undefined
+      
       if (!payload.postal_code) {
         delete payload.postal_code;
       }
@@ -92,13 +92,12 @@ export default function NewVaultSitePage() {
         delete payload.gps_coordinates;
       }
 
-      // Upload insurance files if any
       if (insuranceFiles.length > 0) {
         const insuranceDocuments = await Promise.all(
           insuranceFiles.map(async (file) => ({
             document_id: `DOC_${crypto.randomUUID()}`,
             document_type: "agreement" as DOC_TYPE,
-            document_url: "https://url_of_the_document", // Replace with real URL if needed
+            document_url: "https://url_of_the_document",
             document_base64: await fileToBase64(file),
           })),
         );
@@ -108,11 +107,9 @@ export default function NewVaultSitePage() {
           documents: insuranceDocuments,
         });
 
-        // Add SOD ID to payload
         payload.insurance_coverage_documentation = sod_insurance_id;
       }
 
-      // Upload audit files if any
       if (auditFiles.length > 0) {
         const auditDocuments = await Promise.all(
           auditFiles.map(async (file) => ({
@@ -128,11 +125,9 @@ export default function NewVaultSitePage() {
           documents: auditDocuments,
         });
 
-        // Add SOD ID to payload
         payload.audit_documentation = sod_audit_id;
       }
 
-      // Now create the vault site with document SOD IDs included
       await createVaultSite(payload);
 
       showToast({
@@ -141,7 +136,6 @@ export default function NewVaultSitePage() {
         variant: "success",
       });
 
-      // Optionally reset the form and file states
       reset();
       setInsuranceFiles([]);
       setAuditFiles([]);

@@ -48,7 +48,6 @@ export interface CreateUserForm {
   member_gic: string;
 }
 
-// UpdateUserStatus 
 export interface UpdateUserStatusPayload {
   user_id: string;
   action: "activate" | "deactivate";

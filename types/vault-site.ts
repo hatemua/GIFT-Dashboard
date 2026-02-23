@@ -25,7 +25,7 @@ export interface vaultSiteDetails {
     postal_code: string;
     country: string;
     timezone: string;
-    gps_coordinates: string; // "lat,long" string
+    gps_coordinates: string;
   };
 
   storage_capacity: {
@@ -38,7 +38,7 @@ export interface vaultSiteDetails {
 
   insurance_coverage: {
     name_of_insurer: string;
-    expiration_date: string; // ISO date string
+    expiration_date: string;
     documentation_sod_id: string;
     coverage_amount: number;
     coverage_currency: string;
@@ -46,18 +46,18 @@ export interface vaultSiteDetails {
 
   audit_and_compliance: {
     audit_documentation_sod_id: string;
-    last_audit_date: string; // ISO date string
-    next_audit_due: string; // ISO date string
+    last_audit_date: string;
+    next_audit_due: string;
     audit_frequency: "annual" | "semi-annual" | "quarterly" | "monthly";
   };
 
   status: "active";
 
-  vaults: any[]; // if nested vault objects are added later, replace 'any' with a proper type
-  total_assets: string; // number of assets as string
+  vaults: any[];
+  total_assets: string;
   total_weight_grams: number;
 
-  created_at: string; // ISO datetime string
+  created_at: string;
 }
 
 export interface CreateVaultSitePayload {
@@ -77,10 +77,10 @@ export interface CreateVaultSitePayload {
   maximum_weight_in_gold_kg: number;
   opening_hours: string;
   insurance_coverage_name_of_insurer: string;
-  insurance_coverage_expiration_date: string; // ISO string
+  insurance_coverage_expiration_date: string;
   insurance_coverage_documentation: string;
   audit_documentation: string;
-  last_audit_date: string; // ISO string
+  last_audit_date: string;
 }
 
 export type VaultSiteInventory = {

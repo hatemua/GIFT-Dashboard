@@ -44,7 +44,6 @@ export default function VaultSitesPage() {
     return () => resetFilters();
   }, []);
 
-  // Conditional content rendering
   let content;
   if (loading) {
     content = <VaultSitesSkeleton view={view} />;

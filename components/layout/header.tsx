@@ -28,7 +28,7 @@ export function Header() {
               placeholder="Search transactions, assets, members..."
               className="pl-10 cursor-pointer"
               readOnly
-              onClick={() => setOpen(true)} // open modal
+              onClick={() => setOpen(true)}
             />
           </div>
         </div>
@@ -42,7 +42,6 @@ export function Header() {
           <Settings className="h-5 w-5" />
         </Button> */}
 
-          {/* Gold Price Ticker */}
           {/* Gold Price Ticker */}
           {goldPriceLoading ? (
             <GoldPriceSkeleton />

@@ -8,6 +8,7 @@ import {
   GetMemberResponse,
   GetMemberAccountsResponse,
   MemberRole,
+  ChangeMemberRoleResponse,
 } from "@/types/member";
 import { memberService } from "@/services/memberService";
 
@@ -51,7 +52,7 @@ interface MemberState {
     member_gic: string,
     member_role: MemberRole,
     action: "assign" | "revoke",
-  ) => Promise<Member | undefined>;
+  ) => Promise<ChangeMemberRoleResponse | undefined>;
 
   setFilters: (filters: MembersFilters) => void;
   resetFilters: () => void;
@@ -231,14 +232,35 @@ export const useMemberStore = create<MemberState>((set, get) => ({
   ) => {
     set({ actionLoading: true, actionError: undefined });
     try {
-      const updatedMember = await memberService.changeMemberRole(
+      const response = await memberService.changeMemberRole(
         member_gic,
         member_role,
         action,
       );
 
-      await get().fetchMembers();
-      return updatedMember;
+      set((state) => {
+        const updateMember = (member: Member): Member => {
+          if (member.member_gic !== member_gic) return member;
+
+          const roles =
+            action === "assign"
+              ? Array.from(new Set([...member.roles, response.role]))
+              : member.roles.filter((r) => r !== response.role);
+
+          return {
+            ...member,
+            roles,
+            updatedAt: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          };
+        };
+
+        return {
+          members: state.members.map(updateMember),
+        };
+      });
+
+      return response;
     } catch (err: any) {
       const message =
         err?.response?.data?.error_description ||

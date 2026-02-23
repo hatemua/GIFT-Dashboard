@@ -98,6 +98,14 @@ export interface GetMemberAccountsResponse {
   goldAccounts: MemberAccount[];
 }
 
+export interface ChangeMemberRoleResponse {
+  status: string;
+  action: "assign" | "revoke";
+  member_gic: string;
+  role: string;
+  transaction_hash: string;
+}
+
 export type MemberRole =
   | "ROLE_REFINER"
   | "ROLE_MINTER"
