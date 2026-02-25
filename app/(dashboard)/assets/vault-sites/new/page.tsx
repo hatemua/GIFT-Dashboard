@@ -287,12 +287,7 @@ export default function NewVaultSitePage() {
                     label="Postal Code"
                     placeholder="8001"
                     error={errors.postal_code?.message}
-                    {...register("postal_code", {
-                      pattern: {
-                        value: /^\d{4,6}$/,
-                        message: "Invalid postal code format",
-                      },
-                    })}
+                    {...register("postal_code")}
                     className="bg-gray-50/50"
                   />
                   <Input
