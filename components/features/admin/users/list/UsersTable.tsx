@@ -114,15 +114,6 @@ export default function UsersTable({ users }: UsersTableProps) {
                   align="end"
                   className="z-50 min-w-[180px] rounded-lg border border-slate-200 bg-white/95 backdrop-blur-md shadow-lg py-1 animate-slide-down-fade"
                 >
-                  {/* View Details */}
-                  <DropdownMenuItem
-                    onClick={() => console.log("View Details", user.user_id)}
-                    className="flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 rounded-md transition-colors"
-                  >
-                    <ExternalLink className="h-4 w-4 text-slate-500" />
-                    View Details
-                  </DropdownMenuItem>
-
                   {/* Conditional Activate / Deactivate */}
                   {isAdmin && (
                     <>
