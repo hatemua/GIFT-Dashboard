@@ -114,7 +114,6 @@ export default function UsersTable({ users }: UsersTableProps) {
                   align="end"
                   className="z-50 min-w-[180px] rounded-lg border border-slate-200 bg-white/95 backdrop-blur-md shadow-lg py-1 animate-slide-down-fade"
                 >
-                  {/* Conditional Activate / Deactivate */}
                   {isAdmin && (
                     <>
                       {" "}
