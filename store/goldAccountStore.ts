@@ -123,8 +123,8 @@ export const useGoldAccountStore = create<GoldAccountStore>((set, get) => ({
       set({
         accounts: data.accounts,
         totalCount: data.total_count,
-        limit: data.limit,
-        page: data.page,
+        limit: Number(data.limit) ?? limit,
+        page: Number(data.page) ?? page,
       });
     } catch (err: any) {
       set({ error: err?.message || "Failed to fetch gold accounts" });
