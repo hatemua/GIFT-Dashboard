@@ -13,7 +13,7 @@ interface Props {
 
 export const AssetSummaryTab = ({ data }: Props) => {
   const { isAdmin } = useAuthStore();
-  const { assetDetails } = useAsset();
+  const { assetDetails, assetTracking } = useAsset();
 
   return (
     <>
@@ -21,7 +21,7 @@ export const AssetSummaryTab = ({ data }: Props) => {
         {/* Left Column */}
         <div className="lg:col-span-2 space-y-4">
           <AssetOverviewCard asset={assetDetails} />
-          {assetDetails && <OwnershipLocationCard asset={assetDetails} />}
+          {assetTracking && <OwnershipLocationCard asset={assetTracking.asset_summary}/>}
         </div>
 
         {/* Right Column */}

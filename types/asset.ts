@@ -126,7 +126,7 @@ export interface AssetSummary {
   fineness: number;
   fine_weight_grams: number;
   gold_product_type_id: string;
-  current_status: string;
+  current_status: AssetStatus;
   current_owner_igan: string;
   current_vault_site_id: string;
   current_vault_id: string;

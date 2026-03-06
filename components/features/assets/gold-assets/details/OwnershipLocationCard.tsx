@@ -1,18 +1,18 @@
 "use client";
 
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
-import { AssetDetails } from "@/types/asset";
+import { AssetDetails, AssetSummary } from "@/types/asset";
 import { User, Home } from "lucide-react";
 import { StatusBadge } from "@/components/data-display/status-badge";
 import { getAssetStatusLabel } from "@/lib/assets";
 import { AddressDisplay } from "@/components/blockchain/address-display";
 
 interface Props {
-  asset: AssetDetails;
+  asset: AssetSummary;
 }
 
 export function OwnershipLocationCard({ asset }: Props) {
-  const statusLabel = getAssetStatusLabel(asset.ownership.asset_status);
+  const statusLabel = getAssetStatusLabel(asset?.current_status);
 
   return (
     <Card>
@@ -34,7 +34,7 @@ export function OwnershipLocationCard({ asset }: Props) {
             icon={<User className="h-3 w-3 text-emerald-500" />}
           >
             <AddressDisplay
-              address={asset.ownership.current_owner_igan}
+              address={asset.current_owner_igan}
               truncate
               startChars={4}
               endChars={4}
@@ -44,10 +44,10 @@ export function OwnershipLocationCard({ asset }: Props) {
 
           {/* Vault Site */}
           <InfoItem
-            label="Vault Site"
+            label="Vault Site ID / Vault ID"
             icon={<Home className="h-3 w-3 text-blue-500" />}
           >
-            {asset.ownership.vault_site_id ?? "N/A"} 
+            {asset.current_vault_site_id ?? "N/A"} / {asset.current_vault_id ?? "N/A"}
           </InfoItem>
         </div>
       </CardContent>
