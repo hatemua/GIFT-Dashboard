@@ -128,7 +128,7 @@ export const Stats: React.FC<StatsProps> = ({ account }) => {
         label="Assets & Purity"
         value={
           <>
-            {purity}% <span className="text-sm text-gray-500">fine gold</span>
+            {total_fine_weight_grams} <span className="text-sm text-gray-500">fine gold</span>
           </>
         }
         footer={

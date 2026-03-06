@@ -145,7 +145,7 @@ export const ValuationAnalysis: React.FC<ValuationAnalysisProps> = ({
             </div>
             <div className="text-center p-3 rounded-lg bg-gray-50">
               <p className="text-xs text-gray-500 mb-1">Purity Level</p>
-              <p className="text-lg font-semibold text-gray-900">{purity}%</p>
+              <p className="text-lg font-semibold text-gray-900">{total_holdings.total_fine_weight_grams}</p>
             </div>
           </div>
         </div>
