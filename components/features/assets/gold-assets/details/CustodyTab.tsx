@@ -59,7 +59,7 @@ export const CustodyTab = ({ data }: Props) => {
 
             return (
               <div
-                key={`${custody.custody_party_id}-${custody.from_date}`}
+                key={`${custody.custody_party_id || custody.lsp_id || "unknown"}-${custody.from_date}`}
                 className="relative group"
               >
                 {/* Timeline dot */}
@@ -102,7 +102,7 @@ export const CustodyTab = ({ data }: Props) => {
                           {custody.custody_party_type}
                         </span>
                         <span className="font-mono text-xs text-muted-foreground px-1.5 py-0.5 rounded">
-                          {custody.custody_party_id}
+                          {custody.custody_party_id || custody.lsp_id}
                         </span>
                         {isCurrent && (
                           <Badge className="h-5 bg-emerald-500 hover:bg-emerald-600 text-white px-1.5 text-[10px] gap-0.5 shrink-0">

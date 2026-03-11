@@ -22,6 +22,7 @@ interface UpdateCustodyModalProps {
 interface UpdateCustodyFormValues {
   custody_party_type: string;
   custody_party_id: string;
+  lsp_id: string;
   vault_site_id: string;
   vault_id: string;
   custody_type: string;
@@ -47,6 +48,7 @@ export const UpdateCustodyModal = ({
     defaultValues: {
       custody_party_type: "",
       custody_party_id: "",
+      lsp_id: "",
       vault_site_id: undefined,
       vault_id: undefined,
       custody_type: "",
@@ -82,7 +84,8 @@ export const UpdateCustodyModal = ({
       const payload: UpdateCustodyRequest = {
         token_id: tokenId,
         custody_party_type: values.custody_party_type,
-        custody_party_id: values.custody_party_id,
+        custody_party_id: isLsp ? undefined : values.custody_party_id,
+        lsp_id: isLsp ? values.lsp_id : undefined,
         vault_site_id: isLsp ? undefined : values.vault_site_id,
         vault_id: isLsp ? undefined : values.vault_id,
         custody_type: values.custody_type,
@@ -156,16 +159,31 @@ export const UpdateCustodyModal = ({
             )}
           />
 
-          {/* Custody party ID */}
-          <Input
-            label="Custody Party ID"
-            required
-            placeholder="ID of custody party"
-            error={errors.custody_party_id?.message}
-            {...register("custody_party_id", {
-              required: "Custody party ID is required",
-            })}
-          />
+          {/* Custody party ID – hidden for LSP */}
+          {!isLsp && (
+            <Input
+              label="Custody Party ID"
+              required
+              placeholder="ID of custody party"
+              error={errors.custody_party_id?.message}
+              {...register("custody_party_id", {
+                required: isLsp ? false : "Custody party ID is required",
+              })}
+            />
+          )}
+
+          {/* LSP ID – only for LSP custody */}
+          {isLsp && (
+            <Input
+              label="LSP ID"
+              required
+              placeholder="Logistics service provider ID"
+              error={errors.lsp_id?.message}
+              {...register("lsp_id", {
+                required: "LSP ID is required",
+              })}
+            />
+          )}
 
           {/* Vault site ID */}
           <Input

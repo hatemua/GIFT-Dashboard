@@ -165,6 +165,7 @@ export interface OwnershipChainItem {
 export interface CustodyChainItem {
   custody_party_type: string;
   custody_party_id: string;
+  lsp_id: string | null;
   from_date: string;
   to_date: string | null;
   is_current_custodian?: boolean;
@@ -233,6 +234,7 @@ export interface UpdateCustodyRequest {
   token_id: string;
   custody_party_type: string;
   custody_party_id: string;
+  lsp_id?: string;
   vault_site_id?: string;
   vault_id?: string;
   custody_type: string;

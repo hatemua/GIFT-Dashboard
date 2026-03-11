@@ -206,13 +206,14 @@ export default function MintAssetPage() {
               rules={{
                 required: "Fineness is required",
                 min: { value: 0, message: "Fineness must be at least 0" },
+                max: { value: 1, message: "Fineness must be at most 1" },
               }}
               render={({ field }) => (
                 <Input
                   {...field}
                   type="number"
+                  step="any"
                   min={0}
-                  step={0.0001}
                   label="Fineness"
                   placeholder="e.g. 0.9999"
                   error={errors.fineness?.message}

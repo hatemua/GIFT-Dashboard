@@ -115,10 +115,20 @@ export const BurnAssetModal = ({
               onChange={field.onChange}
               error={errors.burn_reason?.message}
             >
+              <SelectItem value="reprocessed">
+                Physical Redemption of Gold
+              </SelectItem>
+              <SelectItem value="damaged">Reprocessed</SelectItem>
+              <SelectItem value="delivered">
+                Regulartory or Compliance Requirement
+              </SelectItem>
+              <SelectItem value="delivered">
+                Correction of Issuance Error
+              </SelectItem>
+              <SelectItem value="delivered">
+                Vault Reconciliation Adjusment
+              </SelectItem>
               <SelectItem value="other">Other</SelectItem>
-              <SelectItem value="reprocessed">Reprocessed</SelectItem>
-              <SelectItem value="damaged">Damaged</SelectItem>
-              <SelectItem value="delivered">Delivered</SelectItem>
             </Select>
           )}
         />
