@@ -233,7 +233,7 @@ export interface BurnAssetResponse {
 export interface UpdateCustodyRequest {
   token_id: string;
   custody_party_type: string;
-  custody_party_id: string;
+  custody_party_id?: string;
   lsp_id?: string;
   vault_site_id?: string;
   vault_id?: string;
