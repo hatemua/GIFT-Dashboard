@@ -22,7 +22,7 @@ export function AddressDisplay({
 }: AddressDisplayProps) {
   const [copied, setCopied] = useState(false);
 
-  const displayAddress = truncate
+  const displayAddress = truncate && address
     ? truncateAddress(address, startChars, endChars)
     : address;
 
@@ -45,12 +45,12 @@ export function AddressDisplay({
       )}
       title={address}
     >
-      <span className="text-slate-700">{displayAddress}</span>
-      {copied ? (
+      <span className="text-slate-700">{displayAddress || "N/A"}</span>
+      {displayAddress && copied ? (
         <Check className="h-3.5 w-3.5 text-emerald-600" />
-      ) : (
+      ) : displayAddress ? (
         <Copy className="h-3.5 w-3.5 text-slate-400" />
-      )}
+      ) : null}
     </button>
   );
 }
