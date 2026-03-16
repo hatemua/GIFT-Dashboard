@@ -15,8 +15,8 @@ import {
   Calendar,
   MoreVertical,
   ExternalLink,
-  Trash2,
-  Plus,
+  ShieldCheck,
+  Ban,
 } from "lucide-react";
 import { Member } from "@/types/member";
 import {
@@ -34,6 +34,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import { useAuthStore } from "@/store/authStore";
+import { useState } from "react";
+import { BlacklistConfirmModal } from "./BlacklistConfirmModal";
 
 interface MembersTableProps {
   members: Member[];
@@ -47,7 +49,37 @@ export default function MembersTable({
   onRemove,
 }: MembersTableProps) {
   const { isAdmin } = useAuthStore();
+  const [blacklistModal, setBlacklistModal] = useState<{
+    open: boolean;
+    action: "add" | "remove";
+    memberGic: string;
+  }>({ open: false, action: "add", memberGic: "" });
+  const [blacklistLoading, setBlacklistLoading] = useState(false);
+
+  const openBlacklistConfirm = (action: "add" | "remove", memberGic: string) => {
+    setBlacklistModal({ open: true, action, memberGic });
+  };
+
+  const closeBlacklistConfirm = () => {
+    setBlacklistModal((prev) => ({ ...prev, open: false }));
+  };
+
+  const handleBlacklistConfirm = async () => {
+    setBlacklistLoading(true);
+    try {
+      if (blacklistModal.action === "add" && onAdd) {
+        await onAdd(blacklistModal.memberGic);
+      } else if (blacklistModal.action === "remove" && onRemove) {
+        await onRemove(blacklistModal.memberGic);
+      }
+    } finally {
+      setBlacklistLoading(false);
+      closeBlacklistConfirm();
+    }
+  };
+
   return (
+    <>
     <Card className="overflow-hidden">
       <CardContent className="p-0">
         <div className="relative w-full overflow-x-auto">
@@ -151,22 +183,22 @@ export default function MembersTable({
                         {/* Add to Blacklist */}
                         {onAdd && isAdmin && (
                           <DropdownMenuItem
-                            onClick={() => onAdd(member.member_gic)}
+                            onClick={() => openBlacklistConfirm("add", member.member_gic)}
                             className="flex items-center gap-2 text-red-600 focus:text-red-600"
                           >
-                            <Plus className="h-4 w-4" />
-                            Add to Blacklist
+                            <Ban className="h-4 w-4" />
+                            Block
                           </DropdownMenuItem>
                         )}
 
                         {/* Remove */}
                         {onRemove && isAdmin && (
                           <DropdownMenuItem
-                            onClick={() => onRemove(member.member_gic)}
+                            onClick={() => openBlacklistConfirm("remove", member.member_gic)}
                             className="flex items-center gap-2 text-red-600 focus:text-red-600"
                           >
-                            <Trash2 className="h-4 w-4" />
-                            Remove
+                            <ShieldCheck className="h-4 w-4" />
+                            Unblock
                           </DropdownMenuItem>
                         )}
                       </DropdownMenuContent>
@@ -179,5 +211,15 @@ export default function MembersTable({
         </div>
       </CardContent>
     </Card>
+
+    <BlacklistConfirmModal
+      open={blacklistModal.open}
+      onClose={closeBlacklistConfirm}
+      onConfirm={handleBlacklistConfirm}
+      action={blacklistModal.action}
+      memberGic={blacklistModal.memberGic}
+      loading={blacklistLoading}
+    />
+    </>
   );
 }

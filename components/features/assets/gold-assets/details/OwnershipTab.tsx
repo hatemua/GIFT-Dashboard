@@ -129,17 +129,19 @@ export const OwnershipTab = ({ data }: Props) => {
                           </Badge>
                         )}
                       </div>
-                      <div
-                        className={cn(
-                          "flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-medium shrink-0",
-                          isCurrent
-                            ? "bg-emerald-100 text-emerald-700"
-                            : "bg-muted text-muted-foreground",
-                        )}
-                      >
-                        <Calendar className="h-2.5 w-2.5" />
-                        <span>{formatDuration(owner.duration_days)}</span>
-                      </div>
+                      {owner.duration_days != null && (
+                        <div
+                          className={cn(
+                            "flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-medium shrink-0",
+                            isCurrent
+                              ? "bg-emerald-100 text-emerald-700"
+                              : "bg-muted text-muted-foreground",
+                          )}
+                        >
+                          <Calendar className="h-2.5 w-2.5" />
+                          <span>{formatDuration(owner.duration_days)}</span>
+                        </div>
+                      )}
                     </div>
 
                     {/* Row 2: GIC */}

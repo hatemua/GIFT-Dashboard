@@ -20,9 +20,12 @@ export function formatCurrency(
 
 export function formatWeight(grams: number): string {
   if (grams >= 1000) {
-    return `${(grams / 1000).toFixed(2)} kg`;
+    const kg = parseFloat((grams / 1000).toFixed(2));
+    return `${kg} kg`;
   }
-  return `${grams.toFixed(2)} g`;
+
+  const g = parseFloat(grams.toFixed(2));
+  return `${g} g`;
 }
 
 export function formatDate(

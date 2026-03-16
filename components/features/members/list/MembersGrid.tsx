@@ -6,8 +6,8 @@ import { cn, formatDate } from "@/lib/utils";
 import {
   Calendar,
   ExternalLink,
-  Trash2,
-  Plus,
+  ShieldCheck,
+  Ban,
   MoreVertical,
   UserCheck,
 } from "lucide-react";
@@ -29,6 +29,7 @@ import Link from "next/link";
 import { useAuthStore } from "@/store/authStore";
 import { useState } from "react";
 import { ChangeMemberRoleModal } from "./ChangeMemberRoleModal";
+import { BlacklistConfirmModal } from "./BlacklistConfirmModal";
 
 interface MembersGridProps {
   members: Member[];
@@ -49,6 +50,34 @@ export default function MembersGrid({
   const { isAdmin } = useAuthStore();
   const [isOpen, setIsOpenModal] = useState<boolean>(false);
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
+  const [blacklistModal, setBlacklistModal] = useState<{
+    open: boolean;
+    action: "add" | "remove";
+    memberGic: string;
+  }>({ open: false, action: "add", memberGic: "" });
+  const [blacklistLoading, setBlacklistLoading] = useState(false);
+
+  const openBlacklistConfirm = (action: "add" | "remove", memberGic: string) => {
+    setBlacklistModal({ open: true, action, memberGic });
+  };
+
+  const closeBlacklistConfirm = () => {
+    setBlacklistModal((prev) => ({ ...prev, open: false }));
+  };
+
+  const handleBlacklistConfirm = async () => {
+    setBlacklistLoading(true);
+    try {
+      if (blacklistModal.action === "add" && onAdd) {
+        await onAdd(blacklistModal.memberGic);
+      } else if (blacklistModal.action === "remove" && onRemove) {
+        await onRemove(blacklistModal.memberGic);
+      }
+    } finally {
+      setBlacklistLoading(false);
+      closeBlacklistConfirm();
+    }
+  };
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {members.map((member) => (
@@ -106,22 +135,22 @@ export default function MembersGrid({
                   {/* Add to Blacklist */}
                   {onAdd && isAdmin && (
                     <DropdownMenuItem
-                      onClick={() => onAdd(member.member_gic)}
+                      onClick={() => openBlacklistConfirm("add", member.member_gic)}
                       className="flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
                     >
-                      <Plus className="h-4 w-4 text-red-500" />
-                      Add to Blacklist
+                      <Ban className="h-4 w-4 text-red-500" />
+                      Block
                     </DropdownMenuItem>
                   )}
 
                   {/* Remove */}
                   {onRemove && isAdmin && (
                     <DropdownMenuItem
-                      onClick={() => onRemove(member.member_gic)}
+                      onClick={() => openBlacklistConfirm("remove", member.member_gic)}
                       className="flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
                     >
-                      <Trash2 className="h-4 w-4 text-red-500" />
-                      Remove
+                      <ShieldCheck className="h-4 w-4 text-red-500" />
+                      Unblock
                     </DropdownMenuItem>
                   )}
                 </DropdownMenuContent>
@@ -212,6 +241,15 @@ export default function MembersGrid({
           member={selectedMember}
         />
       )}
+
+      <BlacklistConfirmModal
+        open={blacklistModal.open}
+        onClose={closeBlacklistConfirm}
+        onConfirm={handleBlacklistConfirm}
+        action={blacklistModal.action}
+        memberGic={blacklistModal.memberGic}
+        loading={blacklistLoading}
+      />
     </div>
   );
 }

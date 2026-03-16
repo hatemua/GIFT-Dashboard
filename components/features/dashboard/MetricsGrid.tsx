@@ -37,7 +37,7 @@ export default function MetricsGrid() {
         <>
           <MetricCard
             title="Total Gold Under Management"
-            value={`${formatWeight(kpis.gold_weight)} / ${formatCurrencyCompact(kpis.value_in_dollars)}`}
+            value={`${formatWeight(kpis.gold_weight)} / ${formatCurrencyCompact(kpis.value_in_dollars)} $`}
             icon={<Package className="h-5 w-5" />}
           />
           <MetricCard
