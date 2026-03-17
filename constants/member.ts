@@ -47,7 +47,7 @@ export const ROLES = [
   },
   {
     label: "Vault Operator",
-    value: "ROLE_VAULT_OP",
+    value: "ROLE_VAULT",
     description: "Manages operations of vaults and storage facilities",
   },
   {
@@ -76,7 +76,7 @@ export const ROLE_COLORS: Record<string, string> = {
   ROLE_REFINER: "bg-yellow-50 text-yellow-700 border-yellow-200",
   ROLE_MINTER: "bg-blue-50 text-blue-700 border-blue-200",
   ROLE_CUSTODIAN: "bg-purple-50 text-purple-700 border-purple-200",
-  ROLE_VAULT_OP: "bg-pink-50 text-pink-700 border-pink-200",
+  ROLE_VAULT: "bg-pink-50 text-pink-700 border-pink-200",
   ROLE_LSP: "bg-amber-50 text-amber-700 border-amber-200",
   ROLE_AUDITOR: "bg-teal-50 text-teal-700 border-teal-200",
   ROLE_GMO: "bg-fuchsia-50 text-fuchsia-700 border-fuchsia-200",

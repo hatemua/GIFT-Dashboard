@@ -12,11 +12,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Select, SelectItem } from "@/components/ui/select";
 import { DatePicker } from "@/components/ui/date-picker";
-import { FileText, DollarSign, Users, PenTool, Loader2 } from "lucide-react";
+import { FileText, DollarSign, Users, Loader2 } from "lucide-react";
 import { TRANSACTION_TYPE_OPTIONS2 } from "@/constants/transactionOrders";
 import { CreateTransactionFormValues } from "@/app/(dashboard)/transactions/new/page";
 import { useGoldAccount } from "@/hooks/useGoldAccount";
 import { useDebounce } from "@/hooks/useDebounce";
+import { useMember } from "@/hooks/useMember";
+import { useMemberStore } from "@/store/memberStore";
 
 export const TransactionDetailsForm: React.FC = () => {
   const {
@@ -26,6 +28,7 @@ export const TransactionDetailsForm: React.FC = () => {
   } = useFormContext<CreateTransactionFormValues>();
 
   const { fetchAccountByIgan } = useGoldAccount();
+  const { fetchMemberByGic } = useMember();
 
   /* ---------------- Watch IGANs ---------------- */
   const senderIgan = useWatch({ control, name: "sender_igan" });
@@ -41,6 +44,7 @@ export const TransactionDetailsForm: React.FC = () => {
   useEffect(() => {
     if (!debouncedSenderIgan) {
       setValue("initiator_gic", "");
+      setValue("initiator_signature", "");
       return;
     }
 
@@ -48,12 +52,19 @@ export const TransactionDetailsForm: React.FC = () => {
       setLoadingSender(true);
       try {
         const account = await fetchAccountByIgan(debouncedSenderIgan);
+        const gic = account?.member_gic ?? "";
+        setValue("initiator_gic", gic, { shouldValidate: true });
 
-        setValue("initiator_gic", account?.member_gic ?? "", {
-          shouldValidate: true,
-        });
+        if (gic) {
+          await fetchMemberByGic(gic);
+          const member = useMemberStore.getState().selectedMember;
+          setValue("initiator_signature", member?.member.member_hash ?? "", {
+            shouldValidate: true,
+          });
+        }
       } catch {
         setValue("initiator_gic", "");
+        setValue("initiator_signature", "");
       } finally {
         setLoadingSender(false);
       }
@@ -322,40 +333,6 @@ export const TransactionDetailsForm: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Section 4: Authorization */}
-      <Card className="border-l-4 border-l-amber-500 hover:shadow-lg transition-shadow duration-200">
-        <CardHeader className="pb-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-amber-50 rounded-lg">
-              <PenTool className="h-5 w-5 text-amber-600" />
-            </div>
-            <div>
-              <CardTitle className="text-lg">Authorization</CardTitle>
-              <CardDescription>
-                Required signatures for transaction approval
-              </CardDescription>
-            </div>
-          </div>
-        </CardHeader>
-
-        <CardContent>
-          <Controller
-            name="initiator_signature"
-            control={control}
-            rules={{ required: "Initiator Signature is required" }}
-            render={({ field }) => (
-              <Input
-                {...field}
-                required
-                label="Initiator Signature"
-                placeholder="Enter or paste signature here"
-                error={errors.initiator_signature?.message}
-                className="bg-gray-50/50 max-w-md"
-              />
-            )}
-          />
-        </CardContent>
-      </Card>
     </div>
   );
 };

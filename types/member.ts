@@ -110,7 +110,7 @@ export type MemberRole =
   | "ROLE_REFINER"
   | "ROLE_MINTER"
   | "ROLE_CUSTODIAN"
-  | "ROLE_VAULT_OP"
+  | "ROLE_VAULT"
   | "ROLE_LSP"
   | "ROLE_AUDITOR"
   | "ROLE_GMO"

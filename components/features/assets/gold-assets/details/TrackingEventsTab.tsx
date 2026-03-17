@@ -148,146 +148,168 @@ export const TrackingEventsTab = ({ events, lifecycle }: Props) => {
           </Badge>
         </div>
 
-{events.map((event, index) => {
-  const time = formatTimestamp(event.timestamp);
+        {[...events]
+          .sort(
+            (a, b) =>
+              new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
+          )
+          .map((event, index) => {
+            const time = formatTimestamp(event.timestamp);
 
-  const eventKey =
-    event.event_id || event.transaction_reference || `${event.timestamp}-${index}`;
+            const eventKey =
+              event.event_id ||
+              event.transaction_reference ||
+              `${event.timestamp}-${index}`;
 
-  const isOpen = expanded === eventKey;
+            const isOpen = expanded === eventKey;
 
-  const eventTitle =
-    event.event_type ||
-    event.transaction_type ||
-    "Blockchain Event";
+            const eventTitle =
+              event.event_type || event.transaction_type || "Blockchain Event";
 
-  return (
-    <Card
-      key={eventKey}
-      className="group rounded-xl border border-slate-200/60 bg-white hover:shadow-sm transition-all duration-200"
-    >
-      <CardContent className="p-4">
-        {/* Header */}
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex items-start gap-3">
-            <div className="h-8 w-8 rounded-xl bg-slate-100 flex items-center justify-center group-hover:bg-slate-200 transition">
-              <Activity className="h-3.5 w-3.5 text-slate-600" />
-            </div>
+            return (
+              <Card
+                key={eventKey}
+                className="group rounded-xl border border-slate-200/60 bg-white hover:shadow-sm transition-all duration-200"
+              >
+                <CardContent className="p-4">
+                  {/* Header */}
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex items-start gap-3">
+                      <div className="h-8 w-8 rounded-xl bg-slate-100 flex items-center justify-center group-hover:bg-slate-200 transition">
+                        <Activity className="h-3.5 w-3.5 text-slate-600" />
+                      </div>
 
-            <div>
-              <h4 className="text-sm font-semibold text-slate-900 capitalize">
-                {eventTitle.replace(/_/g, " ")}
-              </h4>
+                      <div>
+                        <h4 className="text-sm font-semibold text-slate-900 capitalize">
+                          {eventTitle.replace(/_/g, " ")}
+                        </h4>
 
-              {event.description && (
-                <p className="text-xs text-slate-500 mt-0.5">
-                  {event.description}
-                </p>
-              )}
+                        {event.description && (
+                          <p className="text-xs text-slate-500 mt-0.5">
+                            {event.description}
+                          </p>
+                        )}
 
-              <div className="flex items-center gap-2 mt-2 text-[11px] text-slate-400">
-                {event.event_id && (
-                  <>
-                    <span className="font-mono">
-                      #{event.event_id.slice(0, 8)}
-                    </span>
-                    <span>•</span>
-                  </>
-                )}
+                        <div className="flex items-center gap-2 mt-2 text-[11px] text-slate-400">
+                          {event.event_id && (
+                            <>
+                              <span className="font-mono">
+                                #{event.event_id.slice(0, 8)}
+                              </span>
+                              <span>•</span>
+                            </>
+                          )}
 
-                <span>Block {event.block_number}</span>
-              </div>
-            </div>
-          </div>
+                          <span>Block {event.block_number}</span>
+                        </div>
+                      </div>
+                    </div>
 
-          {/* Date */}
-          <div className="text-right shrink-0">
-            <p className="text-xs font-medium text-slate-800">
-              {time.date}
-            </p>
-            <p className="text-[11px] text-slate-400">
-              {time.time}
-            </p>
-          </div>
-        </div>
-
-        {/* Tx + Value */}
-        <div className="mt-4 flex flex-wrap items-center gap-4 text-[11px] text-slate-500">
-          <div className="flex items-center gap-1.5">
-            <LinkIcon className="h-3 w-3" />
-            <AddressDisplay
-              address={event.transaction_hash}
-              truncate
-              startChars={6}
-              endChars={4}
-              className="font-mono text-slate-700"
-            />
-          </div>
-
-          {event.transaction_reference && (
-            <div className="flex items-center gap-1.5">
-              <span className="text-slate-400">Ref</span>
-              <span className="font-mono text-slate-700">
-                {event.transaction_reference}
-              </span>
-            </div>
-          )}
-
-          {event.valuation_snapshot && (
-            <div className="flex items-center gap-1.5">
-              <span className="text-slate-400">Value</span>
-              <span className="font-medium text-slate-900">
-                {event.valuation_snapshot.asset_value}{" "}
-                {event.valuation_snapshot.currency}
-              </span>
-            </div>
-          )}
-        </div>
-
-        {/* Expand */}
-        {event.details && Object.keys(event.details).length > 0 && (
-          <div className="mt-4">
-            <button
-              onClick={() =>
-                setExpanded(isOpen ? null : eventKey)
-              }
-              className="flex items-center gap-1 text-[11px] font-medium text-slate-500 hover:text-slate-900 transition"
-            >
-              {isOpen ? "Hide details" : "View details"}
-              {isOpen ? (
-                <ChevronUp className="h-3 w-3" />
-              ) : (
-                <ChevronDown className="h-3 w-3" />
-              )}
-            </button>
-
-            <div
-              className={`transition-all duration-300 overflow-hidden ${
-                isOpen ? "max-h-80 mt-3" : "max-h-0"
-              }`}
-            >
-              <div className="space-y-1.5 border-t border-slate-100 pt-3">
-                {Object.entries(event.details).map(([key, value]) => (
-                  <div key={key} className="flex gap-3 text-[11px]">
-                    <span className="min-w-[120px] text-slate-400 capitalize">
-                      {key.replace(/_/g, " ")}
-                    </span>
-                    <span className="font-mono text-slate-700 break-all">
-                      {typeof value === "object"
-                        ? JSON.stringify(value)
-                        : String(value)}
-                    </span>
+                    {/* Date */}
+                    <div className="text-right shrink-0">
+                      <p className="text-xs font-medium text-slate-800">
+                        {time.date}
+                      </p>
+                      <p className="text-[11px] text-slate-400">{time.time}</p>
+                    </div>
                   </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-      </CardContent>
-    </Card>
-  );
-})}
 
+                  {/* Tx + Value */}
+                  <div className="mt-4 flex flex-wrap items-center gap-4 text-[11px] text-slate-500">
+                    <div className="flex items-center gap-1.5">
+                      <LinkIcon className="h-3 w-3" />
+                      <AddressDisplay
+                        address={event.transaction_hash}
+                        truncate
+                        startChars={6}
+                        endChars={4}
+                        className="font-mono text-slate-700"
+                      />
+                    </div>
+
+                    {event.transaction_reference && (
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-slate-400">Ref</span>
+                        <span className="font-mono text-slate-700">
+                          {event.transaction_reference}
+                        </span>
+                      </div>
+                    )}
+
+                    {event.valuation_snapshot && (
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-slate-400">Value</span>
+                        <span className="font-medium text-slate-900">
+                          {event.valuation_snapshot.asset_value}{" "}
+                          {event.valuation_snapshot.currency}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Expand */}
+                  {event.details && Object.keys(event.details).length > 0 && (
+                    <div className="mt-4">
+                      <button
+                        onClick={() => setExpanded(isOpen ? null : eventKey)}
+                        className="flex items-center gap-1 text-[11px] font-medium text-slate-500 hover:text-slate-900 transition"
+                      >
+                        {isOpen ? "Hide details" : "View details"}
+                        {isOpen ? (
+                          <ChevronUp className="h-3 w-3" />
+                        ) : (
+                          <ChevronDown className="h-3 w-3" />
+                        )}
+                      </button>
+
+                      <div
+                        className={`transition-all duration-300 overflow-hidden ${
+                          isOpen ? "max-h-80 mt-3" : "max-h-0"
+                        }`}
+                      >
+                        <div className="space-y-1.5 border-t border-slate-100 pt-3">
+                          {Object.entries(event.details).map(([key, value]) => {
+                            let display: string;
+                            if (typeof value === "object") {
+                              display = JSON.stringify(value);
+                            } else {
+                              const str = String(value);
+                              const asDate = new Date(str);
+                              const isDate =
+                                str.length >= 10 &&
+                                !isNaN(asDate.getTime()) &&
+                                /\d{4}-\d{2}-\d{2}/.test(str);
+                              display = isDate
+                                ? asDate.toLocaleString("en-GB", {
+                                    day: "2-digit",
+                                    month: "short",
+                                    year: "numeric",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                    second: "2-digit",
+                                    timeZone: "UTC",
+                                  })
+                                : str;
+                            }
+                            return (
+                              <div key={key} className="flex gap-3 text-[11px]">
+                                <span className="min-w-[120px] text-slate-400 capitalize">
+                                  {key.replace(/_/g, " ")}
+                                </span>
+                                <span className="font-mono text-slate-700 break-all">
+                                  {display}
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            );
+          })}
       </div>
     </Card>
   );

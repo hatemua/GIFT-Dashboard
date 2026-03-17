@@ -31,13 +31,13 @@ export function Toast({
   return (
     <div
       className={cn(
-        "pointer-events-auto w-96 rounded-lg border shadow-lg p-4 flex gap-3",
+        "pointer-events-auto w-96 max-w-[calc(100vw-2rem)] rounded-lg border shadow-lg p-4 flex gap-3",
         variantStyles[variant]
       )}
     >
-      <div className="flex-1">
+      <div className="flex-1 min-w-0">
         {title && <p className="font-semibold">{title}</p>}
-        <p className="text-sm">{message}</p>
+        <p className="text-sm break-words max-h-32 overflow-y-auto pr-1 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-black/10 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-black/20 hover:[&::-webkit-scrollbar-thumb]:bg-black/40">{message}</p>
       </div>
 
       <button

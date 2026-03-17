@@ -9,7 +9,7 @@ import { Select, SelectItem } from "@/components/ui/select";
 import { UpdateStatusRequest, AssetStatus } from "@/types/asset";
 import { useAsset } from "@/hooks/useAsset";
 import { ASSET_CONDITION_LABELS } from "@/constants/assets";
-import { fileToDataURL } from "@/lib/utils";
+import { fileToBase64 } from "@/lib/utils";
 import { DatePicker } from "@/components/ui/date-picker";
 import { useToast } from "@/providers/toast-provider";
 
@@ -57,20 +57,14 @@ export const UpdateAssetStatusModal = ({
     if (!values.new_status) return;
 
     try {
-      let supportingDocumentBase64: string | undefined;
-
-      if (values.supporting_document) {
-        supportingDocumentBase64 = await fileToDataURL(
-          values.supporting_document,
-        );
-      }
-
       const payload: UpdateStatusRequest = {
         token_id: tokenId,
         new_status: values.new_status,
         reason: values.reason,
         effective_date: values.effective_date,
-        supporting_document: supportingDocumentBase64,
+        supporting_document: values.supporting_document
+          ? await fileToBase64(values.supporting_document)
+          : undefined,
       };
 
       await updateStatus(tokenId, payload);
@@ -151,6 +145,7 @@ export const UpdateAssetStatusModal = ({
                 value={field.value}
                 onChange={field.onChange}
                 error={errors.effective_date?.message}
+                showTime
               />
             )}
           />

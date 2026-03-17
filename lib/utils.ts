@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { keccak256, toUtf8Bytes } from "ethers";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -8,7 +9,7 @@ export function cn(...inputs: ClassValue[]) {
 export function formatCurrency(
   amount: number,
   currency: string = "USD",
-  locale: string = "en-US"
+  locale: string = "en-US",
 ): string {
   return new Intl.NumberFormat(locale, {
     style: "currency",
@@ -30,7 +31,7 @@ export function formatWeight(grams: number): string {
 
 export function formatDate(
   date: string | Date,
-  format: "short" | "long" | "relative" = "short"
+  format: "short" | "long" | "relative" = "short",
 ): string {
   const d = typeof date === "string" ? new Date(date) : date;
 
@@ -75,7 +76,7 @@ export function formatDate(
 export function truncateAddress(
   address: string,
   startChars: number = 6,
-  endChars: number = 4
+  endChars: number = 4,
 ): string {
   if (address?.length <= startChars + endChars) return address;
   return `${address.slice(0, startChars)}...${address.slice(-endChars)}`;
@@ -179,7 +180,7 @@ export const fileToDataURL = (file: File): Promise<string> => {
     const reader = new FileReader();
 
     reader.readAsDataURL(file); // This reads the file as Data URL (includes MIME type)
-    
+
     reader.onload = () => {
       const result = reader.result as string; // e.g., "data:application/pdf;base64,JVBERi0xLjQK..."
       resolve(result); // Keep the full Data URL with MIME type
@@ -189,7 +190,6 @@ export const fileToDataURL = (file: File): Promise<string> => {
   });
 };
 
-
 export const isValidUrl = (url: string) => {
   try {
     new URL(url);
@@ -198,3 +198,26 @@ export const isValidUrl = (url: string) => {
     return false;
   }
 };
+
+/**
+ * Generates an Ethereum-style address from the given input string.
+ *
+ * <p>
+ * The method computes a SHA3 (Keccak-256) hash of the input and extracts
+ * the last 20 bytes to form a 40-character hexadecimal address prefixed with "0x".
+ *
+ * @param input (memberGic) the input string to generate the address from
+ * @return a 42-character hexadecimal address string (including "0x" prefix)
+ */
+export function generateAddress(input: string): string {
+  // compute keccak256 hash
+  const hash = keccak256(toUtf8Bytes(input));
+
+  // remove 0x prefix
+  const cleanHash = hash.slice(2);
+
+  // take last 40 hex characters (20 bytes)
+  const address = cleanHash.slice(-40);
+
+  return "0x" + address;
+}

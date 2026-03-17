@@ -1,21 +1,16 @@
 "use client";
 
-import { useForm } from "react-hook-form";
 import { Modal } from "@/components/ui/modal";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/providers/toast-provider";
 import { useTransaction } from "@/hooks/useTransaction";
 import { TransactionDetails } from "@/types/transaction";
+import { generateAddress } from "@/lib/utils";
 
 interface SignTransactionModalProps {
   transaction: TransactionDetails;
   isOpen: boolean;
   onClose: () => void;
-}
-
-interface SignTransactionFormValues {
-  signature: string;
 }
 
 export const SignTransactionModal = ({
@@ -27,22 +22,13 @@ export const SignTransactionModal = ({
   const { signTransaction, fetchTransactionByReference, signing } =
     useTransaction();
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors, isSubmitting },
-  } = useForm<SignTransactionFormValues>({
-    defaultValues: {
-      signature: "",
-    },
-  });
-
-  const submitHandler = async (values: SignTransactionFormValues) => {
+  const submitHandler = async () => {
     try {
+      const signature = generateAddress(transaction.parties.counterparty.gic);
+
       await signTransaction(
         transaction.transaction_reference,
-        values.signature,
+        signature,
         "counterparty",
       );
 
@@ -53,7 +39,6 @@ export const SignTransactionModal = ({
         message: "Transaction signed successfully!",
         variant: "success",
       });
-      reset();
       onClose();
     } catch (error: any) {
       showToast({
@@ -67,45 +52,33 @@ export const SignTransactionModal = ({
     }
   };
 
-  const isDisabled = signing || isSubmitting;
-
   return (
     <Modal
       isOpen={isOpen}
-      onClose={() => {
-        reset();
-        onClose();
-      }}
+      onClose={onClose}
       size="sm"
       title="Sign Transaction"
     >
-      <form onSubmit={handleSubmit(submitHandler)} className="space-y-5">
-        <Input
-          label="Signature"
-          placeholder="Enter counterparty signature"
-          required
-          error={errors.signature?.message}
-          {...register("signature", { required: "Signature is required" })}
-        />
+      <div className="space-y-5">
+        <p className="text-sm text-muted-foreground">
+          Are you sure you want to sign this transaction?
+        </p>
 
         <div className="flex justify-end gap-3 pt-6">
           <Button
             type="button"
             variant="outline"
-            onClick={() => {
-              reset();
-              onClose();
-            }}
+            onClick={onClose}
             disabled={signing}
           >
             Cancel
           </Button>
 
-          <Button type="submit" disabled={isDisabled}>
-            {signing || isSubmitting ? "Signing..." : "Sign"}
+          <Button onClick={submitHandler} disabled={signing}>
+            {signing ? "Signing..." : "Sign"}
           </Button>
         </div>
-      </form>
+      </div>
     </Modal>
   );
 };

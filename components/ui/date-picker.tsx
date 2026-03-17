@@ -13,11 +13,12 @@ interface DatePickerProps {
   label?: string;
   error?: string;
   required?: boolean;
+  showTime?: boolean;
 }
 
 export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
   (
-    { value, onChange, placeholder = "Select date", label, error, required },
+    { value, onChange, placeholder = "Select date", label, error, required, showTime = false },
     ref
   ) => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -26,8 +27,18 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
     const [isOpen, setIsOpen] = useState(false);
     const [currentMonth, setCurrentMonth] = useState(dayjs());
     const [position, setPosition] = useState({ top: 0, left: 0 });
+    const [time, setTime] = useState({ hours: "00", minutes: "00", seconds: "00" });
 
     const selectedDate = value || "";
+
+    // Sync time state from value when showTime is enabled
+    React.useEffect(() => {
+      if (showTime && value && value.includes("T")) {
+        const [, timePart] = value.split("T");
+        const [h, m, s] = timePart.split(":");
+        setTime({ hours: h ?? "00", minutes: m ?? "00", seconds: s ?? "00" });
+      }
+    }, []);
 
     /* Close on outside click */
     useEffect(() => {
@@ -65,8 +76,24 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
     };
 
     const handleDateClick = (date: dayjs.Dayjs) => {
-      onChange?.(date.format("YYYY-MM-DD"));
-      setIsOpen(false);
+      if (showTime) {
+        onChange?.(`${date.format("YYYY-MM-DD")}T${time.hours}:${time.minutes}:${time.seconds}`);
+      } else {
+        onChange?.(date.format("YYYY-MM-DD"));
+        setIsOpen(false);
+      }
+    };
+
+    const handleTimeChange = (field: "hours" | "minutes" | "seconds", val: string) => {
+      const sanitized = val.replace(/\D/g, "").slice(0, 2);
+      const newTime = { ...time, [field]: sanitized.padStart(2, "0") };
+      setTime(newTime);
+      const datePart = selectedDate.includes("T")
+        ? selectedDate.split("T")[0]
+        : selectedDate;
+      if (datePart) {
+        onChange?.(`${datePart}T${newTime.hours}:${newTime.minutes}:${newTime.seconds}`);
+      }
     };
 
     const startDay = currentMonth.startOf("month").day();
@@ -121,7 +148,12 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
             readOnly
             value={
               selectedDate
-                ? dayjs(selectedDate).format("DD/MM/YYYY")
+                ? showTime
+                  ? (() => {
+                      const datePart = selectedDate.includes("T") ? selectedDate.split("T")[0] : selectedDate;
+                      return `${dayjs(datePart).format("DD/MM/YYYY")} ${time.hours}:${time.minutes}:${time.seconds}`;
+                    })()
+                  : dayjs(selectedDate).format("DD/MM/YYYY")
                 : ""
             }
             placeholder={placeholder}
@@ -182,6 +214,49 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
               <div className="grid grid-cols-7 gap-1 text-sm text-center">
                 {renderCalendarDays()}
               </div>
+
+              {showTime && (
+                <div className="mt-3 pt-3 border-t border-slate-200">
+                  <div className="flex items-center justify-center gap-2">
+                    <label className="text-xs text-slate-500">Time</label>
+                    <input
+                      type="number"
+                      min={0}
+                      max={23}
+                      value={time.hours}
+                      onChange={(e) => handleTimeChange("hours", e.target.value)}
+                      className="w-12 text-center text-sm border border-slate-300 rounded px-1 py-1 focus:outline-none focus:ring-1 focus:ring-gold-500"
+                    />
+                    <span className="text-slate-500 font-medium">:</span>
+                    <input
+                      type="number"
+                      min={0}
+                      max={59}
+                      value={time.minutes}
+                      onChange={(e) => handleTimeChange("minutes", e.target.value)}
+                      className="w-12 text-center text-sm border border-slate-300 rounded px-1 py-1 focus:outline-none focus:ring-1 focus:ring-gold-500"
+                    />
+                    <span className="text-slate-500 font-medium">:</span>
+                    <input
+                      type="number"
+                      min={0}
+                      max={59}
+                      value={time.seconds}
+                      onChange={(e) => handleTimeChange("seconds", e.target.value)}
+                      className="w-12 text-center text-sm border border-slate-300 rounded px-1 py-1 focus:outline-none focus:ring-1 focus:ring-gold-500"
+                    />
+                  </div>
+                  <div className="flex justify-end mt-2">
+                    <button
+                      type="button"
+                      onClick={() => setIsOpen(false)}
+                      className="text-xs px-3 py-1 bg-gold-500 text-white rounded hover:bg-gold-600 transition"
+                    >
+                      Done
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>,
             document.body
           )}
