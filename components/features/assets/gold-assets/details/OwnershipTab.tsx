@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Crown, User, CheckCircle2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { useAsset } from "@/hooks/useAsset";
 
 interface Props {
   data: OwnershipChainItem[];
@@ -29,7 +28,6 @@ const formatDuration = (days: number) => {
 };
 
 export const OwnershipTab = ({ data }: Props) => {
-  const { assetDetails } = useAsset();
   const sortedData = [...data].sort(
     (a, b) => new Date(b.from_date).getTime() - new Date(a.from_date).getTime(),
   );
@@ -70,9 +68,8 @@ export const OwnershipTab = ({ data }: Props) => {
         <div className="absolute left-[15px] top-2 bottom-2 w-0.5 bg-gradient-to-b from-primary/40 via-border to-border" />
 
         <div className="space-y-3">
-          {sortedData.map((owner) => {
-            const isCurrent =
-              owner.owner_igan === assetDetails?.ownership.current_owner_igan;
+          {sortedData.map((owner, index) => {
+            const isCurrent = index === 0;
 
             return (
               <div
