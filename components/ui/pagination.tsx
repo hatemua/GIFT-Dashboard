@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
 
 interface PaginationProps {
   page?: number;
@@ -32,21 +32,19 @@ export function Pagination({
 
   const totalPages = Math.ceil(total / limit);
 
-  const handleNextPage = () => {
+  const goToPage = (targetPage: number) => {
+    const bounded = Math.min(Math.max(1, targetPage), totalPages);
     if (page !== undefined && setPage) {
-      if (currentPage < totalPages) setPage(currentPage + 1);
+      setPage(bounded);
     } else if (offset !== undefined && setOffset) {
-      setOffset(offset + limit);
+      setOffset((bounded - 1) * limit);
     }
   };
 
-  const handlePrevPage = () => {
-    if (page !== undefined && setPage) {
-      if (currentPage > 1) setPage(currentPage - 1);
-    } else if (offset !== undefined && setOffset) {
-      setOffset(Math.max(0, offset - limit));
-    }
-  };
+  const handleNextPage = () => goToPage(currentPage + 1);
+  const handlePrevPage = () => goToPage(currentPage - 1);
+  const handleFastNext = () => goToPage(currentPage + 10);
+  const handleFastPrev = () => goToPage(currentPage - 10);
 
   if (totalPages <= 1) return null;
 
@@ -64,6 +62,18 @@ export function Pagination({
   return (
     <div className={cn("flex justify-center", variant === "default" && "mt-4")}>
       <div className="flex items-center gap-2 sm:gap-3">
+        {/* Fast Previous */}
+        <Button
+          type="button"
+          size="icon"
+          variant="ghost"
+          onClick={handleFastPrev}
+          disabled={currentPage <= 1}
+          className={buttonClasses}
+        >
+          <ChevronsLeft className={size === "sm" ? "h-3 w-3" : "h-4 w-4"} />
+        </Button>
+
         {/* Previous */}
         <Button
           type="button"
@@ -107,6 +117,18 @@ export function Pagination({
           className={buttonClasses}
         >
           <ChevronRight className={size === "sm" ? "h-3 w-3" : "h-4 w-4"} />
+        </Button>
+
+        {/* Fast Next */}
+        <Button
+          type="button"
+          size="icon"
+          variant="ghost"
+          onClick={handleFastNext}
+          disabled={currentPage >= totalPages}
+          className={buttonClasses}
+        >
+          <ChevronsRight className={size === "sm" ? "h-3 w-3" : "h-4 w-4"} />
         </Button>
       </div>
     </div>
