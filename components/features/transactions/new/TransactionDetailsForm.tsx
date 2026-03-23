@@ -69,7 +69,7 @@ export const TransactionDetailsForm: React.FC = () => {
             shouldValidate: true,
           });
         }
-        trigger(["counterparty_gic", "reciever_igan"]);
+        trigger("reciever_igan");
       } catch {
         setValue("initiator_gic", "");
         setValue("initiator_signature", "");
@@ -96,7 +96,7 @@ export const TransactionDetailsForm: React.FC = () => {
         setValue("counterparty_gic", account?.member_gic ?? "", {
           shouldValidate: true,
         });
-        trigger(["counterparty_gic", "sender_igan"]);
+        trigger("sender_igan");
       } catch {
         setValue("counterparty_gic", "");
       } finally {
@@ -253,13 +253,6 @@ export const TransactionDetailsForm: React.FC = () => {
             <Controller
               name="counterparty_gic"
               control={control}
-              rules={{
-                validate: (value) =>
-                  !value ||
-                  !getValues("initiator_gic") ||
-                  value !== getValues("initiator_gic") ||
-                  "Counterparty GIC must differ from Initiator GIC",
-              }}
               render={({ field }) => (
                 <Input
                   {...field}
