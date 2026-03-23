@@ -25,6 +25,8 @@ export const TransactionDetailsForm: React.FC = () => {
     control,
     formState: { errors },
     setValue,
+    getValues,
+    trigger,
   } = useFormContext<CreateTransactionFormValues>();
 
   const { fetchAccountByIgan } = useGoldAccount();
@@ -39,6 +41,11 @@ export const TransactionDetailsForm: React.FC = () => {
 
   const [loadingSender, setLoadingSender] = useState(false);
   const [loadingReceiver, setLoadingReceiver] = useState(false);
+
+  /* ---------------- Reset assets on sender IGAN change ---------------- */
+  useEffect(() => {
+    setValue("requested_assets", []);
+  }, [debouncedSenderIgan]);
 
   /* ---------------- Fetch Initiator ---------------- */
   useEffect(() => {
@@ -62,6 +69,7 @@ export const TransactionDetailsForm: React.FC = () => {
             shouldValidate: true,
           });
         }
+        trigger(["counterparty_gic", "reciever_igan"]);
       } catch {
         setValue("initiator_gic", "");
         setValue("initiator_signature", "");
@@ -88,6 +96,7 @@ export const TransactionDetailsForm: React.FC = () => {
         setValue("counterparty_gic", account?.member_gic ?? "", {
           shouldValidate: true,
         });
+        trigger(["counterparty_gic", "sender_igan"]);
       } catch {
         setValue("counterparty_gic", "");
       } finally {
@@ -183,7 +192,12 @@ export const TransactionDetailsForm: React.FC = () => {
             <Controller
               name="sender_igan"
               control={control}
-              rules={{ required: "Initiator IGAN is required" }}
+              rules={{
+                required: "Initiator IGAN is required",
+                validate: (value) =>
+                  value !== getValues("reciever_igan") ||
+                  "Initiator IGAN must differ from Counterparty IGAN",
+              }}
               render={({ field }) => (
                 <Input
                   {...field}
@@ -219,7 +233,12 @@ export const TransactionDetailsForm: React.FC = () => {
             <Controller
               name="reciever_igan"
               control={control}
-              rules={{ required: "Counterparty IGAN is required" }}
+              rules={{
+                required: "Counterparty IGAN is required",
+                validate: (value) =>
+                  value !== getValues("sender_igan") ||
+                  "Counterparty IGAN must differ from Initiator IGAN",
+              }}
               render={({ field }) => (
                 <Input
                   {...field}
@@ -234,12 +253,20 @@ export const TransactionDetailsForm: React.FC = () => {
             <Controller
               name="counterparty_gic"
               control={control}
+              rules={{
+                validate: (value) =>
+                  !value ||
+                  !getValues("initiator_gic") ||
+                  value !== getValues("initiator_gic") ||
+                  "Counterparty GIC must differ from Initiator GIC",
+              }}
               render={({ field }) => (
                 <Input
                   {...field}
                   required
                   disabled
                   label="Counterparty GIC"
+                  error={errors.counterparty_gic?.message}
                   rightIcon={
                     loadingReceiver ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
