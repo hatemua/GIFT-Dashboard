@@ -33,7 +33,7 @@ const activityConfig = {
     title: "New User Created",
     color: "text-amber-600",
     bg: "bg-amber-100",
-    path: (id: string) => `/users/${id}`,
+    path: (_id: string) => `/admin/users`,
   },
   new_asset_minted: {
     icon: Gem,
@@ -47,7 +47,7 @@ const activityConfig = {
     title: "New Gold Account Added",
     color: "text-blue-600",
     bg: "bg-blue-100",
-    path: (id: string) => `/gold-accounts/${id}`,
+    path: (id: string) => `/assets/accounts/${id}`,
   },
   asset_status_change: {
     icon: RefreshCw,
@@ -89,7 +89,7 @@ function renderDescription(activity: ActivityLog) {
     case "new_member_added":
       return { label: "Member GIC", value: activity.member_gic };
     case "new_user_added":
-      return { label: "User ID", value: activity.user_id };
+      return { label: "User ID", value: activity.user_id ?? "View Users" };
     case "new_gold_account_added":
       return { label: "IGAN", value: activity.igan };
     case "new_asset_minted":
