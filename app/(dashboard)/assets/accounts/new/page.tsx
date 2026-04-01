@@ -35,6 +35,7 @@ export default function NewGoldAccountPage() {
         initial_deposit: data.initial_deposit
           ? Number(data.initial_deposit)
           : undefined,
+        guarantee_deposit_account: data.guarantee_deposit_account || undefined,
       });
 
       showToast({
