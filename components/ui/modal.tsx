@@ -9,6 +9,7 @@ interface ModalProps {
   title?: string;
   children: ReactNode;
   size?: "sm" | "md" | "lg";
+  hideClose?: boolean;
 }
 
 export const Modal = ({
@@ -17,6 +18,7 @@ export const Modal = ({
   title,
   children,
   size = "md",
+  hideClose = false,
 }: ModalProps) => {
   if (!isOpen) return null;
 
@@ -29,7 +31,7 @@ export const Modal = ({
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm overflow-auto"
-      onClick={onClose}
+      onClick={hideClose ? undefined : onClose}
     >
       <div
         className={`relative w-full ${sizeClasses[size]} mx-auto my-8 p-4 transform transition-all duration-300`}
@@ -39,12 +41,14 @@ export const Modal = ({
           {/* Header */}
           <div className="flex justify-between items-center p-4 border-b border-slate-200">
             {title && <h2 className="text-lg font-bold text-slate-900">{title}</h2>}
-            <button
-              onClick={onClose}
-              className="p-1 rounded-full hover:bg-slate-100 transition"
-            >
-              <X className="w-5 h-5 text-slate-700" />
-            </button>
+            {!hideClose && (
+              <button
+                onClick={onClose}
+                className="p-1 rounded-full hover:bg-slate-100 transition"
+              >
+                <X className="w-5 h-5 text-slate-700" />
+              </button>
+            )}
           </div>
 
           {/* Content */}

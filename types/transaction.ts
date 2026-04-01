@@ -87,6 +87,9 @@ export interface TransactionDetails {
     weight_grams: number;
     fine_weight_grams: number;
     status: AssetStatus;
+    curent_cusdoty_party_id: string | null;
+    current_custody_type: string | null;
+    current_owner: string | null;
   }[];
   valuation: {
     date: string;

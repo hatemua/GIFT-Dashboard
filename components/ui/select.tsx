@@ -69,7 +69,6 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
         const rect = containerRef.current.getBoundingClientRect();
         const spaceBelow = window.innerHeight - rect.bottom;
         const spaceAbove = rect.top;
-
         setOpenUpwards(spaceBelow < 200 && spaceAbove > spaceBelow);
       }
       setIsOpen((prev) => !prev);
